@@ -486,7 +486,7 @@ defmodule ReqLLM.Providers.AmazonBedrock do
       {:error, _} ->
         raise """
         AWS Bedrock support requires the ex_aws_auth dependency.
-        Please add {:ex_aws_auth, "~> 1.0", optional: true} to your mix.exs dependencies.
+        Please add {:ex_aws_auth, "~> 1.1", optional: true} to your mix.exs dependencies.
         """
     end
 
@@ -503,14 +503,6 @@ defmodule ReqLLM.Providers.AmazonBedrock do
             {k, if(is_list(v), do: List.first(v), else: v)}
           end)
 
-        # Add session token if provided
-        headers =
-          if aws_creds[:session_token] do
-            Map.put(headers, "x-amz-security-token", aws_creds[:session_token])
-          else
-            headers
-          end
-
         body = req.body || ""
 
         signed_headers_list =
@@ -522,7 +514,9 @@ defmodule ReqLLM.Providers.AmazonBedrock do
             aws_creds[:region] || "us-east-1",
             "bedrock",
             headers,
-            body
+            body,
+            NaiveDateTime.utc_now(),
+            aws_creds[:session_token]
           )
 
         # Req normalizes headers to %{key => [value]}, so convert the signed headers
@@ -542,7 +536,7 @@ defmodule ReqLLM.Providers.AmazonBedrock do
       {:error, _} ->
         raise """
         AWS Bedrock streaming requires the ex_aws_auth dependency.
-        Please add {:ex_aws_auth, "~> 1.0", optional: true} to your mix.exs dependencies.
+        Please add {:ex_aws_auth, "~> 1.1", optional: true} to your mix.exs dependencies.
         """
     end
 
@@ -570,14 +564,6 @@ defmodule ReqLLM.Providers.AmazonBedrock do
     # ex_aws_auth expects map with lowercase header names
     headers_map = Map.new(headers, fn {k, v} -> {String.downcase(k), v} end)
 
-    # Add session token if provided
-    headers_map =
-      if aws_creds[:session_token] do
-        Map.put(headers_map, "x-amz-security-token", aws_creds[:session_token])
-      else
-        headers_map
-      end
-
     # Sign using ex_aws_auth - returns list of header tuples
     signed_headers =
       AWSAuth.sign_authorization_header(
@@ -588,7 +574,9 @@ defmodule ReqLLM.Providers.AmazonBedrock do
         region,
         service,
         headers_map,
-        body_binary
+        body_binary,
+        NaiveDateTime.utc_now(),
+        aws_creds[:session_token]
       )
 
     # Return signed request
