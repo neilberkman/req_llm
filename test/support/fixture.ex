@@ -106,9 +106,10 @@ defmodule ReqLLM.Step.Fixture.Backend do
         end
       else
         Logger.debug("Fixture REPLAY mode - loading from #{Path.relative_to_cwd(path)}")
-        # Short-circuit the pipeline with stubbed response
         {:ok, response} = handle_replay(path, model)
         Logger.debug("Fixture loaded successfully, status=#{response.status}")
+
+        request = Req.Request.put_private(request, :llm_fixture_replay, true)
         {request, response}
       end
     end
