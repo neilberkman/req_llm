@@ -11,8 +11,8 @@ defmodule ReqLLM.Step.RetryTest do
       # Verify retry function is configured
       assert is_function(updated_request.options[:retry], 2)
       assert updated_request.options[:max_retries] == 3
-      assert is_function(updated_request.options[:retry_delay], 1)
-      assert updated_request.options[:retry_delay].(1) == 0
+      # Note: retry_delay should NOT be set since retry returns {:delay, ms}
+      refute updated_request.options[:retry_delay]
       assert updated_request.options[:retry_log_level] == false
     end
   end
@@ -85,8 +85,8 @@ defmodule ReqLLM.Step.RetryTest do
       # Verify retry is configured
       assert is_function(request.options[:retry], 2)
       assert request.options[:max_retries] == 3
-      assert is_function(request.options[:retry_delay], 1)
-      assert request.options[:retry_delay].(1) == 0
+      # Note: retry_delay should NOT be set since retry returns {:delay, ms}
+      refute request.options[:retry_delay]
     end
 
     test "retry function correctly identifies retryable errors" do
