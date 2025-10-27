@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- ArgumentError when retry function returns `{:delay, ms}` - removed conflicting `retry_delay` option from `ReqLLM.Step.Retry.attach/1` (Req 0.5.15+ compatibility)
 - Metadata collection timeout errors on large documents with long processing times
 - Bedrock streaming now works correctly (fixed deprecated function capture syntax)
 - Tool.Inspect protocol crash when inspecting tools with JSON Schema (map) parameter schemas

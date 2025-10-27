@@ -53,7 +53,8 @@ defmodule ReqLLM.Step.Retry do
     |> Req.Request.merge_options(
       retry: &should_retry?/2,
       max_retries: 3,
-      retry_delay: fn _attempt -> 0 end,
+      # Don't set retry_delay since should_retry?/2 returns {:delay, ms}
+      # Setting both causes ArgumentError in Req 0.5.15+
       retry_log_level: false
     )
   end

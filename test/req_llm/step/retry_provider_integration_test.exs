@@ -36,8 +36,8 @@ defmodule ReqLLM.Step.RetryProviderIntegrationTest do
 
       assert is_function(request.options[:retry], 2)
       assert request.options[:max_retries] == 3
-      assert is_function(request.options[:retry_delay], 1)
-      assert request.options[:retry_delay].(1) == 0
+      # Note: retry_delay should NOT be set since retry returns {:delay, ms}
+      refute request.options[:retry_delay]
       assert request.options[:retry_log_level] == false
     end
 
@@ -76,8 +76,8 @@ defmodule ReqLLM.Step.RetryProviderIntegrationTest do
 
       assert is_function(request.options[:retry], 2)
       assert request.options[:max_retries] == 3
-      assert is_function(request.options[:retry_delay], 1)
-      assert request.options[:retry_delay].(1) == 0
+      # Note: retry_delay should NOT be set since retry returns {:delay, ms}
+      refute request.options[:retry_delay]
       assert request.options[:retry_log_level] == false
     end
 
@@ -116,8 +116,8 @@ defmodule ReqLLM.Step.RetryProviderIntegrationTest do
 
       assert is_function(request.options[:retry], 2)
       assert request.options[:max_retries] == 3
-      assert is_function(request.options[:retry_delay], 1)
-      assert request.options[:retry_delay].(1) == 0
+      # Note: retry_delay should NOT be set since retry returns {:delay, ms}
+      refute request.options[:retry_delay]
       assert request.options[:retry_log_level] == false
     end
 
@@ -182,13 +182,10 @@ defmodule ReqLLM.Step.RetryProviderIntegrationTest do
       assert is_function(google_request.options[:retry], 2)
       assert is_function(bedrock_request.options[:retry], 2)
 
-      assert is_function(anthropic_request.options[:retry_delay], 1)
-      assert is_function(google_request.options[:retry_delay], 1)
-      assert is_function(bedrock_request.options[:retry_delay], 1)
-
-      assert anthropic_request.options[:retry_delay].(1) == 0
-      assert google_request.options[:retry_delay].(1) == 0
-      assert bedrock_request.options[:retry_delay].(1) == 0
+      # Note: retry_delay should NOT be set since retry returns {:delay, ms}
+      refute anthropic_request.options[:retry_delay]
+      refute google_request.options[:retry_delay]
+      refute bedrock_request.options[:retry_delay]
 
       assert anthropic_request.options[:retry_log_level] == false
       assert google_request.options[:retry_log_level] == false
