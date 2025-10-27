@@ -103,6 +103,14 @@
     "status": "fail",
     "last_checked": "2025-10-18T02:12:58Z"
   },
+  "amazon_bedrock:global.anthropic.claude-haiku-4-5-20251001-v1:0": {
+    "status": "fail",
+    "last_checked": "2025-10-27T23:58:00Z"
+  },
+  "amazon_bedrock:global.anthropic.claude-sonnet-4-5-20250929-v1:0": {
+    "status": "fail",
+    "last_checked": "2025-10-27T23:47:52Z"
+  },
   "amazon_bedrock:meta.llama3-1-70b-instruct-v1:0": {
     "status": "fail",
     "last_checked": "2025-10-18T02:12:58Z"

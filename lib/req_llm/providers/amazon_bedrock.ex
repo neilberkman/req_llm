@@ -128,7 +128,7 @@ defmodule ReqLLM.Providers.AmazonBedrock do
       endpoint = if opts[:stream], do: "/invoke-with-response-stream", else: "/invoke"
 
       request =
-        Req.new([url: endpoint, method: :post, receive_timeout: 30_000] ++ http_opts)
+        Req.new([url: endpoint, method: :post, receive_timeout: 120_000] ++ http_opts)
         |> attach(model, Keyword.put(opts, :context, context))
 
       {:ok, request}
@@ -150,7 +150,7 @@ defmodule ReqLLM.Providers.AmazonBedrock do
       opts_with_operation = Keyword.put(opts, :operation, :object)
 
       request =
-        Req.new([url: endpoint, method: :post, receive_timeout: 30_000] ++ http_opts)
+        Req.new([url: endpoint, method: :post, receive_timeout: 120_000] ++ http_opts)
         |> attach(model, Keyword.put(opts_with_operation, :context, context))
 
       {:ok, request}
@@ -600,6 +600,23 @@ defmodule ReqLLM.Providers.AmazonBedrock do
       Unsupported model family for: #{model_id}
       Currently supported: #{Map.keys(@model_families) |> Enum.join(", ")}
       """
+  end
+
+  @impl ReqLLM.Provider
+  def translate_options(operation, model, opts) do
+    # Delegate to native Anthropic option translation for Anthropic models
+    # This ensures we get all Anthropic-specific handling (temperature/top_p conflicts,
+    # reasoning effort, etc.) for free
+    model_family = get_model_family(model.model)
+
+    case model_family do
+      "anthropic" ->
+        ReqLLM.Providers.Anthropic.translate_options(operation, model, opts)
+
+      _ ->
+        # Other model families: no translation needed yet
+        {opts, []}
+    end
   end
 
   @impl ReqLLM.Provider
