@@ -125,7 +125,7 @@ defmodule ReqLLM.Provider.DefaultsTest do
            assert tool_call.id == "call_123"
          end},
 
-        # Missing fields handled gracefully  
+        # Missing fields handled gracefully
         {%{"choices" => [%{"message" => %{"content" => "Hello"}}]},
          fn result ->
            assert result.id == "unknown"
@@ -193,12 +193,10 @@ defmodule ReqLLM.Provider.DefaultsTest do
     end
 
     test "handles edge cases gracefully", %{model: model} do
-      # Empty/invalid events
       assert Defaults.default_decode_sse_event(%{data: %{}}, model) == []
       assert Defaults.default_decode_sse_event(%{}, model) == []
       assert Defaults.default_decode_sse_event("invalid", model) == []
 
-      # Tool call with invalid JSON - should fallback to empty map
       invalid_json_event = %{
         data: %{
           "choices" => [
@@ -220,6 +218,30 @@ defmodule ReqLLM.Provider.DefaultsTest do
       [chunk] = Defaults.default_decode_sse_event(invalid_json_event, model)
       assert chunk.type == :tool_call
       assert chunk.arguments == %{}
+    end
+
+    test "handles nil tool names in streaming deltas", %{model: model} do
+      nil_name_event = %{
+        data: %{
+          "choices" => [
+            %{
+              "delta" => %{
+                "tool_calls" => [
+                  %{
+                    "id" => "call_nil",
+                    "type" => "function",
+                    "index" => 0,
+                    "function" => %{"name" => nil, "arguments" => "{}"}
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+
+      [chunk] = Defaults.default_decode_sse_event(nil_name_event, model)
+      assert chunk.type == :meta
     end
   end
 end
