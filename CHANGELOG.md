@@ -43,6 +43,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated Finch streaming to use credential-based signing API
   - Session tokens now handled automatically by ex_aws_auth
 - Simplified STS AssumeRole implementation using credential-based API
+- Refactored Meta/Llama support into generic provider for code reuse
+  - Created `ReqLLM.Providers.Meta` for Meta's native prompt format
+  - Bedrock Meta now delegates to generic provider for format conversion
+  - Documents that most providers (Azure, Vertex AI, vLLM, Ollama) use OpenAI-compatible APIs
+  - Generic provider handles native format with `prompt`, `max_gen_len`, `generation` fields
 
 ## [1.0.0-rc.7] - 2025-10-16
 
