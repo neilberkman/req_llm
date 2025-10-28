@@ -131,7 +131,8 @@ defmodule ReqLLM.Providers.AmazonBedrock.Anthropic do
   # Note: pre_validate_options already extracted reasoning params and added to additional_model_request_fields
   defp maybe_add_thinking(body, opts) do
     # Check if additional_model_request_fields has thinking config (from pre_validate_options)
-    case get_in(opts, [:additional_model_request_fields, :thinking]) do
+    # Note: additional_model_request_fields is nested under :provider_options after Options.process
+    case get_in(opts, [:provider_options, :additional_model_request_fields, :thinking]) do
       %{type: "enabled", budget_tokens: budget} ->
         Map.put(body, :thinking, %{type: "enabled", budget_tokens: budget})
 

@@ -196,6 +196,10 @@ defmodule ReqLLM.Providers.AmazonBedrock do
         {:error, error} -> raise error
       end
 
+    # For Anthropic models: Remove thinking from additional_model_request_fields if it was removed by translate_options
+    # This handles the case where thinking is incompatible with forced tool_choice
+    opts = maybe_clean_thinking_after_translation(opts, get_model_family(model.model), operation)
+
     # Construct the base URL with region
     region = aws_creds.region || "us-east-1"
     base_url = "https://bedrock-runtime.#{region}.amazonaws.com"
@@ -636,6 +640,7 @@ defmodule ReqLLM.Providers.AmazonBedrock do
 
     case model_family do
       "anthropic" ->
+        # Delegate temperature/top_p translation to Anthropic provider
         ReqLLM.Providers.Anthropic.translate_options(operation, model, opts)
 
       _ ->
@@ -715,9 +720,37 @@ defmodule ReqLLM.Providers.AmazonBedrock do
     {req, err}
   end
 
+  # Remove thinking from additional_model_request_fields after Options.process if needed
+  # This is necessary because translate_options can't modify provider_options (they get restored)
+  defp maybe_clean_thinking_after_translation(opts, model_family, operation) do
+    if model_family == "anthropic" do
+      # Check if we have forced tool_choice
+      # For :object operation, tool_choice is added later by the formatter, but we know it will be forced
+      tool_choice = opts[:tool_choice]
+      has_forced_tool = match?(%{type: "tool"}, tool_choice) or operation == :object
+
+      if has_forced_tool do
+        # Remove thinking from additional_model_request_fields
+        update_in(
+          opts,
+          [:provider_options, :additional_model_request_fields],
+          fn
+            nil -> nil
+            fields when is_map(fields) -> Map.delete(fields, :thinking)
+          end
+        )
+      else
+        opts
+      end
+    else
+      opts
+    end
+  end
+
   # Private helper: Determine whether to use Converse API with caching optimization
   defp determine_use_converse(opts) do
-    case opts[:use_converse] do
+    # After Options.process, use_converse is in :provider_options
+    case get_in(opts, [:provider_options, :use_converse]) do
       true ->
         true
 
@@ -726,7 +759,8 @@ defmodule ReqLLM.Providers.AmazonBedrock do
 
       nil ->
         has_tools = opts[:tools] != nil and opts[:tools] != []
-        has_caching = ReqLLM.Providers.Anthropic.has_prompt_caching?(opts)
+        # After Options.process, anthropic_prompt_cache is in :provider_options
+        has_caching = get_in(opts, [:provider_options, :anthropic_prompt_cache]) == true
 
         cond do
           # If caching is enabled with tools, force native API for full caching support
