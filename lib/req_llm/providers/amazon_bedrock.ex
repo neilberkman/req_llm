@@ -196,9 +196,10 @@ defmodule ReqLLM.Providers.AmazonBedrock do
         {:error, error} -> raise error
       end
 
-    # For Anthropic models: Remove thinking from additional_model_request_fields if it was removed by translate_options
-    # This handles the case where thinking is incompatible with forced tool_choice
-    opts = maybe_clean_thinking_after_translation(opts, get_model_family(model.model), operation)
+    # For Anthropic models: Apply post-Options.process fixes
+    # These can't be done in translate_options because Options.process restores original provider_options
+    model_family = get_model_family(model.model)
+    opts = maybe_clean_thinking_after_translation(opts, model_family, operation)
 
     # Construct the base URL with region
     region = aws_creds.region || "us-east-1"
@@ -405,12 +406,17 @@ defmodule ReqLLM.Providers.AmazonBedrock do
       cond do
         reasoning_budget && is_integer(reasoning_budget) ->
           # Explicit budget_tokens provided
-          add_reasoning_to_additional_fields(opts, reasoning_budget)
+          opts
+          |> add_reasoning_to_additional_fields(reasoning_budget)
+          |> ensure_max_tokens_for_reasoning(reasoning_budget)
 
         reasoning_effort ->
           # Map effort to budget
           budget = map_reasoning_effort_to_budget(reasoning_effort)
-          add_reasoning_to_additional_fields(opts, budget)
+
+          opts
+          |> add_reasoning_to_additional_fields(budget)
+          |> ensure_max_tokens_for_reasoning(budget)
 
         true ->
           opts
@@ -434,6 +440,18 @@ defmodule ReqLLM.Providers.AmazonBedrock do
       Keyword.put(provider_opts, :additional_model_request_fields, additional_fields)
 
     Keyword.put(opts, :provider_options, updated_provider_opts)
+  end
+
+  # Ensure max_tokens is at least equal to budget_tokens
+  # Bedrock requires max_tokens > budget_tokens
+  defp ensure_max_tokens_for_reasoning(opts, budget_tokens) do
+    current_max = Keyword.get(opts, :max_tokens)
+
+    if is_nil(current_max) or current_max < budget_tokens do
+      Keyword.put(opts, :max_tokens, budget_tokens)
+    else
+      opts
+    end
   end
 
   defp map_reasoning_effort_to_budget(:low), do: 4_000
