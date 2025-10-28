@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bedrock Anthropic temperature/top_p conflicts - now delegates to native Anthropic option translation
 - Bedrock streaming requests now apply translate_options (fixes temperature/top_p conflicts in streaming)
 - Bedrock receive timeout increased from 30s to 60s
+- Jason.EncodeError when saving Bedrock streaming fixtures (binary protocol contains invalid UTF-8)
 
 ### Changed
 
