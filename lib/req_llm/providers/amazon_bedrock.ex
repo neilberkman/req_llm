@@ -4,7 +4,8 @@ defmodule ReqLLM.Providers.AmazonBedrock do
 
   Supports AWS Bedrock's unified API for accessing multiple AI models including:
   - Anthropic Claude models (fully implemented)
-  - Meta Llama models (extensible)
+  - Meta Llama models (fully implemented)
+  - Mistral AI models (fully implemented)
   - Amazon Nova models (extensible)
   - Cohere models (extensible)
   - And more as AWS adds them
@@ -118,7 +119,8 @@ defmodule ReqLLM.Providers.AmazonBedrock do
   @model_families %{
     "anthropic" => ReqLLM.Providers.AmazonBedrock.Anthropic,
     "openai" => ReqLLM.Providers.AmazonBedrock.OpenAI,
-    "meta" => ReqLLM.Providers.AmazonBedrock.Meta
+    "meta" => ReqLLM.Providers.AmazonBedrock.Meta,
+    "mistral" => ReqLLM.Providers.AmazonBedrock.Mistral
   }
 
   def default_base_url do
@@ -208,7 +210,7 @@ defmodule ReqLLM.Providers.AmazonBedrock do
 
     # Check if we should use Converse API
     # Priority: explicit use_converse option > prompt caching optimization > auto-detect from tools presence
-    use_converse = determine_use_converse(opts)
+    use_converse = determine_use_converse(model_id, opts)
 
     {endpoint_base, formatter, model_family} =
       if use_converse do
@@ -218,7 +220,22 @@ defmodule ReqLLM.Providers.AmazonBedrock do
             do: "/model/#{model_id}/converse-stream",
             else: "/model/#{model_id}/converse"
 
-        {endpoint, ReqLLM.Providers.AmazonBedrock.Converse, :converse}
+        # Check if there's a model family formatter that wraps Converse
+        # (e.g., Mistral formatter that pre-processes messages before delegating to Converse)
+        family = get_model_family(model_id)
+        family_formatter = get_formatter_module(family)
+
+        # Only use family formatter if it explicitly requires Converse API (like Mistral)
+        # Otherwise use Converse formatter directly
+        formatter =
+          if function_exported?(family_formatter, :requires_converse_api?, 0) and
+               family_formatter.requires_converse_api?() do
+            family_formatter
+          else
+            ReqLLM.Providers.AmazonBedrock.Converse
+          end
+
+        {endpoint, formatter, :converse}
       else
         # Use native model-specific endpoint
         endpoint =
@@ -285,16 +302,31 @@ defmodule ReqLLM.Providers.AmazonBedrock do
     # This is critical for streaming requests which bypass the normal Options.process pipeline
     {translated_opts, _warnings} = translate_options(:chat, model, pre_validated_opts)
 
+    # Get model ID
+    model_id = model.model
+
     # Check if we should use Converse API
     # Priority: explicit use_converse option > prompt caching optimization > auto-detect from tools presence
-    use_converse = determine_use_converse(translated_opts)
-
-    # Get model-specific or Converse formatter
-    model_id = model.model
+    use_converse = determine_use_converse(model_id, translated_opts)
 
     {formatter, path} =
       if use_converse do
-        {ReqLLM.Providers.AmazonBedrock.Converse, "/model/#{model_id}/converse-stream"}
+        # Check if there's a model family formatter that wraps Converse
+        # (e.g., Mistral formatter that pre-processes messages before delegating to Converse)
+        model_family = get_model_family(model_id)
+        family_formatter = get_formatter_module(model_family)
+
+        # Only use family formatter if it explicitly requires Converse API (like Mistral)
+        # Otherwise use Converse formatter directly
+        formatter =
+          if function_exported?(family_formatter, :requires_converse_api?, 0) and
+               family_formatter.requires_converse_api?() do
+            family_formatter
+          else
+            ReqLLM.Providers.AmazonBedrock.Converse
+          end
+
+        {formatter, "/model/#{model_id}/converse-stream"}
       else
         model_family = get_model_family(model_id)
         formatter = get_formatter_module(model_family)
@@ -624,10 +656,18 @@ defmodule ReqLLM.Providers.AmazonBedrock do
         if String.starts_with?(normalized_id, prefix <> "."), do: prefix
       end)
 
-    found_family ||
+    # If no family found, extract prefix as family name (e.g., "mistral" from "mistral.model-id")
+    # Models without a dedicated formatter will use Converse API
+    family_from_prefix =
+      case String.split(normalized_id, ".", parts: 2) do
+        [prefix, _rest] when prefix != "" -> prefix
+        _ -> nil
+      end
+
+    found_family || family_from_prefix ||
       raise ArgumentError, """
       Unsupported model family for: #{model_id}
-      Currently supported: #{Map.keys(@model_families) |> Enum.join(", ")}
+      Currently supported: #{Map.keys(@model_families) |> Enum.join(", ")} (and others via Converse API)
       """
   end
 
@@ -656,11 +696,32 @@ defmodule ReqLLM.Providers.AmazonBedrock do
 
   @impl ReqLLM.Provider
   def normalize_model_id(model_id) when is_binary(model_id) do
-    # Strip region prefix from inference profile IDs for metadata lookup
-    # e.g., "us.anthropic.claude-3-sonnet" -> "anthropic.claude-3-sonnet"
-    case String.split(model_id, ".", parts: 2) do
-      [possible_region, rest] when possible_region in ["us", "eu", "ap", "ca", "global"] ->
-        rest
+    # Some Bedrock model IDs start with region prefixes that should be stripped for metadata lookup
+    # (e.g., "us.anthropic.claude-3-sonnet" -> "anthropic.claude-3-sonnet")
+    # BUT some models REQUIRE inference profiles and the region prefix is part of the actual ID
+    #
+    # Strategy: Strip region prefix for typical inference profiles, but ask model family
+    # if they need to preserve it (via preserve_inference_profile? callback)
+    case String.split(model_id, ".", parts: 3) do
+      # Pattern: region.provider.rest where region is known
+      # This is likely an inference profile alias, strip the region
+      [possible_region, _provider, _rest]
+      when possible_region in ["us", "eu", "ap", "ca", "global"] ->
+        # Check if model family wants to preserve the inference profile prefix
+        family = get_model_family(model_id)
+        formatter = get_formatter_module(family)
+
+        should_preserve =
+          function_exported?(formatter, :preserve_inference_profile?, 1) &&
+            formatter.preserve_inference_profile?(model_id)
+
+        if should_preserve do
+          model_id
+        else
+          # Strip region prefix for typical inference profiles
+          [_region, rest] = String.split(model_id, ".", parts: 2)
+          rest
+        end
 
       _ ->
         model_id
@@ -673,10 +734,8 @@ defmodule ReqLLM.Providers.AmazonBedrock do
         module
 
       :error ->
-        raise ArgumentError, """
-        No formatter module found for model family: #{model_family}
-        This shouldn't happen - please report this as a bug.
-        """
+        # Models without a dedicated formatter use Converse API
+        ReqLLM.Providers.AmazonBedrock.Converse
     end
   end
 
@@ -748,7 +807,21 @@ defmodule ReqLLM.Providers.AmazonBedrock do
   end
 
   # Private helper: Determine whether to use Converse API with caching optimization
-  defp determine_use_converse(opts) do
+  defp determine_use_converse(model_id, opts) do
+    # Check if this is a cross-region inference profile (us., eu., etc.)
+    # These MUST use Converse API
+    is_inference_profile =
+      is_binary(model_id) and
+        String.starts_with?(model_id, ["us.", "eu.", "ap.", "ca.", "global."])
+
+    # Check if model's formatter requires Converse API
+    model_family = get_model_family(model_id)
+    formatter = get_formatter_module(model_family)
+
+    requires_converse =
+      function_exported?(formatter, :requires_converse_api?, 0) &&
+        formatter.requires_converse_api?()
+
     # After Options.process, use_converse is in :provider_options
     case get_in(opts, [:provider_options, :use_converse]) do
       true ->
@@ -763,6 +836,14 @@ defmodule ReqLLM.Providers.AmazonBedrock do
         has_caching = get_in(opts, [:provider_options, :anthropic_prompt_cache]) == true
 
         cond do
+          # Inference profiles (cross-region) MUST use Converse API
+          is_inference_profile ->
+            true
+
+          # Formatters that require Converse API (like Mistral wrapper)
+          requires_converse ->
+            true
+
           # If caching is enabled with tools, force native API for full caching support
           has_caching and has_tools ->
             require Logger

@@ -1,0 +1,181 @@
+{
+  "provider": {
+    "id": "amazon-bedrock",
+    "name": "Amazon Bedrock",
+    "base_url": "https://bedrock-runtime.{region}.amazonaws.com",
+    "env": ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"],
+    "doc": "AWS Bedrock multi-provider ML platform"
+  },
+  "models": [
+    {
+      "id": "mistral.mistral-7b-instruct-v0:2",
+      "name": "Mistral 7B Instruct",
+      "provider_model_id": "mistral.mistral-7b-instruct-v0:2",
+      "attachment": false,
+      "reasoning": false,
+      "tool_call": false,
+      "system_messages": false,
+      "temperature": true,
+      "open_weights": true,
+      "cost": {
+        "input": 0.15,
+        "output": 0.2
+      },
+      "limit": {
+        "context": 32000,
+        "output": 8192
+      },
+      "modalities": {
+        "input": ["text"],
+        "output": ["text"]
+      },
+      "knowledge": "2023-12",
+      "release_date": "2023-09-27"
+    },
+    {
+      "id": "mistral.mixtral-8x7b-instruct-v0:1",
+      "name": "Mixtral 8x7B Instruct",
+      "provider_model_id": "mistral.mixtral-8x7b-instruct-v0:1",
+      "attachment": false,
+      "reasoning": false,
+      "tool_call": false,
+      "system_messages": false,
+      "temperature": true,
+      "open_weights": true,
+      "cost": {
+        "input": 0.45,
+        "output": 0.7
+      },
+      "limit": {
+        "context": 32000,
+        "output": 8192
+      },
+      "modalities": {
+        "input": ["text"],
+        "output": ["text"]
+      },
+      "knowledge": "2024-01",
+      "release_date": "2023-12-11"
+    },
+    {
+      "id": "mistral.mistral-small-2402-v1:0",
+      "name": "Mistral Small (24.02)",
+      "provider_model_id": "mistral.mistral-small-2402-v1:0",
+      "attachment": false,
+      "reasoning": false,
+      "tool_call": false,
+      "temperature": true,
+      "open_weights": false,
+      "cost": {
+        "input": 1.0,
+        "output": 3.0
+      },
+      "limit": {
+        "context": 128000,
+        "output": 16384
+      },
+      "modalities": {
+        "input": ["text"],
+        "output": ["text"]
+      },
+      "knowledge": "2025-03",
+      "release_date": "2024-02-01"
+    },
+    {
+      "id": "mistral.mistral-large-2402-v1:0",
+      "name": "Mistral Large (24.02)",
+      "provider_model_id": "mistral.mistral-large-2402-v1:0",
+      "attachment": false,
+      "reasoning": false,
+      "tool_call": false,
+      "temperature": true,
+      "open_weights": false,
+      "cost": {
+        "input": 4.0,
+        "output": 12.0
+      },
+      "limit": {
+        "context": 131072,
+        "output": 16384
+      },
+      "modalities": {
+        "input": ["text"],
+        "output": ["text"]
+      },
+      "knowledge": "2024-11",
+      "release_date": "2024-02-01"
+    },
+    {
+      "id": "us.mistral.pixtral-large-2502-v1:0",
+      "name": "Pixtral Large (25.02)",
+      "provider_model_id": "us.mistral.pixtral-large-2502-v1:0",
+      "attachment": true,
+      "reasoning": false,
+      "tool_call": false,
+      "temperature": true,
+      "open_weights": false,
+      "cost": {
+        "input": 3.0,
+        "output": 9.0
+      },
+      "limit": {
+        "context": 128000,
+        "output": 128000
+      },
+      "modalities": {
+        "input": ["text", "image"],
+        "output": ["text"]
+      },
+      "knowledge": "2024-11",
+      "release_date": "2025-02-01"
+    },
+    {
+      "id": "deepseek.r1-v1:0",
+      "name": "DeepSeek-R1",
+      "provider_model_id": "deepseek.r1-v1:0",
+      "attachment": false,
+      "reasoning": true,
+      "tool_call": true,
+      "temperature": true,
+      "open_weights": false,
+      "cost": {
+        "input": 0.55,
+        "output": 2.19
+      },
+      "limit": {
+        "context": 128000,
+        "output": 128000
+      },
+      "modalities": {
+        "input": ["text"],
+        "output": ["text"]
+      },
+      "knowledge": "2024-07",
+      "release_date": "2025-01-20"
+    },
+    {
+      "id": "deepseek.v3-v1:0",
+      "name": "DeepSeek-V3.1",
+      "provider_model_id": "deepseek.v3-v1:0",
+      "attachment": false,
+      "reasoning": false,
+      "tool_call": true,
+      "temperature": true,
+      "open_weights": false,
+      "cost": {
+        "input": 0.27,
+        "output": 1.1
+      },
+      "limit": {
+        "context": 128000,
+        "output": 8192
+      },
+      "modalities": {
+        "input": ["text"],
+        "output": ["text"]
+      },
+      "knowledge": "2024-07",
+      "release_date": "2024-12-26"
+    }
+  ]
+}

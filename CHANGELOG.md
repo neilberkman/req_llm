@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Full Mistral AI model support for AWS Bedrock provider
+  - 5 models: Mistral 7B, Mixtral 8x7B, Mistral Small, Mistral Large, Pixtral Large
+  - System message workaround for models that don't support system in Converse API
+  - Comprehensive test fixtures for all models
+  - Inference profile preservation for models requiring region-specific invocation
+- Bedrock callback system for model-specific capabilities
+  - `requires_converse_api?/0` - formatters declare Converse API requirement
+  - `supports_converse_tool_choice?/0` - formatters declare toolChoice support
+  - `preserve_inference_profile?/1` - formatters control inference profile ID normalization
 - Prompt caching support for Bedrock Anthropic models (Claude on AWS Bedrock)
   - Auto-switches to native API when caching enabled with tools for full cache control
   - Supports caching of system prompts and tools
@@ -29,6 +38,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ArgumentError when retry function returns `{:delay, ms}` - removed conflicting `retry_delay` option from `ReqLLM.Step.Retry.attach/1` (Req 0.5.15+ compatibility)
 - Metadata collection timeout errors on large documents with long processing times
 - Bedrock streaming now works correctly (fixed deprecated function capture syntax)
+- Bedrock formatter selection when using Converse API
+  - Correctly uses Converse formatter for models without specialized wrappers
+  - Only applies family-specific formatters when they require Converse API
+  - Fixes incorrect formatter selection for Anthropic models with `use_converse: true`
 - Tool.Inspect protocol crash when inspecting tools with JSON Schema (map) parameter schemas
 - Model compatibility task now uses `normalize_model_id` callback for registry lookups (fixes inference profile ID recognition)
 - Missing `:compiled_schema` in object streaming options causing KeyError across all providers with structured output
