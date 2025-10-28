@@ -33,6 +33,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Model compatibility task now uses `normalize_model_id` callback for registry lookups (fixes inference profile ID recognition)
 - Missing `:compiled_schema` in object streaming options causing KeyError across all providers with structured output
 - Bedrock Anthropic temperature/top_p conflicts - now delegates to native Anthropic option translation
+- Bedrock streaming requests now apply translate_options (fixes temperature/top_p conflicts in streaming)
+- Bedrock receive timeout increased from 30s to 60s
 
 ### Changed
 

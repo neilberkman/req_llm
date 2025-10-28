@@ -128,7 +128,7 @@ defmodule ReqLLM.Providers.AmazonBedrock do
       endpoint = if opts[:stream], do: "/invoke-with-response-stream", else: "/invoke"
 
       request =
-        Req.new([url: endpoint, method: :post, receive_timeout: 30_000] ++ http_opts)
+        Req.new([url: endpoint, method: :post, receive_timeout: 60_000] ++ http_opts)
         |> attach(model, Keyword.put(opts, :context, context))
 
       {:ok, request}
@@ -150,7 +150,7 @@ defmodule ReqLLM.Providers.AmazonBedrock do
       opts_with_operation = Keyword.put(opts, :operation, :object)
 
       request =
-        Req.new([url: endpoint, method: :post, receive_timeout: 30_000] ++ http_opts)
+        Req.new([url: endpoint, method: :post, receive_timeout: 60_000] ++ http_opts)
         |> attach(model, Keyword.put(opts_with_operation, :context, context))
 
       {:ok, request}
@@ -260,9 +260,13 @@ defmodule ReqLLM.Providers.AmazonBedrock do
     # Validate we have necessary AWS credentials
     validate_aws_credentials!(aws_creds)
 
+    # Apply option translation (temperature/top_p conflicts, reasoning_effort, etc.)
+    # This is critical for streaming requests which bypass the normal Options.process pipeline
+    {translated_opts, _warnings} = translate_options(:chat, model, other_opts)
+
     # Check if we should use Converse API
     # Priority: explicit use_converse option > prompt caching optimization > auto-detect from tools presence
-    use_converse = determine_use_converse(other_opts)
+    use_converse = determine_use_converse(translated_opts)
 
     # Get model-specific or Converse formatter
     model_id = model.model
@@ -276,8 +280,8 @@ defmodule ReqLLM.Providers.AmazonBedrock do
         {formatter, "/model/#{model_id}/invoke-with-response-stream"}
       end
 
-    # Build request body
-    body = formatter.format_request(model_id, context, other_opts)
+    # Build request body with translated options
+    body = formatter.format_request(model_id, context, translated_opts)
     json_body = Jason.encode!(body)
 
     # Ensure json_body is binary
