@@ -94,6 +94,14 @@ defmodule ReqLLM.Providers.AmazonBedrock do
         type: :map,
         doc:
           "Additional model-specific request fields (e.g., reasoning_config for Claude extended thinking)"
+      ],
+      anthropic_prompt_cache: [
+        type: :boolean,
+        doc: "Enable Anthropic prompt caching for Claude models on Bedrock"
+      ],
+      anthropic_prompt_cache_ttl: [
+        type: :string,
+        doc: "TTL for cache (\"1h\" for one hour; omit for default ~5m)"
       ]
     ]
 
@@ -179,8 +187,14 @@ defmodule ReqLLM.Providers.AmazonBedrock do
     # Validate we have necessary AWS credentials
     validate_aws_credentials!(aws_creds)
 
-    # Use the options directly
-    opts = other_opts
+    # Process options (validates, normalizes, and calls pre_validate_options)
+    operation = other_opts[:operation] || :chat
+
+    opts =
+      case ReqLLM.Provider.Options.process(__MODULE__, operation, model, other_opts) do
+        {:ok, processed_opts} -> processed_opts
+        {:error, error} -> raise error
+      end
 
     # Construct the base URL with region
     region = aws_creds.region || "us-east-1"
@@ -260,9 +274,12 @@ defmodule ReqLLM.Providers.AmazonBedrock do
     # Validate we have necessary AWS credentials
     validate_aws_credentials!(aws_creds)
 
-    # Apply option translation (temperature/top_p conflicts, reasoning_effort, etc.)
+    # Apply pre-validation (reasoning params, etc.) - streaming bypasses Options.process
+    {pre_validated_opts, _warnings} = pre_validate_options(:chat, model, other_opts)
+
+    # Apply option translation (temperature/top_p conflicts, etc.)
     # This is critical for streaming requests which bypass the normal Options.process pipeline
-    {translated_opts, _warnings} = translate_options(:chat, model, other_opts)
+    {translated_opts, _warnings} = translate_options(:chat, model, pre_validated_opts)
 
     # Check if we should use Converse API
     # Priority: explicit use_converse option > prompt caching optimization > auto-detect from tools presence
@@ -363,7 +380,6 @@ defmodule ReqLLM.Providers.AmazonBedrock do
   # It's called by Options.process/4 if the provider exports it
   def pre_validate_options(_operation, model, opts) do
     # Handle reasoning parameters for Claude models on Bedrock
-    # Claude Sonnet 3.7, 4.x support extended thinking via additionalModelRequestFields
     opts = maybe_translate_reasoning_params(model, opts)
     {opts, []}
   end
@@ -373,14 +389,12 @@ defmodule ReqLLM.Providers.AmazonBedrock do
   defp maybe_translate_reasoning_params(model, opts) do
     model_id = model.model
 
-    # Check if this is a Claude model with reasoning support
-    is_claude_reasoning =
-      String.contains?(model_id, "anthropic.claude") and
-        (String.contains?(model_id, "sonnet-3-7") or
-           String.contains?(model_id, "sonnet-4") or
-           String.contains?(model_id, "opus-4"))
+    # Check if this is a Claude model with reasoning capability
+    # Use model.capabilities.reasoning instead of hardcoding model IDs
+    is_claude = String.contains?(model_id, "anthropic.claude")
+    has_reasoning = get_in(model, [Access.key(:capabilities), Access.key(:reasoning)]) == true
 
-    if is_claude_reasoning do
+    if is_claude and has_reasoning do
       {reasoning_effort, opts} = Keyword.pop(opts, :reasoning_effort)
       {reasoning_budget, opts} = Keyword.pop(opts, :reasoning_token_budget)
 
@@ -404,11 +418,18 @@ defmodule ReqLLM.Providers.AmazonBedrock do
   end
 
   defp add_reasoning_to_additional_fields(opts, budget_tokens) do
-    additional_fields =
-      Keyword.get(opts, :additional_model_request_fields, %{})
-      |> Map.put(:reasoning_config, %{type: "enabled", budget_tokens: budget_tokens})
+    # Get existing additional_model_request_fields from provider_options (if any)
+    provider_opts = Keyword.get(opts, :provider_options, [])
 
-    Keyword.put(opts, :additional_model_request_fields, additional_fields)
+    additional_fields =
+      Keyword.get(provider_opts, :additional_model_request_fields, %{})
+      |> Map.put(:thinking, %{type: "enabled", budget_tokens: budget_tokens})
+
+    # Put it back into provider_options
+    updated_provider_opts =
+      Keyword.put(provider_opts, :additional_model_request_fields, additional_fields)
+
+    Keyword.put(opts, :provider_options, updated_provider_opts)
   end
 
   defp map_reasoning_effort_to_budget(:low), do: 4_000

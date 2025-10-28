@@ -129,10 +129,9 @@ defmodule ReqLLM.Providers.AmazonBedrock.Anthropic do
 
   # Add extended thinking configuration for native Anthropic endpoint
   # Note: pre_validate_options already extracted reasoning params and added to additional_model_request_fields
-  # For Converse API, but native endpoint uses different format
   defp maybe_add_thinking(body, opts) do
-    # Check if additional_model_request_fields has reasoning_config (from pre_validate_options)
-    case get_in(opts, [:additional_model_request_fields, :reasoning_config]) do
+    # Check if additional_model_request_fields has thinking config (from pre_validate_options)
+    case get_in(opts, [:additional_model_request_fields, :thinking]) do
       %{type: "enabled", budget_tokens: budget} ->
         Map.put(body, :thinking, %{type: "enabled", budget_tokens: budget})
 
@@ -216,6 +215,12 @@ defmodule ReqLLM.Providers.AmazonBedrock.Anthropic do
   Extracts usage metadata from the response body.
 
   Delegates to the native Anthropic provider.
+
+  Note: AWS Bedrock does not return a separate `reasoning_tokens` field in its
+  response structure. Extended thinking tokens are included in `output_tokens`
+  and billed accordingly, but Bedrock's API response only provides `input_tokens`
+  and `output_tokens`. This differs from Anthropic's direct API which returns
+  `reasoning_tokens` as a separate field.
   """
   def extract_usage(body, model) do
     # Delegate to native Anthropic extract_usage
