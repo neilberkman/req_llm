@@ -32,10 +32,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tool.Inspect protocol crash when inspecting tools with JSON Schema (map) parameter schemas
 - Model compatibility task now uses `normalize_model_id` callback for registry lookups (fixes inference profile ID recognition)
 - Missing `:compiled_schema` in object streaming options causing KeyError across all providers with structured output
-- Bedrock Anthropic temperature/top_p conflicts - now delegates to native Anthropic option translation
-- Bedrock streaming requests now apply translate_options (fixes temperature/top_p conflicts in streaming)
-- Bedrock receive timeout increased from 30s to 60s
+- Bedrock streaming temperature/top_p conflicts and timeout issues
+  - Bedrock now delegates to Anthropic's option translation for temperature/top_p handling
+  - Streaming requests now apply translate_options to prevent parameter conflicts
+  - Increased receive timeout from 30s to 60s for large responses
 - Jason.EncodeError when saving Bedrock streaming fixtures (binary protocol contains invalid UTF-8)
+  - Removed redundant "decoded" field from streaming fixtures (only "b64" field needed for replay)
+  - Bedrock's AWS Event Stream binary protocol now saves correctly
+- Bedrock extended thinking (reasoning) now works correctly with `reasoning_effort` option
+  - Bedrock provider now calls Options.process like other providers
+  - Reasoning parameters properly translated to Bedrock's `thinking` parameter format
+  - Uses model capabilities instead of hardcoded model IDs for reasoning support detection
+  - Thinking parameter correctly removed when incompatible with forced tool_choice (object generation)
 
 ### Changed
 
