@@ -9,13 +9,34 @@ defmodule ReqLLM.Providers.Google do
   ## Google-Specific Extensions
 
   Beyond standard OpenAI parameters, Google supports:
+  - `google_api_version` - Select API version ("v1" or "v1beta"). Defaults to "v1" for production stability.
+    Set to "v1beta" to enable beta features like Google Search grounding.
   - `google_safety_settings` - List of safety filter configurations
   - `google_candidate_count` - Number of response candidates to generate (default: 1)
+  - `google_grounding` - Enable Google Search grounding (built-in web search). Requires `google_api_version: "v1beta"`
+  - `google_thinking_budget` - Thinking token budget for Gemini 2.5 models
   - `dimensions` - Number of dimensions for embedding vectors
   - `task_type` - Task type for embeddings (e.g., RETRIEVAL_QUERY)
 
   See `provider_schema/0` for the complete Google-specific schema and
   `ReqLLM.Provider.Options` for inherited OpenAI parameters.
+
+  ## API Version Selection
+
+  The provider defaults to Google's stable v1 API for production reliability. To use beta features like
+  Google Search grounding, explicitly set `google_api_version: "v1beta"`:
+
+      ReqLLM.generate_text(
+        "google:gemini-2.5-flash",
+        "What are today's tech headlines?",
+        provider_options: [
+          google_api_version: "v1beta",
+          google_grounding: %{enable: true}
+        ]
+      )
+
+  **Note**: When `google_grounding` is used without specifying an API version, v1beta is automatically
+  selected with a warning. Setting v1 explicitly with grounding enabled will return an error.
 
   ## Configuration
 
@@ -27,10 +48,15 @@ defmodule ReqLLM.Providers.Google do
 
   use ReqLLM.Provider.DSL,
     id: :google,
-    base_url: "https://generativelanguage.googleapis.com/v1beta",
+    base_url: "https://generativelanguage.googleapis.com/v1",
     metadata: "priv/models_dev/google.json",
     default_env_key: "GOOGLE_API_KEY",
     provider_schema: [
+      google_api_version: [
+        type: {:in, ["v1", "v1beta"]},
+        doc:
+          "Google API version. Default is 'v1' for production stability. Set to 'v1beta' to enable beta features like Google Search grounding. When google_grounding is used without specifying a version, v1beta is automatically selected."
+      ],
       google_safety_settings: [
         type: {:list, :map},
         doc: "Safety filter settings for content generation"
@@ -43,6 +69,11 @@ defmodule ReqLLM.Providers.Google do
       google_thinking_budget: [
         type: :non_neg_integer,
         doc: "Thinking token budget for Gemini 2.5 models (0 disables thinking, omit for dynamic)"
+      ],
+      google_grounding: [
+        type: :map,
+        doc:
+          "Enable Google Search grounding - allows model to search the web. Set to %{enable: true} for modern models, or %{dynamic_retrieval: %{mode: \"MODE_DYNAMIC\", dynamic_threshold: 0.7}} for Gemini 1.5 legacy support. Requires google_api_version: 'v1beta'"
       ],
       dimensions: [
         type: :pos_integer,
@@ -61,6 +92,60 @@ defmodule ReqLLM.Providers.Google do
 
   require Logger
 
+  defp has_grounding?(opts) do
+    provider = Keyword.get(opts, :provider_options, [])
+
+    case Keyword.get(provider, :google_grounding) do
+      m when is_map(m) and map_size(m) > 0 -> true
+      _ -> false
+    end
+  end
+
+  defp resolve_api_version(opts) do
+    provider = Keyword.get(opts, :provider_options, [])
+
+    case Keyword.get(provider, :google_api_version) do
+      "v1" -> "v1"
+      "v1beta" -> "v1beta"
+      _ -> nil
+    end
+  end
+
+  defp effective_base_url(processed_opts) do
+    case resolve_api_version(processed_opts) do
+      "v1" ->
+        "https://generativelanguage.googleapis.com/v1"
+
+      "v1beta" ->
+        "https://generativelanguage.googleapis.com/v1beta"
+
+      nil ->
+        if has_grounding?(processed_opts) do
+          Logger.warning(
+            "google_grounding requires v1beta; defaulting this request to v1beta. " <>
+              "Set provider option google_api_version: \"v1beta\" to silence this message."
+          )
+
+          "https://generativelanguage.googleapis.com/v1beta"
+        else
+          Keyword.get(processed_opts, :base_url, default_base_url())
+        end
+    end
+  end
+
+  defp validate_version_feature_compat(processed_opts) do
+    case {resolve_api_version(processed_opts), has_grounding?(processed_opts)} do
+      {"v1", true} ->
+        {:error,
+         ReqLLM.Error.Invalid.Parameter.exception(
+           parameter: ~s/google_grounding requires google_api_version: "v1beta"/
+         )}
+
+      _ ->
+        :ok
+    end
+  end
+
   @doc """
   Custom prepare_request for chat operations to use Google's specific endpoints.
 
@@ -72,8 +157,12 @@ defmodule ReqLLM.Providers.Google do
     with {:ok, model} <- ReqLLM.Model.from(model_spec),
          {:ok, context} <- ReqLLM.Context.normalize(prompt, opts),
          opts_with_context = Keyword.put(opts, :context, context),
-         {:ok, processed_opts} <-
-           ReqLLM.Provider.Options.process(__MODULE__, :chat, model, opts_with_context) do
+         {:ok, processed_opts0} <-
+           ReqLLM.Provider.Options.process(__MODULE__, :chat, model, opts_with_context),
+         :ok <- validate_version_feature_compat(processed_opts0) do
+      processed_opts =
+        Keyword.put(processed_opts0, :base_url, effective_base_url(processed_opts0))
+
       http_opts = Keyword.get(processed_opts, :req_http_options, [])
 
       # Determine endpoint based on streaming
@@ -108,7 +197,7 @@ defmodule ReqLLM.Providers.Google do
           Keyword.take(processed_opts, req_keys) ++
             [
               model: model.model,
-              base_url: Keyword.get(processed_opts, :base_url, default_base_url())
+              base_url: processed_opts[:base_url]
             ]
         )
         |> attach(model, processed_opts)
@@ -140,53 +229,58 @@ defmodule ReqLLM.Providers.Google do
           |> Keyword.put(:operation, :object)
 
         case ReqLLM.Provider.Options.process(__MODULE__, :object, model, opts_with_context) do
-          {:ok, processed_opts} ->
-            http_opts = Keyword.get(processed_opts, :req_http_options, [])
+          {:ok, processed_opts0} ->
+            with :ok <- validate_version_feature_compat(processed_opts0) do
+              processed_opts =
+                Keyword.put(processed_opts0, :base_url, effective_base_url(processed_opts0))
 
-            endpoint =
-              if processed_opts[:stream], do: ":streamGenerateContent", else: ":generateContent"
+              http_opts = Keyword.get(processed_opts, :req_http_options, [])
 
-            req_keys =
-              __MODULE__.supported_provider_options() ++
-                [
-                  :context,
-                  :operation,
-                  :compiled_schema,
-                  :text,
-                  :stream,
-                  :model,
-                  :provider_options
-                ]
+              endpoint =
+                if processed_opts[:stream], do: ":streamGenerateContent", else: ":generateContent"
 
-            base_params = if processed_opts[:stream], do: [alt: "sse"], else: []
-
-            timeout =
-              Keyword.get(
-                processed_opts,
-                :receive_timeout,
-                Application.get_env(:req_llm, :receive_timeout, 30_000)
-              )
-
-            request =
-              Req.new(
-                [
-                  url: "/models/#{model.model}#{endpoint}",
-                  method: :post,
-                  params: base_params,
-                  receive_timeout: timeout
-                ] ++ http_opts
-              )
-              |> Req.Request.register_options(req_keys)
-              |> Req.Request.merge_options(
-                Keyword.take(processed_opts, req_keys) ++
+              req_keys =
+                __MODULE__.supported_provider_options() ++
                   [
-                    model: model.model,
-                    base_url: Keyword.get(processed_opts, :base_url, default_base_url())
+                    :context,
+                    :operation,
+                    :compiled_schema,
+                    :text,
+                    :stream,
+                    :model,
+                    :provider_options
                   ]
-              )
-              |> attach(model, processed_opts)
 
-            {:ok, request}
+              base_params = if processed_opts[:stream], do: [alt: "sse"], else: []
+
+              timeout =
+                Keyword.get(
+                  processed_opts,
+                  :receive_timeout,
+                  Application.get_env(:req_llm, :receive_timeout, 30_000)
+                )
+
+              request =
+                Req.new(
+                  [
+                    url: "/models/#{model.model}#{endpoint}",
+                    method: :post,
+                    params: base_params,
+                    receive_timeout: timeout
+                  ] ++ http_opts
+                )
+                |> Req.Request.register_options(req_keys)
+                |> Req.Request.merge_options(
+                  Keyword.take(processed_opts, req_keys) ++
+                    [
+                      model: model.model,
+                      base_url: processed_opts[:base_url]
+                    ]
+                )
+                |> attach(model, processed_opts)
+
+              {:ok, request}
+            end
 
           {:error, reason} ->
             {:error, reason}
@@ -209,8 +303,12 @@ defmodule ReqLLM.Providers.Google do
 
     with {:ok, model} <- ReqLLM.Model.from(model_spec),
          opts_with_text = Keyword.merge(opts_normalized, text: text, operation: :embedding),
-         {:ok, processed_opts} <-
-           ReqLLM.Provider.Options.process(__MODULE__, :embedding, model, opts_with_text) do
+         {:ok, processed_opts0} <-
+           ReqLLM.Provider.Options.process(__MODULE__, :embedding, model, opts_with_text),
+         :ok <- validate_version_feature_compat(processed_opts0) do
+      processed_opts =
+        Keyword.put(processed_opts0, :base_url, effective_base_url(processed_opts0))
+
       http_opts = Keyword.get(processed_opts, :req_http_options, [])
 
       endpoint =
@@ -242,7 +340,7 @@ defmodule ReqLLM.Providers.Google do
           Keyword.take(processed_opts, req_keys) ++
             [
               model: model.model,
-              base_url: Keyword.get(processed_opts, :base_url, default_base_url())
+              base_url: processed_opts[:base_url]
             ]
         )
         |> attach(model, processed_opts)
@@ -438,14 +536,22 @@ defmodule ReqLLM.Providers.Google do
       case request.options[:tools] do
         tools when is_list(tools) and tools != [] ->
           tool_config = build_google_tool_config(request.options[:tool_choice])
+          grounding_tools = build_grounding_tools(request.options[:google_grounding])
 
-          %{
-            tools: [%{functionDeclarations: Enum.map(tools, &ReqLLM.Tool.to_schema(&1, :google))}]
-          }
+          user_tools = [
+            %{functionDeclarations: Enum.map(tools, &ReqLLM.Tool.to_schema(&1, :google))}
+          ]
+
+          all_tools = grounding_tools ++ user_tools
+
+          %{tools: all_tools}
           |> maybe_put(:toolConfig, tool_config)
 
         _ ->
-          %{}
+          case build_grounding_tools(request.options[:google_grounding]) do
+            [] -> %{}
+            grounding_tools -> %{tools: grounding_tools}
+          end
       end
 
     # Build generationConfig with Gemini-specific parameter names
@@ -682,10 +788,22 @@ defmodule ReqLLM.Providers.Google do
             {:ok, response} =
               ReqLLM.Provider.Defaults.decode_response_body_openai_format(openai_format, model)
 
+            response_with_grounding =
+              case openai_format["grounding_metadata"] do
+                nil ->
+                  response
+
+                grounding_data ->
+                  %{
+                    response
+                    | provider_meta: Map.put(response.provider_meta, "google", grounding_data)
+                  }
+              end
+
             merged_response =
               ReqLLM.Context.merge_response(
                 req.options[:context] || %ReqLLM.Context{messages: []},
-                response
+                response_with_grounding
               )
 
             {req, %{resp | body: merged_response}}
@@ -726,6 +844,51 @@ defmodule ReqLLM.Providers.Google do
   defp build_google_tool_config("auto"), do: %{functionCallingConfig: %{mode: "AUTO"}}
   defp build_google_tool_config("none"), do: %{functionCallingConfig: %{mode: "NONE"}}
   defp build_google_tool_config(_), do: nil
+
+  defp build_grounding_tools(nil), do: []
+  defp build_grounding_tools(%{enable: true}), do: [%{google_search: %{}}]
+
+  defp build_grounding_tools(%{dynamic_retrieval: config}) when is_map(config) do
+    [%{google_search_retrieval: %{dynamic_retrieval_config: config}}]
+  end
+
+  defp build_grounding_tools(_), do: []
+
+  defp extract_grounding_metadata(%{"candidates" => [candidate | _]}) do
+    case candidate do
+      %{"groundingMetadata" => metadata} when is_map(metadata) ->
+        sources =
+          case metadata["groundingChunks"] do
+            chunks when is_list(chunks) ->
+              Enum.map(chunks, fn chunk ->
+                case chunk do
+                  %{"web" => %{"uri" => uri, "title" => title}} ->
+                    %{"uri" => uri, "title" => title}
+
+                  %{"web" => %{"uri" => uri}} ->
+                    %{"uri" => uri}
+
+                  _ ->
+                    nil
+                end
+              end)
+              |> Enum.reject(&is_nil/1)
+
+            _ ->
+              []
+          end
+
+        %{
+          "grounding_metadata" => metadata,
+          "sources" => sources
+        }
+
+      _ ->
+        nil
+    end
+  end
+
+  defp extract_grounding_metadata(_), do: nil
 
   # Helper to add thinking configuration if specified
   defp maybe_add_thinking_config(config, nil), do: config
@@ -787,11 +950,19 @@ defmodule ReqLLM.Providers.Google do
           }
       end
 
-    %{
+    grounding_metadata = extract_grounding_metadata(body)
+
+    base_response = %{
       "id" => body["id"] || "google-#{System.unique_integer([:positive])}",
       "choices" => [choice],
       "usage" => convert_google_usage(body["usageMetadata"])
     }
+
+    if grounding_metadata do
+      Map.put(base_response, "grounding_metadata", grounding_metadata)
+    else
+      base_response
+    end
   end
 
   defp convert_google_to_openai_format(body), do: body
