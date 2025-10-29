@@ -42,6 +42,8 @@ defmodule ReqLLM.Test.ModelMatrix do
     anthropic:claude-3-5-haiku-20241022
     anthropic:claude-3-5-sonnet-20241022
     amazon_bedrock:us.anthropic.claude-opus-4-1-20250805-v1:0
+    amazon_bedrock:mistral.mistral-7b-instruct-v0:2
+    amazon_bedrock:mistral.mistral-large-2402-v1:0
     openai:gpt-4o-mini
     openai:gpt-4-turbo
     google:gemini-2.0-flash

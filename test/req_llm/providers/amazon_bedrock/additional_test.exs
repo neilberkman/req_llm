@@ -61,7 +61,8 @@ defmodule ReqLLM.Providers.AmazonBedrock.AdditionalTest do
         opts = [
           access_key_id: "AKIATEST",
           secret_access_key: "secretTEST",
-          region: "us-east-1"
+          region: "us-east-1",
+          use_converse: false
         ]
 
         # This should not raise for anthropic models
@@ -72,14 +73,14 @@ defmodule ReqLLM.Providers.AmazonBedrock.AdditionalTest do
       end
     end
 
-    test "returns error for unsupported models" do
-      unsupported = [
+    test "uses Converse API as fallback for models without dedicated formatters" do
+      models_without_formatters = [
         "amazon.titan-text-express-v1",
         "cohere.command-text-v14",
         "ai21.jamba-1-5-large-v1:0"
       ]
 
-      for model_id <- unsupported do
+      for model_id <- models_without_formatters do
         model = %Model{
           model: model_id,
           provider: :amazon_bedrock,
@@ -93,11 +94,12 @@ defmodule ReqLLM.Providers.AmazonBedrock.AdditionalTest do
           secret_access_key: "secretTEST"
         ]
 
-        # attach_stream rescues errors and returns {:error, ...} tuple
-        assert {:error, {:bedrock_stream_build_failed, %ArgumentError{message: message}}} =
+        # Models without dedicated formatters should use Converse API
+        assert {:ok, request} =
                  AmazonBedrock.attach_stream(model, context, opts, __MODULE__.TestFinch)
 
-        assert message =~ "Unsupported model family"
+        # Converse API uses /converse-stream endpoint
+        assert request.path =~ "/converse-stream"
       end
     end
   end

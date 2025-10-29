@@ -267,7 +267,7 @@ defmodule ReqLLM.Providers.AmazonBedrock.ConverseTest do
       }
 
       {:ok, result} = Converse.parse_stream_chunk(chunk, "test-model")
-      assert result == %{type: :text, text: "Hello"}
+      assert %ReqLLM.StreamChunk{type: :content, text: "Hello"} = result
     end
 
     test "parses messageStop with finish reason" do
@@ -278,7 +278,7 @@ defmodule ReqLLM.Providers.AmazonBedrock.ConverseTest do
       }
 
       {:ok, result} = Converse.parse_stream_chunk(chunk, "test-model")
-      assert result == %{type: :done, finish_reason: :stop}
+      assert %ReqLLM.StreamChunk{type: :meta, metadata: %{finish_reason: :stop}} = result
     end
 
     test "parses metadata with usage" do
@@ -292,7 +292,11 @@ defmodule ReqLLM.Providers.AmazonBedrock.ConverseTest do
       }
 
       {:ok, result} = Converse.parse_stream_chunk(chunk, "test-model")
-      assert result == %{type: :usage, usage: %{input_tokens: 100, output_tokens: 50}}
+
+      assert %ReqLLM.StreamChunk{
+               type: :meta,
+               metadata: %{usage: %{input_tokens: 100, output_tokens: 50}}
+             } = result
     end
 
     test "returns nil for messageStart" do

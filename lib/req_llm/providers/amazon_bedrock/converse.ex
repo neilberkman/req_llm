@@ -226,11 +226,11 @@ defmodule ReqLLM.Providers.AmazonBedrock.Converse do
         # Handle both text and reasoning deltas
         cond do
           delta = get_in(delta_data, ["delta", "text"]) ->
-            {:ok, %{type: :text, text: delta}}
+            {:ok, ReqLLM.StreamChunk.text(delta)}
 
           reasoning_delta = get_in(delta_data, ["delta", "reasoningContent"]) ->
             # Claude extended thinking reasoning delta
-            {:ok, %{type: :thinking, text: reasoning_delta}}
+            {:ok, ReqLLM.StreamChunk.thinking(reasoning_delta)}
 
           true ->
             {:ok, nil}
@@ -247,12 +247,12 @@ defmodule ReqLLM.Providers.AmazonBedrock.Converse do
       %{"messageStop" => stop_data} ->
         # End of message with stop reason
         stop_reason = stop_data["stopReason"]
-        {:ok, %{type: :done, finish_reason: map_stop_reason(stop_reason)}}
+        {:ok, ReqLLM.StreamChunk.meta(%{finish_reason: map_stop_reason(stop_reason)})}
 
       %{"metadata" => metadata} ->
         # Usage metadata
         if usage = metadata["usage"] do
-          {:ok, %{type: :usage, usage: parse_usage(usage)}}
+          {:ok, ReqLLM.StreamChunk.meta(%{usage: parse_usage(usage)})}
         else
           {:ok, nil}
         end
