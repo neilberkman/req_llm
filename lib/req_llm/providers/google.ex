@@ -12,6 +12,7 @@ defmodule ReqLLM.Providers.Google do
   - `google_safety_settings` - List of safety filter configurations
   - `google_candidate_count` - Number of response candidates to generate (default: 1)
   - `dimensions` - Number of dimensions for embedding vectors
+  - `task_type` - Task type for embeddings (e.g., RETRIEVAL_QUERY)
 
   See `provider_schema/0` for the complete Google-specific schema and
   `ReqLLM.Provider.Options` for inherited OpenAI parameters.
@@ -47,6 +48,11 @@ defmodule ReqLLM.Providers.Google do
         type: :pos_integer,
         doc:
           "Number of dimensions for the embedding vector (128-3072, recommended: 768, 1536, or 3072)"
+      ],
+      task_type: [
+        type: :string,
+        doc:
+          "Task type for embedding (e.g., RETRIEVAL_QUERY, RETRIEVAL_DOCUMENT, SEMANTIC_SIMILARITY)"
       ]
     ]
 
@@ -463,25 +469,22 @@ defmodule ReqLLM.Providers.Google do
   defp encode_embedding_body(request) do
     text = request.options[:text]
 
+    build_embedding_body = fn t ->
+      %{
+        model: "models/#{request.options[:model]}",
+        content: %{parts: [%{text: t}]}
+      }
+      |> maybe_put(:outputDimensionality, request.options[:dimensions])
+      |> maybe_put(:taskType, request.options[:task_type])
+    end
+
     case text do
       texts when is_list(texts) ->
-        requests =
-          Enum.map(texts, fn t ->
-            %{
-              model: "models/#{request.options[:model]}",
-              content: %{parts: [%{text: t}]}
-            }
-            |> maybe_put(:outputDimensionality, request.options[:dimensions])
-          end)
-
+        requests = Enum.map(texts, build_embedding_body)
         %{requests: requests}
 
       single_text when is_binary(single_text) ->
-        %{
-          model: "models/#{request.options[:model]}",
-          content: %{parts: [%{text: single_text}]}
-        }
-        |> maybe_put(:outputDimensionality, request.options[:dimensions])
+        build_embedding_body.(single_text)
     end
   end
 
@@ -1194,7 +1197,7 @@ defmodule ReqLLM.Providers.Google do
   defp convert_content_part(part), do: %{text: to_string(part)}
 
   # Decode Google streaming events.
-  # 
+  #
   # Google's :streamGenerateContent endpoint returns JSON array format (not SSE) for 2.5 models.
   # This function handles both formats:
   # - SSE format: %{data: {...}}
