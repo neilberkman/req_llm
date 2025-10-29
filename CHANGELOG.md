@@ -7,6 +7,93 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-rc.8] - 2025-10-29
+
+### Added
+
+- Google Search grounding support for Google Gemini models via built-in tools
+  - New `google_grounding` option to enable web search during generation
+  - API versioning support (v1 and v1beta) for Google provider
+  - Grounding metadata included in responses when available
+- Model catalog feature for runtime model discovery
+- `task_type` parameter support for Google embeddings
+- HTTP streaming in StreamServer with improved lifecycle management
+- JSON Schema validation using JSV library (supports draft 2020-12 and draft 7)
+  - Client-side schema validation before sending to providers
+  - Better error messages for invalid schemas (e.g., embedded JSON strings vs maps)
+- Base URL override capability for testing with mock services
+- Configurable `metadata_timeout` option for long-running streams (default: 60s)
+- Direct JSON schema pass-through support for complex object generation
+- API key option in provider defaults with proper precedence handling
+
+### Enhanced
+
+- Bedrock provider with comprehensive fixes and improvements
+  - Streaming temperature/top_p conflict resolution via Options.process pipeline
+  - Extended thinking support with proper `reasoning_effort` translation
+  - Tool round-trip conversations by extracting stub tools from messages
+  - Complete usage metadata fields (cached_tokens, reasoning_tokens) for all models
+  - Increased receive timeout from 30s to 60s for large responses
+- Meta/Llama support refactored into reusable generic provider
+  - Created `ReqLLM.Providers.Meta` for Meta's native prompt format
+  - Bedrock Meta now delegates to generic provider for format conversion
+  - Enables future Azure AI Foundry and Vertex AI support
+- OpenAI provider with JSON Schema response format support for GPT-5 models
+- Streaming error handling with HTTP status code validation
+  - Proper error propagation for 4xx/5xx responses
+  - Prevents error JSON from being passed to SSE parser
+- Model metadata tests with improved field mapping validation
+- Documentation across provider guides and API references
+
+### Fixed
+
+- Bedrock streaming binary protocol (AWS Event Stream) encoding in fixtures
+  - Removed redundant "decoded" field that caused Jason.EncodeError
+  - Fixtures now only store "b64" field for binary protocols
+- Bedrock thinking parameter removal for forced tool_choice scenarios
+  - Extended thinking incompatible with object generation fixed via post-processing
+- Model compatibility task now uses `normalize_model_id` callback for registry lookups
+  - Fixes inference profile ID recognition (e.g., global.anthropic.claude-sonnet-4-5)
+- Missing `:compiled_schema` in object streaming options (KeyError fix)
+- Nil tool names in streaming deltas now properly guarded
+- HTTP/2 flow control bug with large request bodies (>64KB)
+  - Changed default Finch pool from [:http2, :http1] to [:http1]
+  - Added validation to prevent HTTP/2 with large payloads
+- ArgumentError when retry function returns `{:delay, ms}` (Req 0.5.15+ compatibility)
+- Validation errors now use correct Error struct fields (reason vs errors)
+- Dialyzer type mismatches in decode_response/2
+
+### Changed
+
+- Removed JidoKeys dependency, simplified to dotenvy for .env file loading
+  - API keys now loaded from .env files at startup
+  - Precedence: runtime options > application config > system environment
+- Upgraded dependencies:
+  - ex_aws_auth from ~> 1.0 to ~> 1.3
+  - ex_doc from 0.38.4 to 0.39.1
+  - zoi from 0.7.4 to 0.8.1
+  - credo to 1.7.13
+- Refactored Bedrock provider to use modern ex_aws_auth features
+  - Migrated to AWSAuth.Credentials struct for credential management
+  - Replaced manual request signing with AWSAuth.Req plugin
+- Comprehensive test timeout increased from 180s to 300s for slow models
+- Formatter line length standardized to 98 characters
+- Quokka dependency pinned to specific version (2.11.2)
+
+### Removed
+
+- Outdated test fixtures for deprecated models (Claude 3.5 Sonnet variants, OpenAI o1/o3/o4 variants)
+- Over 85,000 lines of stale fixture data cleaned up
+
+### Infrastructure
+
+- CI workflow updates for Elixir 1.18/1.19 on OTP 27/28
+- Enhanced GitHub Actions configuration with explicit version matrix
+- Added hex.pm best practices (changelog link, module grouping)
+- Improved documentation organization with provider-specific guides
+
+## [Unreleased - Historical]
+
 ### Added
 
 - Prompt caching support for Bedrock Anthropic models (Claude on AWS Bedrock)
@@ -362,6 +449,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Quality tooling with Dialyzer, Credo, and formatter
 - LiveFixture testing framework for API mocking
 
+[1.0.0-rc.8]: https://github.com/agentjido/req_llm/releases/tag/v1.0.0-rc.8
+[1.0.0-rc.7]: https://github.com/agentjido/req_llm/releases/tag/v1.0.0-rc.7
 [1.0.0-rc.6]: https://github.com/agentjido/req_llm/releases/tag/v1.0.0-rc.6
 [1.0.0-rc.5]: https://github.com/agentjido/req_llm/releases/tag/v1.0.0-rc.5
 [1.0.0-rc.4]: https://github.com/agentjido/req_llm/releases/tag/v1.0.0-rc.4
