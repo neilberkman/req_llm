@@ -42,12 +42,47 @@ defmodule ReqLLM.MixProject do
           "guides/api-reference.md",
           "guides/data-structures.md",
           "guides/model-metadata.md",
+          "guides/mix-tasks.md",
+          "guides/fixture-testing.md",
+          "guides/streaming-migration.md",
           "guides/coverage-testing.md",
-          "guides/adding_a_provider.md"
+          "guides/adding_a_provider.md",
+          "guides/providers/README.md",
+          "guides/providers/anthropic.md",
+          "guides/providers/openai.md",
+          "guides/providers/google.md",
+          "guides/providers/groq.md",
+          "guides/providers/openrouter.md",
+          "guides/providers/xai.md"
         ],
         groups_for_extras: [
-          Guides: ~r/guides\/.*/,
-          Changelog: ~r/CHANGELOG\.md/
+          Guides: [
+            "guides/getting-started.md",
+            "guides/core-concepts.md",
+            "guides/api-reference.md",
+            "guides/data-structures.md",
+            "guides/streaming-migration.md"
+          ],
+          "Development & Testing": [
+            "guides/mix-tasks.md",
+            "guides/fixture-testing.md",
+            "guides/coverage-testing.md",
+            "guides/adding_a_provider.md"
+          ],
+          "Provider Guides": [
+            "guides/providers/README.md",
+            "guides/providers/anthropic.md",
+            "guides/providers/openai.md",
+            "guides/providers/google.md",
+            "guides/providers/groq.md",
+            "guides/providers/openrouter.md",
+            "guides/providers/xai.md"
+          ],
+          Reference: [
+            "guides/model-metadata.md"
+          ],
+          Changelog: ["CHANGELOG.md"],
+          Contributing: ["CONTRIBUTING.md"]
         ],
         groups_for_modules: [
           Providers: ~r/ReqLLM\.Providers\..*/,

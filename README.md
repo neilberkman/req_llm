@@ -14,6 +14,8 @@ This package provides **two-layers** of client interfaces. The top layer is a hi
 
 The low-level client interface directly utilizes `Req` plugins to make HTTP requests to the LLM API's. This layer is more flexible and customizable, but requires more knowledge of the underlying API's. This package is built around the OpenAI API Baseline standard, making it easier to implement providers that follow this standard. Providers such as _Anthropic_ who do not follow the OpenAI standard are heavily customized through provider callbacks.
 
+**Supported Providers:** Anthropic, OpenAI, Google, Groq, OpenRouter, xAI, and more. See [Provider Guides](guides/providers/README.md) for provider-specific documentation.
+
 ## Quick Start
 
 ```elixir
@@ -55,8 +57,7 @@ person = ReqLLM.generate_object!(model, "Generate a person", schema)
 
 # Streaming text generation
 {:ok, response} = ReqLLM.stream_text(model, "Write a short story")
-response
-|> ReqLLM.StreamResponse.tokens()
+ReqLLM.StreamResponse.tokens(response)
 |> Stream.each(&IO.write/1)
 |> Stream.run()
 
@@ -220,8 +221,7 @@ The new `StreamResponse` provides flexible access patterns:
 # Real-time streaming for UI
 {:ok, response} = ReqLLM.stream_text(model, "Tell me a story")
 
-response
-|> ReqLLM.StreamResponse.tokens()
+ReqLLM.StreamResponse.tokens(response)
 |> Stream.each(&broadcast_to_liveview/1)
 |> Stream.run()
 
@@ -286,8 +286,11 @@ This approach gives you full control over the Req pipeline, allowing you to add 
 - [Core Concepts](guides/core-concepts.md) – architecture & data model
 - [API Reference](guides/api-reference.md) – functions & types
 - [Data Structures](guides/data-structures.md) – detailed type information
+- [Mix Tasks](guides/mix-tasks.md) – model sync, compatibility testing, code generation
+- [Fixture Testing](guides/fixture-testing.md) – model validation and supported models
 - [Streaming Migration](guides/streaming-migration.md) – migrate from deprecated `stream_text!/3`
 - [Coverage Testing](guides/coverage-testing.md) – testing strategies
+- [Provider Guides](guides/providers/README.md) – provider-specific documentation
 - [Adding a Provider](guides/adding_a_provider.md) – extend with new providers
 
 ## Migration from Deprecated APIs
@@ -295,13 +298,12 @@ This approach gives you full control over the Req pipeline, allowing you to add 
 If you're using the deprecated `stream_text!/3` function, please migrate to the new `StreamResponse` API:
 
 ```elixir
-# Old (deprecated)
+# Old (deprecated - no longer functions, only logs deprecation warning)
 ReqLLM.stream_text!(model, messages) |> Enum.each(&IO.write/1)
 
 # New (recommended)
 {:ok, response} = ReqLLM.stream_text(model, messages)
-response
-|> ReqLLM.StreamResponse.tokens()
+ReqLLM.StreamResponse.tokens(response)
 |> Stream.each(&IO.write/1)
 |> Stream.run()
 ```

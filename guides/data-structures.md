@@ -54,7 +54,7 @@ Design principles: provider-agnostic, type-safe with discriminated unions, compo
 model = ReqLLM.Model.new(:anthropic, "claude-3-5-sonnet", 
   temperature: 0.5,
   max_tokens: 2000,
-  capabilities: %{reasoning?: true, tool_call?: true}
+  capabilities: %{reasoning: true, tool_call: true}
 )
 ```
 
@@ -93,7 +93,7 @@ context = ReqLLM.Context.new([
 
 for {:ok, model} <- models do
   {:ok, response} = ReqLLM.generate_text(model, context)
-  IO.puts("#{model.provider}: #{response.message.content}")
+  IO.puts("#{model.provider}: #{ReqLLM.Response.text(response)}")
 end
 ```
 
@@ -363,12 +363,16 @@ execute_tools_in_context = fn context, tools ->
     tool = Enum.find(tools, &(&1.name == tool_call.tool_name))
     {:ok, result} = ReqLLM.Tool.execute(tool, tool_call.input)
     
-    ContentPart.tool_result(tool_call.tool_call_id, result)
+    %ReqLLM.Message.ContentPart{
+      type: :tool_result,
+      tool_call_id: tool_call.tool_call_id,
+      output: result
+    }
   end)
   
   # Add tool results as a user message
   if tool_results != [] do
-    Context.add_message(context, %ReqLLM.Message{
+    Context.append(context, %ReqLLM.Message{
       role: :user,
       content: tool_results
     })
@@ -676,7 +680,7 @@ vision_model = ReqLLM.Model.from!("anthropic:claude-3-5-sonnet")
 {:ok, vision_result} = ReqLLM.generate_text(vision_model, image_context)
 
 # Combine results
-final_analysis = text_result.content <> " " <> vision_result.content
+final_analysis = ReqLLM.Response.text(text_result) <> " " <> ReqLLM.Response.text(vision_result)
 ```
 
 ReqLLM provides type-safe, provider-agnostic data structures for building composable AI workflows. Each structure builds on the others to create a unified foundation for AI application development.

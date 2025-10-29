@@ -18,8 +18,10 @@ ReqLLM.put_key(:anthropic_api_key, "sk-ant-...")
 ReqLLM.generate_text!("anthropic:claude-3-sonnet-20240229", "Hello")
 # Returns: "Hello! How can I assist you today?"
 
-ReqLLM.stream_text!("anthropic:claude-3-sonnet-20240229", "Tell me a story")
-|> Enum.each(&IO.write/1)
+{:ok, response} = ReqLLM.stream_text("anthropic:claude-3-sonnet-20240229", "Tell me a story")
+ReqLLM.StreamResponse.tokens(response)
+|> Stream.each(&IO.write/1)
+|> Stream.run()
 ```
 
 ## Structured Data
@@ -56,7 +58,12 @@ usage = ReqLLM.Response.usage(response)
 ReqLLM provides flexible API key configuration with clear precedence:
 
 ```elixir
-# Recommended: Use ReqLLM.put_key for secure in-memory storage
+# Recommended: .env files (automatically loaded via dotenvy at startup)
+# Add to your .env file and they're picked up automatically:
+# ANTHROPIC_API_KEY=sk-ant-...
+# OPENAI_API_KEY=sk-...
+
+# Alternative: Use ReqLLM.put_key for runtime in-memory storage
 ReqLLM.put_key(:anthropic_api_key, "sk-ant-...")
 ReqLLM.put_key(:openai_api_key, "sk-...")
 
@@ -68,11 +75,6 @@ System.put_env("ANTHROPIC_API_KEY", "sk-ant-...")
 
 # Alternative: Application configuration
 Application.put_env(:req_llm, :anthropic_api_key, "sk-ant-...")
-
-# Keys from .env are automatically loaded via dotenvy at startup
-# Just add to your .env file and they're picked up automatically:
-# ANTHROPIC_API_KEY=sk-ant-...
-# OPENAI_API_KEY=sk-...
 ```
 
 ## Message Context

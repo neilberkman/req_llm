@@ -9,7 +9,7 @@ Complete reference for ReqLLM public API. Provides Vercel AI SDK-inspired functi
 Generate text using an AI model with full response metadata.
 
 ```elixir
-@spec generate_text(model_spec, messages, opts) :: {:ok, ReqLLM.Response.t()} | {:error, Splode.t()}
+@spec generate_text(model_spec, messages, opts) :: {:ok, ReqLLM.Response.t()} | {:error, term()}
 ```
 
 Returns a canonical ReqLLM.Response with usage data, context, and metadata.
@@ -55,7 +55,7 @@ ReqLLM.generate_text!("anthropic:claude-3-sonnet-20240229", "Hello")
 Stream text generation with full response metadata.
 
 ```elixir
-@spec stream_text(model_spec, messages, opts) :: {:ok, ReqLLM.Response.t()} | {:error, Splode.t()}
+@spec stream_text(model_spec, messages, opts) :: {:ok, ReqLLM.StreamResponse.t()} | {:error, term()}
 ```
 
 Returns a canonical ReqLLM.Response containing usage data and stream.
@@ -63,7 +63,7 @@ Returns a canonical ReqLLM.Response containing usage data and stream.
 **Examples:**
 ```elixir
 {:ok, response} = ReqLLM.stream_text("anthropic:claude-3-sonnet-20240229", "Tell me a story")
-ReqLLM.Response.text_stream(response) |> Enum.each(&IO.write/1)
+ReqLLM.StreamResponse.tokens(response) |> Enum.each(&IO.write/1)
 
 # Access usage after streaming
 ReqLLM.Response.usage(response)
@@ -90,7 +90,7 @@ ReqLLM.stream_text!("anthropic:claude-3-sonnet-20240229", "Count to 10")
 Generate structured data with schema validation.
 
 ```elixir
-@spec generate_object(model_spec, messages, schema, opts) :: {:ok, ReqLLM.Response.t()} | {:error, Splode.t()}
+@spec generate_object(model_spec, messages, schema, opts) :: {:ok, ReqLLM.Response.t()} | {:error, term()}
 ```
 
 Equivalent to Vercel AI SDK's `generateObject()`.
@@ -117,7 +117,7 @@ Generate structured data returning only the object.
 Stream structured data generation.
 
 ```elixir
-@spec stream_object(model_spec, messages, schema, opts) :: {:ok, ReqLLM.Response.t()} | {:error, Splode.t()}
+@spec stream_object(model_spec, messages, schema, opts) :: {:ok, ReqLLM.StreamResponse.t()} | {:error, term()}
 ```
 
 ### stream_object!/4
@@ -132,7 +132,7 @@ Stream structured data returning only the stream.
 
 ### embed/3
 
-Generate a single embedding vector.
+Generate embeddings for single or multiple texts.
 
 ```elixir
 @spec embed(model_spec, text, opts) :: {:ok, [float()]} | {:error, Splode.t()}
@@ -140,21 +140,11 @@ Generate a single embedding vector.
 
 **Examples:**
 ```elixir
+# Single text
 {:ok, embedding} = ReqLLM.embed("openai:text-embedding-3-small", "Hello world")
-# embedding => [0.1234, -0.5678, ...]
-```
 
-### embed_many/3
-
-Generate embeddings for multiple texts.
-
-```elixir
-@spec embed_many(model_spec, [text], opts) :: {:ok, [[float()]]} | {:error, Splode.t()}
-```
-
-**Examples:**
-```elixir
-{:ok, embeddings} = ReqLLM.embed_many("openai:text-embedding-3-small", ["Hello", "World"])
+# Multiple texts (same function)
+{:ok, embeddings} = ReqLLM.embed("openai:text-embedding-3-small", ["Hello", "World"])
 ```
 
 ## Model Specification Formats

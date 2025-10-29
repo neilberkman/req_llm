@@ -20,7 +20,7 @@ ReqLLM's streaming implementation has been completely redesigned to use Finch di
 
 ```elixir
 ReqLLM.stream_text!(model, "Tell me a story")
-|> Stream.each(&IO.write(&1.text))
+|> Stream.each(&IO.write/1)
 |> Stream.run()
 ```
 
@@ -41,7 +41,7 @@ response
 ```elixir
 try do
   ReqLLM.stream_text!(model, messages)
-  |> Stream.each(&IO.write(&1.text))
+  |> Stream.each(&IO.write/1)
   |> Stream.run()
 rescue
   error -> handle_error(error)
@@ -101,7 +101,6 @@ IO.puts("Finish reason: #{finish_reason}")
 ```elixir
 text =
   ReqLLM.stream_text!(model, messages)
-  |> Stream.map(& &1.text)
   |> Enum.join("")
 ```
 
@@ -298,7 +297,7 @@ Update your tests to expect the new return format:
 ```elixir
 test "streams text" do
   chunks = ReqLLM.stream_text!("anthropic:claude-3-sonnet", "Hello") |> Enum.take(5)
-  assert Enum.all?(chunks, &is_binary(&1.text))
+  assert Enum.all?(chunks, &is_binary/1)
 end
 ```
 

@@ -94,28 +94,27 @@ defmodule ReqLLM.Providers.MyOpenAI do
   # ---------------------------------------------------------------------------
 
   @impl ReqLLM.Provider
-  def attach(%Req.Request{} = request, model_input, user_opts \\ []) do
+  def attach(%Req.Request{} = request, model_input, opts \\ []) do
     %ReqLLM.Model{} = model = ReqLLM.Model.from!(model_input)
-    if model.provider != provider_id(), do: raise ReqLLM.Error.Invalid.Provider, provider: model.provider
 
-    {:ok, api_key} = ReqLLM.Keys.get(model.provider, user_opts)
+    api_key = ReqLLM.Keys.get!(model.provider, opts)
 
-    {tools, other_opts} = Keyword.pop(user_opts, :tools, [])
+    {tools, other_opts} = Keyword.pop(opts, :tools, [])
     {provider_opts, core_opts} = Keyword.pop(other_opts, :provider_options, [])
 
-    opts =
+    prepared_opts =
       model
       |> prepare_options!(__MODULE__, core_opts)
       |> Keyword.put(:tools, tools)
       |> Keyword.merge(provider_opts)
 
-    base_url = Keyword.get(user_opts, :base_url, default_base_url())
+    base_url = Keyword.get(opts, :base_url, default_base_url())
     req_keys = __MODULE__.supported_provider_options() ++ [:context]
 
     request
     |> Req.Request.register_options(req_keys ++ [:model])
     |> Req.Request.merge_options(
-      Keyword.take(opts, req_keys) ++
+      Keyword.take(prepared_opts, req_keys) ++
         [model: model.model, base_url: base_url, auth: {:bearer, api_key}]
     )
     |> ReqLLM.Step.Error.attach()
@@ -126,14 +125,12 @@ defmodule ReqLLM.Providers.MyOpenAI do
   end
 
   # ---------------------------------------------------------------------------
-  # 3️⃣  encode_body – still needed (adds provider-specific extras)
+  # 3️⃣  encode_body & decode_response – automatic for OpenAI-compatible APIs
   # ---------------------------------------------------------------------------
 
-  # encode_body/1 and decode_response/1 are provided automatically
-  # by the DSL using built-in OpenAI-style defaults.
-  # Only implement these if you need provider-specific customizations.
-
-  # decode_response/1 is also provided automatically by the DSL
+  # encode_body/1 and decode_response/1 are provided automatically by the DSL
+  # using built-in OpenAI-style defaults. You do NOT need to implement them
+  # unless you need provider-specific customizations or non-OpenAI wire format.
 
   # Usage extraction is identical to Groq / OpenAI
   @impl ReqLLM.Provider

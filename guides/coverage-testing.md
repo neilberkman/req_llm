@@ -1,5 +1,7 @@
 # Coverage Testing Guide
 
+> **Note:** This guide is largely superseded by the [Fixture Testing Guide](fixture-testing.md), which covers the modern `mix req_llm.model_compat` task and comprehensive testing system. This document remains for reference on legacy testing patterns.
+
 This guide covers testing and verification workflows for ReqLLM, focusing on live API coverage tests with fixture support for local testing without API calls.
 
 ## Overview
@@ -22,12 +24,12 @@ mix test --only openai      # Test specific provider with fixtures
 
 ### Live Mode
 
-Set `LIVE=true` to test against real APIs and capture new fixtures:
+Set `REQ_LLM_FIXTURES_MODE=record` to test against real APIs and capture new fixtures:
 
 ```bash
-LIVE=true mix test                    # Run all tests live
-LIVE=true mix test --only openai      # Test specific provider live
-LIVE=true mix test --only coverage    # Run coverage tests live
+REQ_LLM_FIXTURES_MODE=record mix test                    # Run all tests live
+REQ_LLM_FIXTURES_MODE=record mix test --only openai      # Test specific provider live
+REQ_LLM_FIXTURES_MODE=record mix test --only coverage    # Run coverage tests live
 ```
 
 **Live mode will:**
@@ -52,14 +54,12 @@ mix quality    # or mix q - runs format, compile --warnings-as-errors, dialyzer,
 test/
 ├── coverage/                 # Provider capability coverage tests
 │   ├── anthropic/
-│   │   ├── core_test.exs            # Basic generation
-│   │   ├── streaming_test.exs       # Streaming responses
-│   │   └── tool_calling_test.exs    # Tool calling
-│   └── openai/               # Similar structure for each provider
+│   │   ├── comprehensive_test.exs   # All capabilities
+│   │   └── fixtures/                # Cached API responses
+│   └── openai/
+│       ├── comprehensive_test.exs
+│       └── fixtures/
 ├── support/
-│   ├── fixtures/             # Cached API responses
-│   │   ├── anthropic/
-│   │   └── openai/
 │   ├── live_fixture.ex       # Test fixture system
 │   └── provider_test/        # Shared test macros
 ├── req_llm/
@@ -71,10 +71,11 @@ test/
 Tests use ExUnit tags for organization:
 
 ```elixir
-@moduletag :coverage       # Coverage test
-@moduletag :openai         # Provider-specific
-@moduletag :streaming      # Feature-specific
-@moduletag :tools          # Capability-specific
+@moduletag :coverage           # Coverage test
+@moduletag provider: "anthropic"  # Provider-specific (string)
+@tag scenario: :basic          # Scenario-specific (atom)
+@tag scenario: :streaming      # Feature-specific
+@tag scenario: :tool_multi     # Capability-specific
 ```
 
 Run specific test groups:
@@ -101,36 +102,8 @@ end
 ```
 
 Available macros:
-- `ReqLLM.ProviderTest.Core` - Basic text generation
-- `ReqLLM.ProviderTest.Streaming` - Streaming responses  
-- `ReqLLM.ProviderTest.ToolCalling` - Tool/function calling
-
-### Manual Testing with LiveFixture
-
-For custom tests, use the LiveFixture API directly:
-
-```elixir
-defmodule ReqLLM.Coverage.MyProvider.CustomTest do
-  use ExUnit.Case, async: false
-  
-  import ReqLLM.Test.LiveFixture
-  
-  @moduletag :coverage
-  @moduletag :my_provider
-  
-  @model "my_provider:my-model"
-  
-  test "basic text generation", fixture: "basic_generation" do
-    ctx = ReqLLM.Context.new([ReqLLM.Context.user("Hello!")])
-    {:ok, resp} = ReqLLM.generate_text(@model, ctx, max_tokens: 50)
-    
-    text = ReqLLM.Response.text(resp)
-    assert is_binary(text)
-    assert text != ""
-    assert resp.id != nil
-  end
-end
-```
+- `ReqLLM.ProviderTest.Comprehensive` - All capabilities (basic, streaming, tools, objects, reasoning)
+- `ReqLLM.ProviderTest.Embedding` - Embedding generation
 
 ### Capability-Driven Tests
 
@@ -289,12 +262,14 @@ Fixtures are stored as JSON with metadata:
 
 ```json
 {
-  "captured_at": "2024-01-15T10:30:00Z",
+  "captured_at": "2025-01-15T10:30:00Z",
+  "model_spec": "openai:gpt-4o",
+  "scenario": "basic",
   "result": {
-    "type": "ok_req_llm_response",
-    "data": {
+    "ok": true,
+    "response": {
       "id": "resp_123",
-      "model": "openai:gpt-4o",
+      "model": "gpt-4o",
       "message": {
         "role": "assistant",
         "content": [{"type": "text", "text": "Hello there!"}]
@@ -374,7 +349,7 @@ end)
 # test/coverage/my_provider/tool_calling_test.exs
 
 # Run live tests to capture fixtures
-LIVE=true mix test --only coverage --only my_provider
+REQ_LLM_FIXTURES_MODE=record mix test --only coverage --only my_provider
 
 # Quality check
 mix quality
@@ -389,13 +364,13 @@ Regular verification workflows:
 mix test --only coverage
 
 # Weekly: Refresh critical fixtures
-LIVE=true mix test test/coverage/*/core_test.exs
+REQ_LLM_FIXTURES_MODE=record mix test test/coverage/*/comprehensive_test.exs
 
 # Release: Full live test suite
-LIVE=true mix test --only coverage
+REQ_LLM_FIXTURES_MODE=record mix test --only coverage
 
 # API Changes: Update specific provider
-LIVE=true mix test --only anthropic --only coverage
+REQ_LLM_FIXTURES_MODE=record mix test --only "provider:anthropic" --only coverage
 ```
 
 ## Best Practices
