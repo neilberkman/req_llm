@@ -1,0 +1,103 @@
+{
+  "request": {
+    "body": {
+      "b64": "eyJhZGRpdGlvbmFsTW9kZWxSZXF1ZXN0RmllbGRzIjp7InRoaW5raW5nIjp7ImJ1ZGdldF90b2tlbnMiOjQwMDAsInR5cGUiOiJlbmFibGVkIn19LCJpbmZlcmVuY2VDb25maWciOnsibWF4VG9rZW5zIjo0MDAxLCJ0ZW1wZXJhdHVyZSI6MS4wfSwibWVzc2FnZXMiOlt7ImNvbnRlbnQiOlt7InRleHQiOiJIZWxsbyB3b3JsZCEifV0sInJvbGUiOiJ1c2VyIn1dfQ=="
+    },
+    "canonical_json": {
+      "additionalModelRequestFields": {
+        "thinking": {
+          "budget_tokens": 4000,
+          "type": "enabled"
+        }
+      },
+      "inferenceConfig": {
+        "maxTokens": 4001,
+        "temperature": 1.0
+      },
+      "messages": [
+        {
+          "content": [
+            {
+              "text": "Hello world!"
+            }
+          ],
+          "role": "user"
+        }
+      ]
+    },
+    "headers": {
+      "accept-encoding": [
+        "gzip"
+      ],
+      "authorization": "[REDACTED:authorization]",
+      "content-type": [
+        "application/json"
+      ],
+      "host": [
+        "bedrock-runtime.us-east-1.amazonaws.com"
+      ],
+      "user-agent": [
+        "req/0.5.15"
+      ],
+      "x-amz-content-sha256": [
+        "7f9a966d6b206c355901091927ad26f0f732dcaad1ce5e6763fbc8c9d997d40b"
+      ],
+      "x-amz-date": [
+        "20251101T002625Z"
+      ]
+    },
+    "method": "post",
+    "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-opus-4-1-20250805-v1:0/converse"
+  },
+  "response": {
+    "body": {
+      "metrics": {
+        "latencyMs": 8915
+      },
+      "output": {
+        "message": {
+          "content": [
+            {
+              "reasoningContent": {
+                "reasoningText": {
+                  "signature": "EoYDCkgICRABGAIqQOLaDFevB1aRMOKsSYjr6jdyFx369DwljUayEmeVXEiY+7f6KitA648uWG9w5jDApM+J8sspv9cTi/M2HqFj5lcSDG75UmpmNxoggSJzlRoM0txIf96pU0yl3ligIjCXq+KcoEft/Lq6MPqUQNlEvOvYJU7rsTm25af9PIyVZXZY6wKlZyhqTlELsrsMjE0q6wFENj8RuTU7xWVmYv/tnP9Vkqtwqu/rrRU61gYFpYFRZO4wCi10V1DLwJjvSZC0x8uqB58w5mGRH+7GGjlqmZ4pGcPYBWgzuwtk0juhBUbx0jMRdM4E2/zaiLmAztIEhwVDWXEtMi0Z8PuUic87y46u+TZkNhjWbAVzsYmx5ABKNHxxwwpg+YrNvIodYr+vHamtpvpPGH3HJ0NJf6ByyZTLDTS6Pqv0SdUKojFF7aUECK9wzxZ3NK2G5WeT2H2I0556EgBJrJ0fbeDJ0udhlGKfFovsVkbbqMy4ztEyiD5xlT+0++VbVU6Nb6DsGAE=",
+                  "text": "The user has sent me a simple \"Hello world!\" greeting. This is a common phrase used in programming as a first example, but in this context it seems like a friendly greeting. I should respond in a warm and welcoming way."
+                }
+              }
+            },
+            {
+              "text": "Hello! 👋 Welcome! How can I help you today?"
+            }
+          ],
+          "role": "assistant"
+        }
+      },
+      "stopReason": "end_turn",
+      "usage": {
+        "cacheReadInputTokenCount": 0,
+        "cacheReadInputTokens": 0,
+        "cacheWriteInputTokenCount": 0,
+        "cacheWriteInputTokens": 0,
+        "inputTokens": 38,
+        "outputTokens": 75,
+        "serverToolUsage": {},
+        "totalTokens": 113
+      }
+    },
+    "headers": {
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json"
+      ],
+      "date": [
+        "Sat, 01 Nov 2025 00:26:34 GMT"
+      ],
+      "x-amzn-requestid": [
+        "0375825d-4805-43ae-a283-cfc7e02005ec"
+      ]
+    },
+    "status": 200
+  }
+}

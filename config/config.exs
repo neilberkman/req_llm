@@ -13,6 +13,9 @@ config :req_llm, :sample_embedding_models, ~w(
 config :req_llm, :sample_text_models, ~w(
     anthropic:claude-3-5-haiku-20241022
     anthropic:claude-3-5-sonnet-20241022
+    amazon_bedrock:global.anthropic.claude-sonnet-4-5-20250929-v1:0
+    amazon_bedrock:global.anthropic.claude-haiku-4-5-20251001-v1:0
+    amazon_bedrock:us.anthropic.claude-opus-4-1-20250805-v1:0
     openai:gpt-4o-mini
     openai:gpt-4-turbo
     google:gemini-2.0-flash

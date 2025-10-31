@@ -1,0 +1,103 @@
+{
+  "request": {
+    "body": {
+      "b64": "eyJhZGRpdGlvbmFsTW9kZWxSZXF1ZXN0RmllbGRzIjp7InRoaW5raW5nIjp7ImJ1ZGdldF90b2tlbnMiOjQwMDAsInR5cGUiOiJlbmFibGVkIn19LCJpbmZlcmVuY2VDb25maWciOnsibWF4VG9rZW5zIjo0MDAxLCJ0ZW1wZXJhdHVyZSI6MS4wfSwibWVzc2FnZXMiOlt7ImNvbnRlbnQiOlt7InRleHQiOiJXcml0ZSBhIHZlcnkgbG9uZyBzdG9yeSBhYm91dCBkcmFnb25zIGFuZCBhZHZlbnR1cmVzIn1dLCJyb2xlIjoidXNlciJ9XX0="
+    },
+    "canonical_json": {
+      "additionalModelRequestFields": {
+        "thinking": {
+          "budget_tokens": 4000,
+          "type": "enabled"
+        }
+      },
+      "inferenceConfig": {
+        "maxTokens": 4001,
+        "temperature": 1.0
+      },
+      "messages": [
+        {
+          "content": [
+            {
+              "text": "Write a very long story about dragons and adventures"
+            }
+          ],
+          "role": "user"
+        }
+      ]
+    },
+    "headers": {
+      "accept-encoding": [
+        "gzip"
+      ],
+      "authorization": "[REDACTED:authorization]",
+      "content-type": [
+        "application/json"
+      ],
+      "host": [
+        "bedrock-runtime.us-east-1.amazonaws.com"
+      ],
+      "user-agent": [
+        "req/0.5.15"
+      ],
+      "x-amz-content-sha256": [
+        "6db0b5792c8bea0bccb48e26e4641fc3040c401b4120e29897197667c67b9921"
+      ],
+      "x-amz-date": [
+        "20251101T002541Z"
+      ]
+    },
+    "method": "post",
+    "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/global.anthropic.claude-sonnet-4-5-20250929-v1:0/converse"
+  },
+  "response": {
+    "body": {
+      "metrics": {
+        "latencyMs": 92672
+      },
+      "output": {
+        "message": {
+          "content": [
+            {
+              "reasoningContent": {
+                "reasoningText": {
+                  "signature": "EtMDCkgICRABGAIqQGF+/Xh40BjTV/Mmiez3htALvrwOtHd44AVFGF7W6q5oz1QvAuwj19dKNKJY5v/u8/uoePr+h7M2XOVrfUt/lIMSDMAiR+cMd3ANSffQWBoMs1NfBjg69x+mMIiRIjAEG82oWQ8FhtPKh759GcJW5mjYHO9X3dmRB60snpB9vA9tO7z6/idQps3eB0cdK1oquAIG8khHDwIi+kiZOe7ouQ0pWMz/4shZAOBrIuH+jGNrYfKMZup4rvtVpsdok+6URzXM1vWsgXVGhGV3IXTjSpgfzAGUGRB56OuOzsJno3OKO2sM79ObUsU3NP0RBWEihexzXD1vu1E56DlxV2Kepl3/xqEv5tpp3npxLGGtDpEegSS4lCLhvsLqsk8a9sA+Bsdw3F/ljS4tB8RE1eBM06nbtPClDMKrwcmDDdHjKi6HdQPh+SZJS8ql3jcZlJutk7W8Ka6JpW07KYo1jx1hnXHWkV3s5ZtaDUNYlOiIuhFhY/bh24nkQfjSZklysJk71EttzggUdCEz1H0SScTvuxnGWNRexQG4ZtQn0fOSjRhTJ2LBVDsTl7SCncksZvMaz6G33/cUjRtGPWnsj5fMve6zVDABN/dNd/QYAQ==",
+                  "text": "The user wants a very long story about dragons and adventures. I'll create an epic fantasy adventure story with multiple characters, a compelling plot, world-building, and plenty of dragon encounters. I'll make it engaging with character development, action sequences, and an adventurous journey."
+                }
+              }
+            },
+            {
+              "text": "# The Last Dragon Singer\n\n## Part One: The Awakening\n\nThe morning mist clung to the Whispering Valley like a silk shroud, and young Kael Stormwind stood at the edge of the cliff, staring into the swirling grey below. At seventeen, he had spent his entire life in the mountain village of Thornhaven, where the greatest excitement was usually the annual harvest festival or the occasional visit from traveling merchants. But today was different. Today, everything would change.\n\n\"You're certain about this?\" asked his mentor, Old Garrick, the village's historian and keeper of forgotten lore. The elderly man's weathered face showed both concern and something else—perhaps hope, or maybe fear.\n\nKael touched the pendant at his chest, feeling its unusual warmth. The silver dragon medallion had been his mother's, the only thing he had left of her after she disappeared twelve years ago. For twelve years it had been nothing but cold metal and memory. But three days ago, it had begun to glow with an inner light, and he had started hearing the songs in his dreams—ancient melodies that seemed to come from the earth itself, from the sky, from the very stones of the mountains.\n\n\"I don't have a choice,\" Kael replied, his voice steadier than he felt. \"The dreams are getting stronger. Last night, I saw it clearly—a dragon, white as fresh snow, calling to me from the Frostpeak Mountains. And there were words, Garrick. Words in a language I shouldn't understand, but somehow do.\"\n\nGarrick sighed deeply and pulled out a worn leather journal from his pack. \"Your mother... she knew this day might come. Before she left, she gave me this. She made me promise to give it to you only when the medallion awakened.\" He placed the journal in Kael's hands with trembling fingers.\n\nThe journal's leather cover was embossed with the same dragon symbol as his medallion. As Kael opened it, his mother's handwriting flowed across the pages, and he felt tears prick at his eyes.\n\n*My dearest Kael,* the first page read, *if you are reading this, then the dragon blood that flows in your veins has awakened. You are a Dragon Singer, as was I, and my mother before me, going back to the Age of Flame when humans and dragons lived in harmony. Our family has guarded a great secret, and now that burden falls to you.*\n\n*The dragons are not extinct, as the world believes. They are sleeping, hidden in sanctuaries across the realm, waiting for the time when they will be needed again. That time is coming. The Shadow that our ancestors imprisoned is stirring, and only a Dragon Singer can wake the great wyrms and unite them against the darkness.*\n\n*I have gone to seek answers and allies, but I fear I may not return. Trust in your gift, my son. The dragons will know you by your song. Find them. Wake them. Save our world.*\n\n*All my love,*\n*Lyara Stormwind*\n\nKael looked up from the journal, his heart pounding. \"Dragon Singer? I don't even know what that means.\"\n\n\"It means,\" Garrick said slowly, \"that you have the ancient magic in your blood—the ability to communicate with dragons through song, to understand them, to bond with them. The Dragon Singers were once the bridge between our species. They were the peacemakers, the negotiators, the only humans whom dragons would call friend.\"\n\n\"But dragons have been gone for three hundred years,\" Kael protested. \"Everyone knows that. They all died in the Dragon Wars.\"\n\n\"That's what the world was told,\" Garrick corrected. \"But legends persist among those who listen. Stories of shadows with wings glimpsed in distant mountains, of strange songs heard in deep caves, of travelers who speak of finding scales the size of shields in hidden valleys.\"\n\nA sound made them both turn. Emerging from the morning mist came three figures on horseback. As they drew closer, Kael could see two young people near his own age and an older woman who rode with the bearing of a warrior.\n\nThe woman dismounted with practiced grace. She was tall, with silver-streaked black hair bound in a warrior's braid and a sword at her hip that looked well-used. \"Garrick,\" she said with a nod. \"I received your message. So the boy has awakened?\"\n\n\"He has, Commander Thorne,\" Garrick confirmed.\n\nThe two younger riders dismounted as well. One was a girl with copper-red hair, bright green eyes, and a bow slung across her back. She looked at Kael with undisguised curiosity. The other was a boy with dark skin, wearing robes marked with the symbols of the Mage Academy, a staff strapped to his back.\n\n\"This is my daughter, Aria,\" Commander Thorne introduced, gesturing to the red-haired girl. \"Best tracker in the northern territories and a fair shot with that bow. And this is Finn Ashwood, graduated from the Academy two years early. They'll be accompanying you on your quest.\"\n\n\"Quest?\" Kael stammered. \"I never said anything about a quest. I just wanted to understand the dreams.\"\n\nAria laughed, a bright sound in the misty morning. \"The medallion chose you, farm boy. You don't get to choose. But don't worry—we've been preparing for this for months. Mother's been tracking the old Dragon Singer trails, and Finn's been researching dragon lore.\"\n\nFinn adjusted his spectacles and pulled out a rolled map. \"According to the ancient texts, there are five major dragon sanctuaries scattered across the realm. The closest is the Frostpeak Sanctuary, approximately two weeks' journey north. If your dreams are showing you a white dragon, that would be consistent with Frostpeak—it's said to be the resting place of Crystalwing, one of the ancient Ice Dragons.\"\n\n\"Two weeks?\" Kael's head was spinning. \"I can't just leave. The farm, my father—\"\n\n\"Your father knows,\" Garrick said gently. \"I spoke with him last night. He understands. And he's proud of you, boy. Your mother's blood runs true.\"\n\nCommander Thorne stepped forward, her expression serious. \"I won't lie to you, Kael. This journey will be dangerous. The roads are not safe—bandits, monsters, and worse things stir in the wild places. And there are those who would stop you from reaching the dragons. The Order of the Iron Fist believes dragons are abominations that should never return. They have agents everywhere.\"\n\n\"Then why are you helping me?\" Kael asked.\n\n\"Because twelve years ago, your mother saved my life,\" Thorne replied, her voice softening slightly. \"We served together in the Northern Guard. When I was wounded and surrounded by ice trolls, she sang a song that made the very mountain shake. Something came from the caves—something massive and terrible and beautiful. It scattered the trolls like leaves and guarded us until reinforcements arrived. I never saw it clearly, but I knew what it was. A dragon. Very much alive.\"\n\nShe placed a hand on Kael's shoulder. \"Your mother went seeking the Dragon Singers' secrets to protect the realm from a danger she foresaw. She was the bravest person I ever knew. Let me help her son finish what she started.\"\n\nKael looked at the three strangers who would be his companions, then back at Garrick, then down at his mother's journal clutched in his hands. Every instinct told him to refuse, to go back to his simple life. But the medallion was warm against his chest, and in his mind, he could hear it—that distant song, calling him northward.\n\n\"When do we leave?\" he finally asked.\n\nAria grinned. \"Right now. We've got supplies, horses, and weapons. Well, weapons for us. What do you fight with?\"\n\nKael looked down at his empty hands. \"I've never really fought anyone. I mean, I can handle a staff, I suppose. We use them to drive the sheep...\"\n\nFinn winced. \"This is going to be an interesting journey.\"\n\n## Part Two: The Road North\n\nThey rode for three days through familiar territory, past farms and small villages where Kael had sometimes traveled with his father to trade. But on the fourth day, they crossed into the Wildwood, and the world changed.\n\nThe trees here were ancient, their trunks so wide that five men holding hands couldn't encircle them. The canopy above was so dense that even at midday, they traveled in green-tinted twilight. Strange sounds echoed through the forest—calls of birds that sounded almost like words, rustling in the undergrowth that suggested creatures much larger than rabbits or deer.\n\n\"Stay close,\" Commander Thorne commanded. \"The Wildwood is old magic. Not evil, necessarily, but not safe for those who don't know its ways.\"\n\nAria rode beside Kael, who was still learning to manage his horse, a patient grey mare named Mist. \"So,\" she said conversationally, \"what's it like? Being a Dragon Singer?\"\n\n\"I don't know,\" Kael admitted. \"I only found out a few days ago. I still don't understand what it means or how it works.\"\n\n\"Can you try?\" Finn called from behind them. \"The texts say Dragon Singers can commune with any creature touched by dragon magic. The Wildwood is full of such beings.\"\n\n\"I wouldn't recommend experimenting in the Wildwood,\" Thorne warned. \"You might call something we'd rather not meet.\"\n\nBut Kael was curious now. He closed his eyes, trying to remember the songs from his dreams. They didn't have words exactly, more like emotions given voice—longing, strength, ancient memory, fire and ice and storm. Hesitantly, he began to hum.\n\nThe melody that emerged surprised him. It seemed to come from somewhere deeper than his throat, resonating in his chest, in his very bones. The tune wove through the trees like a living thing, and as he sang, he felt... awareness. Hundreds of small consciousnesses in the forest, turning toward the sound like flowers toward the sun.\n\n\"Kael, stop!\" Thorne hissed, but it was too late.\n\nThe undergrowth exploded with movement. Dozens of creatures emerged—but not the dangerous beasts Kael had feared. They were small dragons, none larger than a cat, with jewel-bright scales in every color imaginable. They had delicate wings and long, sinuous bodies, and they swirled around the travelers in a glittering cloud, chirping and trilling.\n\n\"Drakelings,\" Finn breathed in wonder. \"I've never seen so many. They're supposed to be incredibly rare.\"\n\nOne landed on Kael's shoulder, a little emerald-green creature with eyes like golden coins. It nuzzled against his cheek, making a sound like a purring cat mixed with wind chimes.\n\n\"They like you,\" Aria said, smiling as several landed on her extended arms. \"That's a good sign, isn't it? If dragon-kin trust him?\"\n\nThorne looked less pleased. \"It's also a beacon advertising his presence to anyone sensitive to magic. We need to move faster.\"\n\nBut Kael was entranced. Through his connection to the little dragon on his shoulder, he could sense emotions—joy, curiosity, recognition. \"They've been alone,\" he murmured. \"For so long. They remember when there were greater dragons in the world. They remember the songs.\"\n\nThe emerald drakeling chirped and touched its small snout to Kael's medallion. Suddenly, images flooded his mind—not memories of his own, but the drakeling's. He saw the Wildwood as it had been centuries ago, when massive dragons nested in clearings and Dragon Singers walked freely, their music weaving harmony between species. He saw the war that came, humans against dragons, blood and fire and terrible destruction. He saw the great dragons departing, flying toward hidden sanctuaries, leaving only the small drakelings behind to keep the memory alive.\n\nWhen the vision faded, Kael found tears streaming down his face. \"They're alone,\" he whispered. \"The little ones were left behind. They've been waiting for someone to sing the old songs again.\"\n\nThe emerald drakeling—Kael found himself thinking of it as Spark—refused to leave his shoulder even when the other drakelings eventually dispersed back into the forest. The little dragon seemed to have adopted him.\n\n\"Well,\" Finn said with a slight smile, \"every Dragon Singer in the old tales had a companion. Looks like you've found yours.\"\n\nThey continued through the Wildwood for two more days. With Spark perched on his shoulder, Kael found himself becoming more confident. The drakeling would chirp warnings when danger was near, and its presence seemed to make other creatures of the forest less aggressive. They passed through without incident, emerging on the sixth day into the foothills of the northern mountains.\n\nHere, the landscape became rockier, the air colder. They began to see snow on the higher peaks, and Thorne insisted they stop at a trading post to purchase warmer clothing and additional supplies.\n\nThe trading post was a rough establishment, a collection of wooden buildings huddled around a central lodge where travelers could find food, drink, and information. It was crowded with merchants, trappers, and adventurers of all sorts.\n\n\"Keep your medallion hidden,\" Thorne advised as they dismounted. \"And Kael, keep that drakeling out of sight. Dragon-kin aren't exactly welcome everywhere.\"\n\nSpark, displaying surprising intelligence, climbed inside Kael's cloak and settled around his neck like a scaly scarf.\n\nThe lodge was warm and smoky, filled with the smell of roasting meat and spilled ale. They found a table in the corner and ordered food while Thorne went to speak with the post master about road conditions ahead.\n\n\"So, Kael,\" Aria said, tearing into a piece of bread, \"tell us about yourself. What was life like before all this?\"\n\n\"Ordinary,\" Kael said with a shrug. \"I helped my father with the farm. We raised sheep, grew wheat and barley. I studied with Garrick sometimes, learning to read and write, hearing the old stories. I thought maybe I'd become a merchant someday, travel a bit. Nothing like this.\"\n\n\"Did you have any idea about your mother?\" Finn asked. \"That she was a Dragon Singer?\"\n\n\"None. Father never spoke of her much. It hurt him too much, I think. I knew she'd been a soldier before I was born, that she'd traveled. But I thought she left because she couldn't settle down, couldn't stand the quiet life.\" He touched the medallion through his shirt. \"I thought she left because of me. Because I wasn't enough to make her stay.\"\n\nAria's expression softened. \"That's not why she left, Kael. She left to protect you. To protect everyone.\"\n\nBefore Kael could respond, the lodge door burst open. A group of armed men entered, wearing the black and red colors of the Order of the Iron Fist. Their leader was a tall man with a scarred face and cold eyes that swept the room like a predator searching for prey.\n\n\"Quiet!\" he barked, and the lodge fell silent. \"We seek information about a boy, seventeen years of age, traveling with a dragon medallion. There's a reward of one hundred gold pieces for information leading to his capture.\"\n\nKael felt Spark tense beneath his cloak. Under the table, Aria's hand moved to her bow, and Finn's fingers began to trace subtle patterns in the air—the beginnings of a spell.\n\n\"The Order does not tolerate the heresy of dragon worship,\" the scarred man continued. \"Any who harbor or aid those who would wake the wyrms will be considered enemies of humanity. So I ask you: has anyone here seen this boy?\"\n\nThe room remained silent, but Kael could feel eyes turning toward their table. It was only a matter of time before someone spoke up for that reward.\n\nThen Commander Thorne emerged from the back of the lodge, her hand on her sword hilt. \"Captain Marcus,\" she said coolly. \"I see the Order is far from its usual hunting grounds.\"\n\nThe scarred man's eyes narrowed. \"Commander Thorne. I heard you'd retired.\"\n\n\"I did. Doesn't mean I don't still have friends in these parts.\" She gestured around the room, and Kael noticed several other travelers had also moved their hands to their weapons—former soldiers, perhaps, who'd served with Thorne. \"And my friends don't take kindly to the Order making threats in neutral territory.\"\n\n\"We're not making threats, Commander. We're hunting a dangerous criminal.\"\n\n\"A boy with a family heirloom is a criminal now?\"\n\n\"A boy who would wake the dragons that nearly destroyed humanity three hundred years ago? Yes, I'd call that criminal.\" Marcus stepped closer. \"The Order has evidence that someone has been using dragon magic in the Wildwood. We tracked the disturbance here. So I'll ask again: has anyone seen the boy?\"\n\nThe tension in the room was thick enough to cut. Kael's heart hammered in his chest. They were outnumbered, and if it came to"
+            }
+          ],
+          "role": "assistant"
+        }
+      },
+      "stopReason": "max_tokens",
+      "usage": {
+        "cacheReadInputTokenCount": 0,
+        "cacheReadInputTokens": 0,
+        "cacheWriteInputTokenCount": 0,
+        "cacheWriteInputTokens": 0,
+        "inputTokens": 44,
+        "outputTokens": 4001,
+        "serverToolUsage": {},
+        "totalTokens": 4045
+      }
+    },
+    "headers": {
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json"
+      ],
+      "date": [
+        "Sat, 01 Nov 2025 00:27:14 GMT"
+      ],
+      "x-amzn-requestid": [
+        "ec00de2a-4083-41fd-8dd0-c6f94d6d8b1d"
+      ]
+    },
+    "status": 200
+  }
+}

@@ -61,6 +61,7 @@ defmodule ReqLLM.Provider.Generated.ValidProviders do
     :zai,
     :zai_coder,
     :zai_coding_plan,
+    :zenmux,
     :zhipuai,
     :zhipuai_coding_plan
   ]

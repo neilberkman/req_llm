@@ -1,0 +1,127 @@
+{
+  "request": {
+    "body": {
+      "b64": "eyJhZGRpdGlvbmFsTW9kZWxSZXF1ZXN0RmllbGRzIjp7InRoaW5raW5nIjp7ImJ1ZGdldF90b2tlbnMiOjQwMDAsInR5cGUiOiJlbmFibGVkIn19LCJpbmZlcmVuY2VDb25maWciOnsibWF4VG9rZW5zIjoxMjgwMCwidGVtcGVyYXR1cmUiOjEuMH0sIm1lc3NhZ2VzIjpbeyJjb250ZW50IjpbeyJ0ZXh0IjoiVGVsbCBtZSBhIGpva2UgYWJvdXQgY2F0cyJ9XSwicm9sZSI6InVzZXIifV0sInRvb2xDb25maWciOnsidG9vbHMiOlt7InRvb2xTcGVjIjp7ImRlc2NyaXB0aW9uIjoiR2V0IGN1cnJlbnQgd2VhdGhlciBpbmZvcm1hdGlvbiBmb3IgYSBsb2NhdGlvbiIsImlucHV0U2NoZW1hIjp7Impzb24iOnsiYWRkaXRpb25hbFByb3BlcnRpZXMiOmZhbHNlLCJwcm9wZXJ0aWVzIjp7ImxvY2F0aW9uIjp7InR5cGUiOiJzdHJpbmcifX0sInJlcXVpcmVkIjpbImxvY2F0aW9uIl0sInR5cGUiOiJvYmplY3QifX0sIm5hbWUiOiJnZXRfd2VhdGhlciJ9fV19fQ=="
+    },
+    "canonical_json": {
+      "additionalModelRequestFields": {
+        "thinking": {
+          "budget_tokens": 4000,
+          "type": "enabled"
+        }
+      },
+      "inferenceConfig": {
+        "maxTokens": 12800,
+        "temperature": 1.0
+      },
+      "messages": [
+        {
+          "content": [
+            {
+              "text": "Tell me a joke about cats"
+            }
+          ],
+          "role": "user"
+        }
+      ],
+      "toolConfig": {
+        "tools": [
+          {
+            "toolSpec": {
+              "description": "Get current weather information for a location",
+              "inputSchema": {
+                "json": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "location": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "location"
+                  ],
+                  "type": "object"
+                }
+              },
+              "name": "get_weather"
+            }
+          }
+        ]
+      }
+    },
+    "headers": {
+      "accept-encoding": [
+        "gzip"
+      ],
+      "authorization": "[REDACTED:authorization]",
+      "content-type": [
+        "application/json"
+      ],
+      "host": [
+        "bedrock-runtime.us-east-1.amazonaws.com"
+      ],
+      "user-agent": [
+        "req/0.5.15"
+      ],
+      "x-amz-content-sha256": [
+        "c4eb11a862bce5b2d914c2b19dcade70e9a69b245b41bc4669fd2bb923780e37"
+      ],
+      "x-amz-date": [
+        "20251101T002505Z"
+      ]
+    },
+    "method": "post",
+    "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/global.anthropic.claude-sonnet-4-5-20250929-v1:0/converse"
+  },
+  "response": {
+    "body": {
+      "metrics": {
+        "latencyMs": 4150
+      },
+      "output": {
+        "message": {
+          "content": [
+            {
+              "reasoningContent": {
+                "reasoningText": {
+                  "signature": "EscCCkgICRABGAIqQPTRk0Gz5uARPi0alf1c0hgA7qNtr6DBr11B0/zTOb5aYfWwXGvL7XBfysD3zNaJzpyVTbColfQJyyDJm18Nq90SDJHyvRg5KbKIROpk+BoMN7InmRn764qxRliRIjCjejL6sQKn7IBd23csS1iCQsywZ0IoBwkualD25Sa/hxiikhfVqLV5KvOwbP20g1AqrAGdHCbgMntdfBF1a/NuyeGPwPWufdH5OgRzs0Serx1yjZDAsRgojrLqYKmf2D2IkziWt9lT3Q1EIW3vjuXbcBJYqa5gV7rlYShE8PXJ5fq8kZI8p6dNY/Bk73/GlPgYfaszqOpWtSTA0NN9U39JZr84pWFnLNUI3j+meQdNCCXoA1YxPyade6DrFIEnPyS6kKSP31+L4d0eH4mYvwrNfev4gBWQ43F2v9zKHZzmGAE=",
+                  "text": "The user is asking for a joke about cats. This is a simple request that doesn't require any tools or functions. I should just tell them a cat joke directly."
+                }
+              }
+            },
+            {
+              "text": "Here's a cat joke for you:\n\nWhy don't cats play poker in the jungle?\n\nToo many cheetahs!\n\nWould you like to hear another one? 😸"
+            }
+          ],
+          "role": "assistant"
+        }
+      },
+      "stopReason": "end_turn",
+      "usage": {
+        "cacheReadInputTokenCount": 0,
+        "cacheReadInputTokens": 0,
+        "cacheWriteInputTokenCount": 0,
+        "cacheWriteInputTokens": 0,
+        "inputTokens": 600,
+        "outputTokens": 85,
+        "serverToolUsage": {},
+        "totalTokens": 685
+      }
+    },
+    "headers": {
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json"
+      ],
+      "date": [
+        "Sat, 01 Nov 2025 00:25:09 GMT"
+      ],
+      "x-amzn-requestid": [
+        "3ab3a6a9-1308-4c8a-9df4-7e0443c3fb41"
+      ]
+    },
+    "status": 200
+  }
+}

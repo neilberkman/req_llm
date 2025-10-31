@@ -1,0 +1,103 @@
+{
+  "request": {
+    "body": {
+      "b64": "eyJhZGRpdGlvbmFsTW9kZWxSZXF1ZXN0RmllbGRzIjp7InRoaW5raW5nIjp7ImJ1ZGdldF90b2tlbnMiOjQwMDAsInR5cGUiOiJlbmFibGVkIn19LCJpbmZlcmVuY2VDb25maWciOnsibWF4VG9rZW5zIjo0MDAxLCJ0ZW1wZXJhdHVyZSI6MS4wfSwibWVzc2FnZXMiOlt7ImNvbnRlbnQiOlt7InRleHQiOiJIZWxsbyB3b3JsZCEifV0sInJvbGUiOiJ1c2VyIn1dfQ=="
+    },
+    "canonical_json": {
+      "additionalModelRequestFields": {
+        "thinking": {
+          "budget_tokens": 4000,
+          "type": "enabled"
+        }
+      },
+      "inferenceConfig": {
+        "maxTokens": 4001,
+        "temperature": 1.0
+      },
+      "messages": [
+        {
+          "content": [
+            {
+              "text": "Hello world!"
+            }
+          ],
+          "role": "user"
+        }
+      ]
+    },
+    "headers": {
+      "accept-encoding": [
+        "gzip"
+      ],
+      "authorization": "[REDACTED:authorization]",
+      "content-type": [
+        "application/json"
+      ],
+      "host": [
+        "bedrock-runtime.us-east-1.amazonaws.com"
+      ],
+      "user-agent": [
+        "req/0.5.15"
+      ],
+      "x-amz-content-sha256": [
+        "7f9a966d6b206c355901091927ad26f0f732dcaad1ce5e6763fbc8c9d997d40b"
+      ],
+      "x-amz-date": [
+        "20251101T002515Z"
+      ]
+    },
+    "method": "post",
+    "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/global.anthropic.claude-sonnet-4-5-20250929-v1:0/converse"
+  },
+  "response": {
+    "body": {
+      "metrics": {
+        "latencyMs": 2591
+      },
+      "output": {
+        "message": {
+          "content": [
+            {
+              "reasoningContent": {
+                "reasoningText": {
+                  "signature": "ErcCCkgICRABGAIqQJuqszQ9LWNLnFfLTqJBkjbWfEdEoWiLgbB5JLhT1hSUbETNNV6veSzixNbV1EWW3S2tlyAbk1QNYvAWRiTaQukSDCr+ZzN8ULSqjRYmPBoM728xAguID2AvAyOTIjDWdkfz7myFzFE5F9MEMGpqPxVSq4TUP8Pn+Ajrqbe3zuke5Se9NfwFhFkq1ULzvHcqnAG5aARlQ8sVPHrqq+Qy5DhiMFP5Qu9IuXd8uKNnffBeymQcoGf1xH8MM9gYoq/1iUrLHboue8iAcof96zuomIehDzOMWtJF7K8fzkRU3FoXsKPd/hnchjAdLjoYDUwPs5jNUWNVfEECIZNhiQxAktdtlptZeyx9RTjHpPS2yFVJFtBnKN9NyJ3a2TywfJ6UTwXe2TvxsavU1SK7iEIYAQ==",
+                  "text": "The user has sent a simple \"Hello world!\" greeting. This is a friendly, casual greeting and I should respond in a warm and welcoming manner."
+                }
+              }
+            },
+            {
+              "text": "Hello! How can I help you today?"
+            }
+          ],
+          "role": "assistant"
+        }
+      },
+      "stopReason": "end_turn",
+      "usage": {
+        "cacheReadInputTokenCount": 0,
+        "cacheReadInputTokens": 0,
+        "cacheWriteInputTokenCount": 0,
+        "cacheWriteInputTokens": 0,
+        "inputTokens": 38,
+        "outputTokens": 52,
+        "serverToolUsage": {},
+        "totalTokens": 90
+      }
+    },
+    "headers": {
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json"
+      ],
+      "date": [
+        "Sat, 01 Nov 2025 00:25:18 GMT"
+      ],
+      "x-amzn-requestid": [
+        "6e24ef8d-94f1-48af-8077-a5564dd8754d"
+      ]
+    },
+    "status": 200
+  }
+}

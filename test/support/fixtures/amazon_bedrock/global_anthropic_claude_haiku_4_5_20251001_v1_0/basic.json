@@ -1,0 +1,103 @@
+{
+  "request": {
+    "body": {
+      "b64": "eyJhZGRpdGlvbmFsTW9kZWxSZXF1ZXN0RmllbGRzIjp7InRoaW5raW5nIjp7ImJ1ZGdldF90b2tlbnMiOjQwMDAsInR5cGUiOiJlbmFibGVkIn19LCJpbmZlcmVuY2VDb25maWciOnsibWF4VG9rZW5zIjo0MDAxLCJ0ZW1wZXJhdHVyZSI6MS4wfSwibWVzc2FnZXMiOlt7ImNvbnRlbnQiOlt7InRleHQiOiJIZWxsbyB3b3JsZCEifV0sInJvbGUiOiJ1c2VyIn1dfQ=="
+    },
+    "canonical_json": {
+      "additionalModelRequestFields": {
+        "thinking": {
+          "budget_tokens": 4000,
+          "type": "enabled"
+        }
+      },
+      "inferenceConfig": {
+        "maxTokens": 4001,
+        "temperature": 1.0
+      },
+      "messages": [
+        {
+          "content": [
+            {
+              "text": "Hello world!"
+            }
+          ],
+          "role": "user"
+        }
+      ]
+    },
+    "headers": {
+      "accept-encoding": [
+        "gzip"
+      ],
+      "authorization": "[REDACTED:authorization]",
+      "content-type": [
+        "application/json"
+      ],
+      "host": [
+        "bedrock-runtime.us-east-1.amazonaws.com"
+      ],
+      "user-agent": [
+        "req/0.5.15"
+      ],
+      "x-amz-content-sha256": [
+        "7f9a966d6b206c355901091927ad26f0f732dcaad1ce5e6763fbc8c9d997d40b"
+      ],
+      "x-amz-date": [
+        "20251101T002509Z"
+      ]
+    },
+    "method": "post",
+    "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/global.anthropic.claude-haiku-4-5-20251001-v1:0/converse"
+  },
+  "response": {
+    "body": {
+      "metrics": {
+        "latencyMs": 858
+      },
+      "output": {
+        "message": {
+          "content": [
+            {
+              "reasoningContent": {
+                "reasoningText": {
+                  "signature": "EpwCCkgICRABGAIqQHCIuudqHeJAuKwPr6JSo5iFWHBaq2t192i2dnfFnnlJ1iqfa7FhjMskM2SdE1tyY1TuPRTyTSlxLFWcXw+vrPgSDNP+NT858CngHq3zSRoMzo8de/QoWxyfMlsjIjCaBssgfZ0ABLzwoRM/oZ+UODg4bdmjAsevLGzhHtyU80ubEVkJgMDq1s5jWmyNyW4qgQFawSrs0/ZGc2eyNlfLz9XD8NcVOF0XGHIzHvHXf5bm2WhFM/RoHDOly7d27yPuGG0gKmcW7tAe//KLQOSxTKGZSpSEk2Kpk2TusOBaGiXrvJEYAhJcAHCSbA4cNj8844MkJvLXP4nBLtPUfsZZ5xdnDyJdnRCcfLVpYv/uj224llcYAQ==",
+                  "text": "The user has greeted me with \"Hello world!\" - this is a friendly greeting. I should respond warmly and helpfully."
+                }
+              }
+            },
+            {
+              "text": "Hello! 👋 It's nice to meet you. How can I help you today?"
+            }
+          ],
+          "role": "assistant"
+        }
+      },
+      "stopReason": "end_turn",
+      "usage": {
+        "cacheReadInputTokenCount": 0,
+        "cacheReadInputTokens": 0,
+        "cacheWriteInputTokenCount": 0,
+        "cacheWriteInputTokens": 0,
+        "inputTokens": 38,
+        "outputTokens": 59,
+        "serverToolUsage": {},
+        "totalTokens": 97
+      }
+    },
+    "headers": {
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json"
+      ],
+      "date": [
+        "Sat, 01 Nov 2025 00:25:10 GMT"
+      ],
+      "x-amzn-requestid": [
+        "dc9e91de-772e-4862-95e4-11c9adc4a325"
+      ]
+    },
+    "status": 200
+  }
+}

@@ -107,7 +107,7 @@ defmodule ReqLLM.Providers.AmazonBedrockProviderTest do
       assert :put_aws_sigv4 in request_steps
 
       response_steps = Keyword.keys(request.response_steps)
-      assert :bedrock_decode_response in response_steps
+      assert :llm_decode_response in response_steps
     end
 
     test "attach with streaming option configures SSE" do
@@ -126,7 +126,7 @@ defmodule ReqLLM.Providers.AmazonBedrockProviderTest do
       assert request.url.path =~ "invoke-with-response-stream"
     end
 
-    test "error handling for unsupported model families" do
+    test "uses Converse API as fallback for models without dedicated formatters" do
       model = ReqLLM.Model.from!("amazon-bedrock:cohere.command-text-v14")
       context = context_fixture()
 
@@ -135,10 +135,11 @@ defmodule ReqLLM.Providers.AmazonBedrockProviderTest do
         secret_access_key: "secretTEST"
       ]
 
-      # Should error for unsupported model family
-      assert_raise ArgumentError, ~r/Unsupported model family/, fn ->
-        AmazonBedrock.prepare_request(:chat, model, context, opts)
-      end
+      # Models without dedicated formatters should use Converse API
+      {:ok, request} = AmazonBedrock.prepare_request(:chat, model, context, opts)
+
+      # Converse API uses /converse endpoint
+      assert request.url.path =~ "/converse"
     end
 
     test "error handling for missing credentials" do

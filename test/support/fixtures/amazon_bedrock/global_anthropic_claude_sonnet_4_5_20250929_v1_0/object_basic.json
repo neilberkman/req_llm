@@ -1,0 +1,147 @@
+{
+  "request": {
+    "body": {
+      "b64": "eyJhZGRpdGlvbmFsTW9kZWxSZXF1ZXN0RmllbGRzIjp7InRoaW5raW5nIjp7ImJ1ZGdldF90b2tlbnMiOjQwMDAsInR5cGUiOiJlbmFibGVkIn19LCJpbmZlcmVuY2VDb25maWciOnsibWF4VG9rZW5zIjo0MDAxLCJ0ZW1wZXJhdHVyZSI6MS4wfSwibWVzc2FnZXMiOlt7ImNvbnRlbnQiOlt7InRleHQiOiJHZW5lcmF0ZSBhIHNvZnR3YXJlIGVuZ2luZWVyIHByb2ZpbGUifV0sInJvbGUiOiJ1c2VyIn1dLCJ0b29sQ29uZmlnIjp7InRvb2xzIjpbeyJ0b29sU3BlYyI6eyJkZXNjcmlwdGlvbiI6IkdlbmVyYXRlIHN0cnVjdHVyZWQgb3V0cHV0IG1hdGNoaW5nIHRoZSBwcm92aWRlZCBzY2hlbWEiLCJpbnB1dFNjaGVtYSI6eyJqc29uIjp7ImFkZGl0aW9uYWxQcm9wZXJ0aWVzIjpmYWxzZSwicHJvcGVydGllcyI6eyJhZ2UiOnsiZGVzY3JpcHRpb24iOiJQZXJzb24ncyBhZ2UgaW4geWVhcnMiLCJtaW5pbXVtIjoxLCJ0eXBlIjoiaW50ZWdlciJ9LCJuYW1lIjp7ImRlc2NyaXB0aW9uIjoiUGVyc29uJ3MgZnVsbCBuYW1lIiwidHlwZSI6InN0cmluZyJ9LCJvY2N1cGF0aW9uIjp7ImRlc2NyaXB0aW9uIjoiUGVyc29uJ3Mgam9iIG9yIHByb2Zlc3Npb24iLCJ0eXBlIjoic3RyaW5nIn19LCJyZXF1aXJlZCI6WyJuYW1lIiwiYWdlIl0sInR5cGUiOiJvYmplY3QifX0sIm5hbWUiOiJzdHJ1Y3R1cmVkX291dHB1dCJ9fV19fQ=="
+    },
+    "canonical_json": {
+      "additionalModelRequestFields": {
+        "thinking": {
+          "budget_tokens": 4000,
+          "type": "enabled"
+        }
+      },
+      "inferenceConfig": {
+        "maxTokens": 4001,
+        "temperature": 1.0
+      },
+      "messages": [
+        {
+          "content": [
+            {
+              "text": "Generate a software engineer profile"
+            }
+          ],
+          "role": "user"
+        }
+      ],
+      "toolConfig": {
+        "tools": [
+          {
+            "toolSpec": {
+              "description": "Generate structured output matching the provided schema",
+              "inputSchema": {
+                "json": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "age": {
+                      "description": "Person's age in years",
+                      "minimum": 1,
+                      "type": "integer"
+                    },
+                    "name": {
+                      "description": "Person's full name",
+                      "type": "string"
+                    },
+                    "occupation": {
+                      "description": "Person's job or profession",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "age"
+                  ],
+                  "type": "object"
+                }
+              },
+              "name": "structured_output"
+            }
+          }
+        ]
+      }
+    },
+    "headers": {
+      "accept-encoding": [
+        "gzip"
+      ],
+      "authorization": "[REDACTED:authorization]",
+      "content-type": [
+        "application/json"
+      ],
+      "host": [
+        "bedrock-runtime.us-east-1.amazonaws.com"
+      ],
+      "user-agent": [
+        "req/0.5.15"
+      ],
+      "x-amz-content-sha256": [
+        "6d9e17859921ac68a6e25e858385ac139251475c6e5630e284868a9fe76e7523"
+      ],
+      "x-amz-date": [
+        "20251101T002509Z"
+      ]
+    },
+    "method": "post",
+    "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/global.anthropic.claude-sonnet-4-5-20250929-v1:0/converse"
+  },
+  "response": {
+    "body": {
+      "metrics": {
+        "latencyMs": 5107
+      },
+      "output": {
+        "message": {
+          "content": [
+            {
+              "reasoningContent": {
+                "reasoningText": {
+                  "signature": "EscGCkgICRABGAIqQPbzJNcpLHubeOBSNomwonOH0sRzXjjfh7QWfYXrVNw+5lYhGNkkE9k8LbjJLNS09UWEqMQDc2B73aPphMPSBWwSDCqxajY0jRGfxOttTxoMwUXdUplaod0Yb/NbIjD7G4MTYqI5cli4F3uaRmccByzSdwKTjV7RRTLqB2rk60CQ40OivoZXdph2FnclwSAqrAXXbV4r7vqhY662KI2OxciUqvV0gdk/9ZvYn0TnRQ9vYKzKMHXxvr6jkC9KBKcIuy83Kt5e9O7FuHPe4U37hLVyKplAQ7YvG34xwe64OH/DaULPUbgnZNFIWyDL5cyF0dGGp822OhL1BubRxaX0oh55zXmt3bORs1Y33aR3ODUCYBR3E04++rgwHdCDk8jB+JTnI/HG50sC8SKHNuSf16R6Eks9io2T8jJQCi2k5sOVIqU77edxyTpfVkxDZwLmlf0Ge1VMU1/tWkJHUfemEUIrU6dLacMUlZYNqCly8sa4q7rjHg2SsTf9mQ1V4l6AlZdQGjLylPf/WyEI9R+mcSTg3UnXiglIPYdHZSWeGItcfmbGCfOXUas3CVGDwcKlisH6u1bZ1LK/2Owd73zWHfzlwyK1P+ZZGetBlYvGuOhlQ2uJCPaBdmyU1Ke5PlXREkSUPiv9VG0YNJLSGIAeI+O0sw+e7u4JHddE5nYASFSgZVVSFQ1zubs6YFDl50/LCLPyqrQ36z/j52NaVJsrCXRVFo32zzMDLlWyulNsPC1Hba2BDm+X6nZRE58ijJIm3AXLUQpG+owAN7nJfb1unAAbANp9jIcs9CobIWDeMNGmQRbnvSF1fsPjPOYR2DKP7CdD/N6U/sgi71etMbimX59YXZX2GN3x0wUcEL+5YUmi4/hSSZbRj22U4Z42mSqGv6bT+mJqF7Pk2XpSKkPoZIcbqCD+ck7saa7b1zrxcd3YKe7w1NF1es8TTEbl70BvIQ2LJa9e0wV5eS8vkR5VI0fgtKIbv1lKUvNyCsDcJ8D/i9mki5VkkucG9M2IcJc4zxa/OYrMrQK7YqEdbjoP3ioUafErQADuO45NzcDz5f5720x9XwrDZEgLoRJL+bwpAaHbvCGxf68olEGjWOUYAQ==",
+                  "text": "The user is asking me to generate a software engineer profile. I need to use the structured_output function to create a person profile with:\n- name (required): A person's full name\n- age (required): An integer representing their age (minimum 1)\n- occupation (optional): Their job or profession\n\nSince the user wants a software engineer profile, I should set the occupation to \"Software Engineer\" and create reasonable values for name and age.\n\nLet me generate a realistic profile:\n- Name: I'll use a common name\n- Age: A typical age for a software engineer might be anywhere from early 20s to 60s, I'll pick something in the mid-range\n- Occupation: \"Software Engineer\""
+                }
+              }
+            },
+            {
+              "toolUse": {
+                "input": {
+                  "age": 29,
+                  "name": "Alex Chen",
+                  "occupation": "Software Engineer"
+                },
+                "name": "structured_output",
+                "toolUseId": "tooluse_MAhx682cQFq5U67JwcYMqw",
+                "type": "tool_use"
+              }
+            }
+          ],
+          "role": "assistant"
+        }
+      },
+      "stopReason": "tool_use",
+      "usage": {
+        "cacheReadInputTokenCount": 0,
+        "cacheReadInputTokens": 0,
+        "cacheWriteInputTokenCount": 0,
+        "cacheWriteInputTokens": 0,
+        "inputTokens": 657,
+        "outputTokens": 252,
+        "serverToolUsage": {},
+        "totalTokens": 909
+      }
+    },
+    "headers": {
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json"
+      ],
+      "date": [
+        "Sat, 01 Nov 2025 00:25:15 GMT"
+      ],
+      "x-amzn-requestid": [
+        "40e99f02-ebb3-4631-9fba-df8ebdcafa04"
+      ]
+    },
+    "status": 200
+  }
+}

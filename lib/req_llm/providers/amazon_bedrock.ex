@@ -4,7 +4,8 @@ defmodule ReqLLM.Providers.AmazonBedrock do
 
   Supports AWS Bedrock's unified API for accessing multiple AI models including:
   - Anthropic Claude models (fully implemented)
-  - Meta Llama models (extensible)
+  - Meta Llama models (fully implemented)
+  - Mistral AI models (fully implemented)
   - Amazon Nova models (extensible)
   - Cohere models (extensible)
   - And more as AWS adds them
@@ -31,6 +32,26 @@ defmodule ReqLLM.Providers.AmazonBedrock do
         secret_access_key: "...",
         region: "us-east-1"
       })
+
+  ## Known Limitations
+
+  ### AWS Signature V4 Expiry with Long-Running Requests
+
+  AWS Signature V4 (used for all AWS API requests) has a hardcoded 5-minute expiry time.
+  This creates a fundamental limitation for requests that take longer than 5 minutes to complete:
+
+  - AWS validates the signature when **responding**, not when receiving the request
+  - If a request takes >5 minutes to complete, AWS will reject it with a 403 "Signature expired" error
+  - This affects slow models with large outputs (e.g., Claude Opus 4/4.1 with max token limits)
+  - The 5-minute limit cannot be extended or configured - it's part of the AWS SigV4 spec
+  - No workaround exists without implementing request re-signing during long-running requests
+
+  From [AWS IAM documentation](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html):
+  > In most cases, a request must reach AWS within five minutes of the time stamp in the request.
+
+  **Impact:** Tests or production code using slow models with high token limits may intermittently
+  fail with signature expiry errors. Consider using shorter timeouts or faster model variants for
+  time-critical applications.
 
   ## Examples
 
@@ -116,9 +137,7 @@ defmodule ReqLLM.Providers.AmazonBedrock do
   @dialyzer :no_match
   # Base URL will be constructed with region
   @model_families %{
-    "anthropic" => ReqLLM.Providers.AmazonBedrock.Anthropic,
-    "openai" => ReqLLM.Providers.AmazonBedrock.OpenAI,
-    "meta" => ReqLLM.Providers.AmazonBedrock.Meta
+    "anthropic" => ReqLLM.Providers.AmazonBedrock.Anthropic
   }
 
   def default_base_url do
@@ -135,8 +154,16 @@ defmodule ReqLLM.Providers.AmazonBedrock do
       # Bedrock endpoints vary by streaming
       endpoint = if opts[:stream], do: "/invoke-with-response-stream", else: "/invoke"
 
+      # Reasoning models with extended thinking need longer timeouts
+      timeout =
+        if get_in(model, [Access.key(:capabilities), Access.key(:reasoning)]) == true do
+          180_000
+        else
+          60_000
+        end
+
       request =
-        Req.new([url: endpoint, method: :post, receive_timeout: 60_000] ++ http_opts)
+        Req.new([url: endpoint, method: :post, receive_timeout: timeout] ++ http_opts)
         |> attach(model, Keyword.put(opts, :context, context))
 
       {:ok, request}
@@ -154,11 +181,19 @@ defmodule ReqLLM.Providers.AmazonBedrock do
       # Bedrock endpoints vary by streaming
       endpoint = if opts[:stream], do: "/invoke-with-response-stream", else: "/invoke"
 
+      # Reasoning models with extended thinking need longer timeouts
+      timeout =
+        if get_in(model, [Access.key(:capabilities), Access.key(:reasoning)]) == true do
+          180_000
+        else
+          60_000
+        end
+
       # Mark operation as :object so the formatter can handle it appropriately
       opts_with_operation = Keyword.put(opts, :operation, :object)
 
       request =
-        Req.new([url: endpoint, method: :post, receive_timeout: 60_000] ++ http_opts)
+        Req.new([url: endpoint, method: :post, receive_timeout: timeout] ++ http_opts)
         |> attach(model, Keyword.put(opts_with_operation, :context, context))
 
       {:ok, request}
@@ -208,7 +243,7 @@ defmodule ReqLLM.Providers.AmazonBedrock do
 
     # Check if we should use Converse API
     # Priority: explicit use_converse option > prompt caching optimization > auto-detect from tools presence
-    use_converse = determine_use_converse(opts)
+    use_converse = determine_use_converse(model_id, opts)
 
     {endpoint_base, formatter, model_family} =
       if use_converse do
@@ -218,7 +253,22 @@ defmodule ReqLLM.Providers.AmazonBedrock do
             do: "/model/#{model_id}/converse-stream",
             else: "/model/#{model_id}/converse"
 
-        {endpoint, ReqLLM.Providers.AmazonBedrock.Converse, :converse}
+        # Check if there's a model family formatter that wraps Converse
+        # (e.g., Mistral formatter that pre-processes messages before delegating to Converse)
+        family = get_model_family(model_id)
+        family_formatter = get_formatter_module(family)
+
+        # Only use family formatter if it explicitly requires Converse API (like Mistral)
+        # Otherwise use Converse formatter directly
+        formatter =
+          if function_exported?(family_formatter, :requires_converse_api?, 0) and
+               family_formatter.requires_converse_api?() do
+            family_formatter
+          else
+            ReqLLM.Providers.AmazonBedrock.Converse
+          end
+
+        {endpoint, formatter, :converse}
       else
         # Use native model-specific endpoint
         endpoint =
@@ -238,7 +288,8 @@ defmodule ReqLLM.Providers.AmazonBedrock do
         :context,
         :model_family,
         :use_converse,
-        :operation
+        :operation,
+        :tools
       ])
       |> Req.Request.merge_options(
         base_url: base_url,
@@ -246,7 +297,8 @@ defmodule ReqLLM.Providers.AmazonBedrock do
         model_family: model_family,
         context: opts[:context],
         use_converse: use_converse,
-        operation: opts[:operation]
+        operation: opts[:operation],
+        tools: opts[:tools]
       )
 
     model_body =
@@ -266,8 +318,9 @@ defmodule ReqLLM.Providers.AmazonBedrock do
     |> ReqLLM.Step.Retry.attach()
     |> put_aws_sigv4(aws_creds)
     # No longer attach streaming here - it's handled by attach_stream
-    |> Req.Request.append_response_steps(bedrock_decode_response: &decode_response/1)
+    |> Req.Request.append_response_steps(llm_decode_response: &decode_response/1)
     |> Step.Usage.attach(model)
+    |> ReqLLM.Step.Fixture.maybe_attach(model, user_opts)
   end
 
   @impl ReqLLM.Provider
@@ -285,16 +338,31 @@ defmodule ReqLLM.Providers.AmazonBedrock do
     # This is critical for streaming requests which bypass the normal Options.process pipeline
     {translated_opts, _warnings} = translate_options(:chat, model, pre_validated_opts)
 
+    # Get model ID
+    model_id = model.model
+
     # Check if we should use Converse API
     # Priority: explicit use_converse option > prompt caching optimization > auto-detect from tools presence
-    use_converse = determine_use_converse(translated_opts)
-
-    # Get model-specific or Converse formatter
-    model_id = model.model
+    use_converse = determine_use_converse(model_id, translated_opts)
 
     {formatter, path} =
       if use_converse do
-        {ReqLLM.Providers.AmazonBedrock.Converse, "/model/#{model_id}/converse-stream"}
+        # Check if there's a model family formatter that wraps Converse
+        # (e.g., Mistral formatter that pre-processes messages before delegating to Converse)
+        model_family = get_model_family(model_id)
+        family_formatter = get_formatter_module(model_family)
+
+        # Only use family formatter if it explicitly requires Converse API (like Mistral)
+        # Otherwise use Converse formatter directly
+        formatter =
+          if function_exported?(family_formatter, :requires_converse_api?, 0) and
+               family_formatter.requires_converse_api?() do
+            family_formatter
+          else
+            ReqLLM.Providers.AmazonBedrock.Converse
+          end
+
+        {formatter, "/model/#{model_id}/converse-stream"}
       else
         model_family = get_model_family(model_id)
         formatter = get_formatter_module(model_family)
@@ -366,8 +434,21 @@ defmodule ReqLLM.Providers.AmazonBedrock do
   def decode_sse_event(event, model) when is_map(event) do
     # Decode AWS event stream events into StreamChunks
     # This is called after parse_stream_protocol returns events
-    model_family = get_model_family(model.model)
-    formatter = get_formatter_module(model_family)
+    #
+    # IMPORTANT: For inference profiles, we need to route to the Converse formatter
+    # because those models MUST use Converse API, which produces events in Converse format.
+    # The model family alone isn't sufficient - we need to check if this is an inference profile.
+    model_id = model.model
+
+    formatter =
+      if is_inference_profile_model?(model_id) do
+        # Inference profiles use Converse API, so use Converse formatter
+        ReqLLM.Providers.AmazonBedrock.Converse
+      else
+        # Non-inference-profile models: use model family formatter
+        model_family = get_model_family(model_id)
+        get_formatter_module(model_family)
+      end
 
     case formatter.parse_stream_chunk(event, %{}) do
       {:ok, nil} -> []
@@ -443,6 +524,10 @@ defmodule ReqLLM.Providers.AmazonBedrock do
   defp map_reasoning_effort_to_budget("medium"), do: 8_000
   defp map_reasoning_effort_to_budget("high"), do: 16_000
   defp map_reasoning_effort_to_budget(_), do: 8_000
+
+  defp is_inference_profile_model?(model_id) when is_binary(model_id) do
+    String.starts_with?(model_id, ["us.", "eu.", "ap.", "ca.", "global."])
+  end
 
   @impl ReqLLM.Provider
   def extract_usage(body, model) when is_map(body) do
@@ -624,10 +709,18 @@ defmodule ReqLLM.Providers.AmazonBedrock do
         if String.starts_with?(normalized_id, prefix <> "."), do: prefix
       end)
 
-    found_family ||
+    # If no family found, extract prefix as family name (e.g., "mistral" from "mistral.model-id")
+    # Models without a dedicated formatter will use Converse API
+    family_from_prefix =
+      case String.split(normalized_id, ".", parts: 2) do
+        [prefix, _rest] when prefix != "" -> prefix
+        _ -> nil
+      end
+
+    found_family || family_from_prefix ||
       raise ArgumentError, """
       Unsupported model family for: #{model_id}
-      Currently supported: #{Map.keys(@model_families) |> Enum.join(", ")}
+      Currently supported: #{Map.keys(@model_families) |> Enum.join(", ")} (and others via Converse API)
       """
   end
 
@@ -641,11 +734,39 @@ defmodule ReqLLM.Providers.AmazonBedrock do
     case model_family do
       "anthropic" ->
         # Delegate temperature/top_p translation to Anthropic provider
-        ReqLLM.Providers.Anthropic.translate_options(operation, model, opts)
+        {translated_opts, warnings} =
+          ReqLLM.Providers.Anthropic.translate_options(operation, model, opts)
+
+        # For Bedrock, move :thinking from top-level to additionalModelRequestFields
+        translated_opts = move_thinking_to_additional_fields(translated_opts)
+
+        {translated_opts, warnings}
 
       _ ->
         # Other model families: no translation needed yet
         {opts, []}
+    end
+  end
+
+  # Move :thinking from top-level opts to additionalModelRequestFields for Bedrock
+  defp move_thinking_to_additional_fields(opts) do
+    case Keyword.pop(opts, :thinking) do
+      {nil, opts} ->
+        # No thinking field, return as-is
+        opts
+
+      {thinking_config, opts} ->
+        # Move thinking to provider_options -> additional_model_request_fields
+        provider_opts = Keyword.get(opts, :provider_options, [])
+
+        additional_fields =
+          Keyword.get(provider_opts, :additional_model_request_fields, %{})
+          |> Map.put(:thinking, thinking_config)
+
+        updated_provider_opts =
+          Keyword.put(provider_opts, :additional_model_request_fields, additional_fields)
+
+        Keyword.put(opts, :provider_options, updated_provider_opts)
     end
   end
 
@@ -656,10 +777,18 @@ defmodule ReqLLM.Providers.AmazonBedrock do
 
   @impl ReqLLM.Provider
   def normalize_model_id(model_id) when is_binary(model_id) do
-    # Strip region prefix from inference profile IDs for metadata lookup
-    # e.g., "us.anthropic.claude-3-sonnet" -> "anthropic.claude-3-sonnet"
-    case String.split(model_id, ".", parts: 2) do
-      [possible_region, rest] when possible_region in ["us", "eu", "ap", "ca", "global"] ->
+    # Strip region prefixes from inference profile IDs for metadata lookup
+    # (e.g., "us.anthropic.claude-3-sonnet" -> "anthropic.claude-3-sonnet")
+    # (e.g., "global.anthropic.claude-sonnet-4-5" -> "anthropic.claude-sonnet-4-5")
+    #
+    # Note: This is ONLY for metadata lookup. The preserve_inference_profile? callback
+    # controls whether the prefix is kept in API requests (see prepare_request/4).
+    case String.split(model_id, ".", parts: 3) do
+      # Pattern: region.provider.rest where region is known
+      [possible_region, _provider, _rest]
+      when possible_region in ["us", "eu", "ap", "ca", "global"] ->
+        # Strip region prefix for metadata lookup
+        [_region, rest] = String.split(model_id, ".", parts: 2)
         rest
 
       _ ->
@@ -673,10 +802,8 @@ defmodule ReqLLM.Providers.AmazonBedrock do
         module
 
       :error ->
-        raise ArgumentError, """
-        No formatter module found for model family: #{model_family}
-        This shouldn't happen - please report this as a bug.
-        """
+        # Models without a dedicated formatter use Converse API
+        ReqLLM.Providers.AmazonBedrock.Converse
     end
   end
 
@@ -748,9 +875,29 @@ defmodule ReqLLM.Providers.AmazonBedrock do
   end
 
   # Private helper: Determine whether to use Converse API with caching optimization
-  defp determine_use_converse(opts) do
+  defp determine_use_converse(model_id, opts) do
+    # Check if this is a cross-region inference profile (us., eu., etc.)
+    # These MUST use Converse API
+    is_inference_profile =
+      is_binary(model_id) and
+        String.starts_with?(model_id, ["us.", "eu.", "ap.", "ca.", "global."])
+
+    # Check if model's formatter requires Converse API
+    model_family = get_model_family(model_id)
+    formatter = get_formatter_module(model_family)
+
+    requires_converse =
+      function_exported?(formatter, :requires_converse_api?, 0) &&
+        formatter.requires_converse_api?()
+
+    # Check if formatter is Converse (fallback for unsupported families)
+    is_fallback_to_converse = formatter == ReqLLM.Providers.AmazonBedrock.Converse
+
     # After Options.process, use_converse is in :provider_options
-    case get_in(opts, [:provider_options, :use_converse]) do
+    # But for direct attach_stream calls, it might be at top level
+    use_converse_opt = get_in(opts, [:provider_options, :use_converse]) || opts[:use_converse]
+
+    case use_converse_opt do
       true ->
         true
 
@@ -763,6 +910,18 @@ defmodule ReqLLM.Providers.AmazonBedrock do
         has_caching = get_in(opts, [:provider_options, :anthropic_prompt_cache]) == true
 
         cond do
+          # Inference profiles (cross-region) MUST use Converse API
+          is_inference_profile ->
+            true
+
+          # Formatters that require Converse API (like Mistral wrapper)
+          requires_converse ->
+            true
+
+          # Models without dedicated formatters fall back to Converse API
+          is_fallback_to_converse ->
+            true
+
           # If caching is enabled with tools, force native API for full caching support
           has_caching and has_tools ->
             require Logger

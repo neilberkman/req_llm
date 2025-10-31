@@ -133,6 +133,7 @@ defmodule ReqLLM.ProviderTest.Comprehensive do
           end
 
           @tag scenario: :token_limit
+          @tag timeout: 600_000
           test "token limit constraints" do
             opts =
               param_bundles(@provider).minimal
@@ -494,11 +495,13 @@ defmodule ReqLLM.ProviderTest.Comprehensive do
 
               provider_config = param_bundles(@provider)
 
+              # Bedrock requires max_tokens > budget_tokens (4000 for :low)
+              # Use 5000 to be safe for all providers
               base_opts =
                 provider_config.deterministic
                 |> Keyword.delete(:temperature)
                 |> Keyword.merge(
-                  max_tokens: 2048,
+                  max_tokens: 5000,
                   temperature: 1.0,
                   reasoning_effort: provider_config.reasoning[:reasoning_effort]
                 )
@@ -550,7 +553,7 @@ defmodule ReqLLM.ProviderTest.Comprehensive do
                 provider_config.creative
                 |> Keyword.delete(:temperature)
                 |> Keyword.merge(
-                  max_tokens: 2048,
+                  max_tokens: 5000,
                   temperature: 1.0,
                   reasoning_effort: provider_config.reasoning[:reasoning_effort]
                 )

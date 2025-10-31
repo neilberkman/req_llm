@@ -9,6 +9,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Allow provider `base_url`s to be overriden in config
 
+### Added
+
+- Context tools persistence for AWS Bedrock multi-turn conversations (fixes #158)
+  - Tools automatically persist in context after first request
+  - Bedrock-specific implementation with zero impact on other providers
+- AWS Bedrock Claude inference profile models with fixtures (3 models)
+  - global.anthropic.claude-sonnet-4-5-20250929-v1:0 (12 fixtures)
+  - global.anthropic.claude-haiku-4-5-20251001-v1:0 (4 fixtures)
+  - us.anthropic.claude-opus-4-1-20250805-v1:0 (4 fixtures)
+
+### Fixed
+
+- AWS Bedrock Anthropic inference profile model ID preservation
+  - Added `preserve_inference_profile?/1` callback to Anthropic Bedrock formatter
+  - Ensures region prefixes (global., us.) are preserved in API requests
+  - Fixes 400 "invalid model identifier" errors for inference profile models
+- AWS Bedrock Converse API usage field parsing
+  - Fixed `parse_usage/1` to include all required fields (reasoning_tokens, total_tokens, cached_tokens)
+  - Fixes KeyError when accessing usage fields from Converse API responses
+- AWS Bedrock provider now only advertises Anthropic models
+  - Removed Meta and Mistral from @model_families (not currently supported)
+  - Test metadata validation now skips non-Anthropic Bedrock models
+
 ## [1.0.0-rc.8] - 2025-10-29
 
 ### Added

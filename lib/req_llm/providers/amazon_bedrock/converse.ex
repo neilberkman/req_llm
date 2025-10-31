@@ -107,11 +107,22 @@ defmodule ReqLLM.Providers.AmazonBedrock.Converse do
     request = add_messages(request, context.messages)
 
     # Add tools if present (tools are in opts, not context)
+    # Add tools from opts or persisted from context
     request =
-      if tools = opts[:tools] do
-        add_tools(request, tools)
-      else
-        request
+      case opts[:tools] do
+        nil ->
+          # Use persisted tools from context if available
+          case Map.get(context, :tools) do
+            tools when is_list(tools) and tools != [] ->
+              add_tools(request, tools, opts[:formatter_module])
+
+            _ ->
+              # No tools
+              request
+          end
+
+        tools when is_list(tools) ->
+          add_tools(request, tools, opts[:formatter_module])
       end
 
     # Add tool choice if specified
@@ -150,9 +161,12 @@ defmodule ReqLLM.Providers.AmazonBedrock.Converse do
     updated_context = Map.put(context, :tools, [structured_output_tool | existing_tools])
 
     # Update opts to force tool choice
+    # Handle case where opts[:tools] is explicitly nil (Keyword.get returns nil, not default)
+    existing_tools = Keyword.get(opts, :tools) || []
+
     updated_opts =
       opts
-      |> Keyword.put(:tools, [structured_output_tool | Keyword.get(opts, :tools, [])])
+      |> Keyword.put(:tools, [structured_output_tool | existing_tools])
       |> Keyword.put(:tool_choice, %{type: "tool", name: "structured_output"})
 
     {updated_context, updated_opts}
@@ -174,21 +188,21 @@ defmodule ReqLLM.Providers.AmazonBedrock.Converse do
     # Parse message (includes reasoning content if present)
     message = parse_message(message_data)
 
-    # Build context with message
-    context = %ReqLLM.Context{
-      messages: if(message, do: [message], else: [])
-    }
-
-    # Build response
-    response = %ReqLLM.Response{
+    # Build initial response with minimal context
+    initial_response = %ReqLLM.Response{
       id: get_in(response_body, ["output", "messageId"]) || "unknown",
       model: opts[:model] || "bedrock-converse",
-      context: context,
+      context: %ReqLLM.Context{messages: []},
       message: message,
       finish_reason: map_stop_reason(stop_reason),
       usage: parse_usage(usage),
       stream?: false
     }
+
+    # Merge with original context, persisting tools
+    original_context = opts[:context] || %ReqLLM.Context{messages: []}
+    merge_opts = [tools: opts[:tools]]
+    response = ReqLLM.Context.merge_response(original_context, initial_response, merge_opts)
 
     # For :object operation, extract structured output from tool call
     final_response =
@@ -215,22 +229,60 @@ defmodule ReqLLM.Providers.AmazonBedrock.Converse do
   Parse a Converse API streaming chunk.
 
   Handles different event types from the Converse stream.
+  Events are already decoded by AWSEventStream.parse_binary before reaching this function.
   """
   def parse_stream_chunk(chunk, _model_id) do
     case chunk do
-      %{"contentBlockStart" => _data} ->
+      %{"contentBlockStart" => start_data} ->
         # Start of a new content block
-        {:ok, nil}
+        # For tool use blocks, emit tool_call chunk with empty arguments
+        if tool_use_start = get_in(start_data, ["start", "toolUse"]) do
+          tool_name = tool_use_start["name"]
+          tool_use_id = tool_use_start["toolUseId"]
+          content_block_index = start_data["contentBlockIndex"]
+
+          # Send empty tool_call that will be filled by deltas
+          {:ok,
+           ReqLLM.StreamChunk.tool_call(tool_name, %{}, %{
+             id: tool_use_id,
+             index: content_block_index,
+             start: true
+           })}
+        else
+          {:ok, nil}
+        end
 
       %{"contentBlockDelta" => delta_data} ->
-        # Handle both text and reasoning deltas
+        # Handle text, reasoning, and tool use deltas
         cond do
           delta = get_in(delta_data, ["delta", "text"]) ->
-            {:ok, %{type: :text, text: delta}}
+            {:ok, ReqLLM.StreamChunk.text(delta)}
 
           reasoning_delta = get_in(delta_data, ["delta", "reasoningContent"]) ->
             # Claude extended thinking reasoning delta
-            {:ok, %{type: :thinking, text: reasoning_delta}}
+            # reasoningContent is a map with "text" key, extract it
+            case reasoning_delta["text"] do
+              text when is_binary(text) and text != "" ->
+                {:ok, ReqLLM.StreamChunk.thinking(text)}
+
+              _ ->
+                # Empty or missing text, skip this chunk
+                {:ok, nil}
+            end
+
+          tool_use_delta = get_in(delta_data, ["delta", "toolUse"]) ->
+            # Tool use delta for object generation
+            # The input field contains the streaming JSON fragment
+            if input = tool_use_delta["input"] do
+              content_block_index = delta_data["contentBlockIndex"]
+              # Emit metadata chunk with JSON fragment to be accumulated
+              {:ok,
+               ReqLLM.StreamChunk.meta(%{
+                 tool_call_args: %{index: content_block_index, fragment: input}
+               })}
+            else
+              {:ok, nil}
+            end
 
           true ->
             {:ok, nil}
@@ -247,12 +299,12 @@ defmodule ReqLLM.Providers.AmazonBedrock.Converse do
       %{"messageStop" => stop_data} ->
         # End of message with stop reason
         stop_reason = stop_data["stopReason"]
-        {:ok, %{type: :done, finish_reason: map_stop_reason(stop_reason)}}
+        {:ok, ReqLLM.StreamChunk.meta(%{finish_reason: map_stop_reason(stop_reason)})}
 
       %{"metadata" => metadata} ->
         # Usage metadata
         if usage = metadata["usage"] do
-          {:ok, %{type: :usage, usage: parse_usage(usage)}}
+          {:ok, ReqLLM.StreamChunk.meta(%{usage: parse_usage(usage)})}
         else
           {:ok, nil}
         end
@@ -284,10 +336,28 @@ defmodule ReqLLM.Providers.AmazonBedrock.Converse do
     Map.put(request, "messages", encoded_messages)
   end
 
-  defp add_tools(request, tools) do
+  defp add_tools(request, [], _formatter_module), do: request
+
+  defp add_tools(request, tools, formatter_module) when is_list(tools) do
     tool_specs =
-      Enum.map(tools, fn tool ->
-        ReqLLM.Schema.to_bedrock_converse_format(tool)
+      tools
+      |> Enum.reject(&is_nil/1)
+      |> Enum.map(fn tool ->
+        bedrock_tool = ReqLLM.Schema.to_bedrock_converse_format(tool)
+
+        # Some model families need to normalize tool schemas
+        # Check if formatter module provides normalization
+        if formatter_module &&
+             function_exported?(formatter_module, :normalize_tool_schema, 1) do
+          # Normalize the inputSchema.json field
+          update_in(
+            bedrock_tool,
+            ["toolSpec", "inputSchema", "json"],
+            &formatter_module.normalize_tool_schema/1
+          )
+        else
+          bedrock_tool
+        end
       end)
 
     Map.put(request, "toolConfig", %{
@@ -375,7 +445,13 @@ defmodule ReqLLM.Providers.AmazonBedrock.Converse do
   end
 
   defp add_additional_fields(request, opts) do
-    case opts[:additional_model_request_fields] do
+    # Check both locations: top-level opts and provider_options
+    # (after Options.process, fields are in provider_options)
+    fields =
+      opts[:additional_model_request_fields] ||
+        get_in(opts, [:provider_options, :additional_model_request_fields])
+
+    case fields do
       nil -> request
       fields when is_map(fields) -> Map.put(request, "additionalModelRequestFields", fields)
       _ -> request
@@ -539,7 +615,40 @@ defmodule ReqLLM.Providers.AmazonBedrock.Converse do
       end
     end)
     |> then(fn {tool_calls, content_parts} ->
-      {Enum.reverse(tool_calls), Enum.reverse(content_parts)}
+      # Deduplicate tool calls by (name, arguments) pair
+      #
+      # WORKAROUND: Meta Llama models on AWS Bedrock return duplicate tool calls
+      # with identical parameters but different toolUseIds. This is a known issue
+      # with Meta Llama tool calling behavior across multiple platforms.
+      #
+      # References:
+      # - https://stackoverflow.com/questions/79247654/inconsistent-tool-calling-behavior-with-llama-3-1-70b-model-on-aws-bedrock
+      # - https://github.com/meta-llama/llama-models/issues/229
+      #
+      # This deduplication keeps the first occurrence of each unique (name, arguments)
+      # pair and discards duplicates. If this workaround becomes unnecessary, it can
+      # be safely removed without affecting other models.
+      deduplicated_tool_calls =
+        tool_calls
+        |> Enum.reverse()
+        |> Enum.uniq_by(fn tool_call ->
+          {tool_call.function.name, tool_call.function.arguments}
+        end)
+
+      # Log warning if duplicates were removed
+      duplicates_removed = length(tool_calls) - length(deduplicated_tool_calls)
+
+      if duplicates_removed > 0 do
+        require Logger
+
+        Logger.warning(
+          "[ReqLLM] Removed #{duplicates_removed} duplicate tool call(s). " <>
+            "This is a known issue with Meta Llama models on AWS Bedrock. " <>
+            "See: https://github.com/meta-llama/llama-models/issues/229"
+        )
+      end
+
+      {deduplicated_tool_calls, Enum.reverse(content_parts)}
     end)
   end
 
@@ -547,7 +656,24 @@ defmodule ReqLLM.Providers.AmazonBedrock.Converse do
 
   # Parse individual content blocks (excluding tool calls which are handled separately)
   defp parse_content_block(%{"text" => text}) do
-    ContentPart.text(text)
+    # WORKAROUND: Meta Llama models output malformed JSON when confused about tool usage
+    # Strip patterns like {"name": null, "parameters": null}
+    #
+    # Instead of generating proper text responses, Meta Llama models sometimes output
+    # malformed JSON structures with null values when tools are available but shouldn't
+    # be used. This is part of broader tool calling issues with Meta Llama models.
+    #
+    # References:
+    # - https://github.com/ggml-org/llama.cpp/issues/14697 (tool calls as JSON strings)
+    # - Multiple reports of Llama 3/4 returning null/malformed JSON in tool contexts
+    #
+    # This workaround strips the malformed JSON. If this becomes unnecessary, it can
+    # be safely removed without affecting other models.
+    cleaned_text = strip_malformed_tool_json(text)
+
+    if cleaned_text != "" do
+      ContentPart.text(cleaned_text)
+    end
   end
 
   defp parse_content_block(%{"reasoningText" => reasoning_text}) do
@@ -562,12 +688,47 @@ defmodule ReqLLM.Providers.AmazonBedrock.Converse do
 
   defp parse_content_block(_), do: nil
 
+  # Strip malformed tool call JSON that some models output when confused about tool usage
+  defp strip_malformed_tool_json(text) when is_binary(text) do
+    trimmed = String.trim(text)
+
+    case trimmed do
+      # Match {"name": null, "parameters": null} or similar variations
+      "{\"name\":" <> rest ->
+        if String.contains?(rest, "null") and String.contains?(rest, "}") do
+          require Logger
+
+          Logger.warning(
+            "[ReqLLM] Stripped malformed tool JSON from response: #{inspect(trimmed)}. " <>
+              "This is a known issue with Meta Llama models outputting null JSON when confused about tool usage. " <>
+              "See: https://github.com/ggml-org/llama.cpp/issues/14697"
+          )
+
+          ""
+        else
+          text
+        end
+
+      _ ->
+        text
+    end
+  end
+
+  defp strip_malformed_tool_json(text), do: text
+
   defp parse_usage(nil), do: nil
 
   defp parse_usage(usage) do
+    input = usage["inputTokens"] || 0
+    output = usage["outputTokens"] || 0
+    cached = (usage["cacheReadInputTokens"] || 0) + (usage["cacheWriteInputTokens"] || 0)
+
     %{
-      input_tokens: usage["inputTokens"],
-      output_tokens: usage["outputTokens"]
+      input_tokens: input,
+      output_tokens: output,
+      total_tokens: input + output,
+      cached_tokens: cached,
+      reasoning_tokens: 0
     }
   end
 

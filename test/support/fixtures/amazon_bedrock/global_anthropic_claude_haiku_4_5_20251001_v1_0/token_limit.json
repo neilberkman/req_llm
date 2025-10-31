@@ -1,0 +1,103 @@
+{
+  "request": {
+    "body": {
+      "b64": "eyJhZGRpdGlvbmFsTW9kZWxSZXF1ZXN0RmllbGRzIjp7InRoaW5raW5nIjp7ImJ1ZGdldF90b2tlbnMiOjQwMDAsInR5cGUiOiJlbmFibGVkIn19LCJpbmZlcmVuY2VDb25maWciOnsibWF4VG9rZW5zIjo0MDAxLCJ0ZW1wZXJhdHVyZSI6MS4wfSwibWVzc2FnZXMiOlt7ImNvbnRlbnQiOlt7InRleHQiOiJXcml0ZSBhIHZlcnkgbG9uZyBzdG9yeSBhYm91dCBkcmFnb25zIGFuZCBhZHZlbnR1cmVzIn1dLCJyb2xlIjoidXNlciJ9XX0="
+    },
+    "canonical_json": {
+      "additionalModelRequestFields": {
+        "thinking": {
+          "budget_tokens": 4000,
+          "type": "enabled"
+        }
+      },
+      "inferenceConfig": {
+        "maxTokens": 4001,
+        "temperature": 1.0
+      },
+      "messages": [
+        {
+          "content": [
+            {
+              "text": "Write a very long story about dragons and adventures"
+            }
+          ],
+          "role": "user"
+        }
+      ]
+    },
+    "headers": {
+      "accept-encoding": [
+        "gzip"
+      ],
+      "authorization": "[REDACTED:authorization]",
+      "content-type": [
+        "application/json"
+      ],
+      "host": [
+        "bedrock-runtime.us-east-1.amazonaws.com"
+      ],
+      "user-agent": [
+        "req/0.5.15"
+      ],
+      "x-amz-content-sha256": [
+        "6db0b5792c8bea0bccb48e26e4641fc3040c401b4120e29897197667c67b9921"
+      ],
+      "x-amz-date": [
+        "20251101T002520Z"
+      ]
+    },
+    "method": "post",
+    "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/global.anthropic.claude-haiku-4-5-20251001-v1:0/converse"
+  },
+  "response": {
+    "body": {
+      "metrics": {
+        "latencyMs": 54382
+      },
+      "output": {
+        "message": {
+          "content": [
+            {
+              "reasoningContent": {
+                "reasoningText": {
+                  "signature": "ErwDCkgICRABGAIqQAa7M5Js0Op0W29HYpyrbJiu8T53CLVxAe6Z0BbmNBWF3esPg4hsqJYqFMvdv8JSl3w/Mkq89KJJOKT1h8D5HnwSDAFAOSDCBYahF3aBKxoMPbOwtIJbkK53l3beIjBkmo+0Eorj8KMdEEzB4upY+mkPp+Xp3bHrmxsODmlOsBTsBHWxcFagGXnPZNQg1BMqoQLI0XGkmMLXqmA3a1iv7fk8aSGJOeqiDUT3xYmrPLZO93aDVIG54vVECLdS2coYHIosx+MjxlmdYslrnAKQ0aiFQHHU9meDFiux05GF6u+pXi9rYuZEVPxUcxxZmTGZDBWcNm48hcDoodugKxYZlzgqBDPshairNcfcN3S3ViX+IVQOezEbwZI7I3CrRdla6ydZk9kY2uIf4ePcNaHjbBBhTC9pxsv5S5A3b0EGs8zfR6Cm6CIuc3k6w6AbrnGY7qcELv6QYqGz2te+hhFPxo6KYbJCf6V25i+juuhx24A3YFdu/X3V4cxQYHs+O3/WJbexo6z2JgD14m06vmZ8m5M4mjEzE8vljdS/IrkHrxfyxQE/OdfOq4I+yg0Rm6tVyUb8GAE=",
+                  "text": "The user wants a very long story about dragons and adventures. I'll create an epic fantasy adventure with multiple characters, settings, and a compelling narrative arc. I'll aim for substantial length with descriptive prose, character development, and exciting plot points."
+                }
+              }
+            },
+            {
+              "text": "# The Last Dragonborn\n\n## Part One: The Mountain's Shadow\n\nThe kingdom of Valdros had not seen a dragon in three hundred years. The old stories told by grandfathers to wide-eyed children spoke of terrible beasts that blotted out the sun, their wings spanning the length of entire villages, their fire reducing castles to ash and bone. But those were legends now, relegated to dusty tomes in the royal library and the tavern tales of drunken men who embellished with every passing year.\n\nKael didn't believe in legends.\n\nThe young knight sat atop his horse, Stormwind, watching the sunrise paint the eastern sky in shades of amber and rose. They had ridden through the night, following rumors that had turned into whispers that had turned into desperate warnings. The borderlands were in chaos. Entire settlements had gone quiet. Traders didn't return from the mountain passes. Livestock disappeared by the dozens.\n\nThe official explanation from the capital was bandits—organized, ruthless bandits led by some new warlord in the northern peaks. King Aldric had sent Kael and fifty other knights to investigate and, if necessary, to deal with the problem.\n\nKael was the youngest among them, just past his twentieth year, but he had earned his place through skill rather than connections. His mentor, Sir Garrett, was leading the expedition. It was Garrett who had insisted on bringing Kael along, despite the objections of the older, more traditional knights who believed youth belonged in training yards, not on dangerous missions.\n\n\"Kael,\" Garrett called out, riding up beside him. The older knight's weathered face showed the scars of two decades of service. \"We're making camp here. The village of Thornhome is just ahead. We'll question the survivors and scout the surrounding area.\"\n\nKael nodded and helped organize the camp. They set up near a small stream, less than a mile from the village. As they worked, Kael couldn't shake the feeling that something was terribly wrong. The air seemed to shimmer with an odd heat, and there was a faint smell like burnt metal.\n\nAs dusk fell, the knights ventured into Thornhome.\n\nThe village was devastated. Buildings were toppled, not burned but torn apart as if by some tremendous force. One cottage had its entire roof caved inward, but Kael found no siege equipment, no battering rams, nothing that could explain such destruction. Bodies lay in the streets, and those that remained intact showed claw marks—massive, deep claw marks that no brigand's sword could have made.\n\n\"Mother of the gods,\" whispered one of the older knights, a grizzled veteran named Sir Marcus.\n\nIn the center of the village square, they found an elderly woman who had survived by hiding in the well. Her name was Enna, and she was the town's healer. She was traumatized, speaking in a fragmented voice, but her message was clear.\n\n\"Dragon,\" she kept repeating. \"The beast came from the north. It came with fire and death. The dragon has come home.\"\n\nThe knights exchanged uncertain glances. Garrett knelt down before Enna, his weathered voice gentle. \"Tell us what you saw. Everything you remember.\"\n\nEnna's hands trembled as she spoke. \"Three days ago. We didn't know. We had no warning. The sky turned dark, and then—then it appeared. So vast. So terrible. Its scales were like midnight and starlight mixed together. Its eyes burned like molten gold. The fire came first, taking the northern houses. Then it landed and began tearing through the village, looking for something. People ran, but they didn't stand a chance. Some of the young men tried to fight it with whatever they had. The beast crushed them beneath its talons as if they were insects.\"\n\n\"Why would a dragon attack a small village?\" asked Sir Garrett. \"What would it seek here?\"\n\n\"The bell,\" Enna whispered. \"The ancient bell in our tower. It was said to have been crafted from dragon bone in the old days. One of our villagers had always theorized it would draw dragons. No one believed him. We all thought it was a myth.\"\n\nGarrett stood slowly, his face grim. \"This changes everything. We're not dealing with bandits. We're dealing with an ancient threat. We need to return to the capital and inform the king.\"\n\nBut Kael stepped forward, his voice steady despite the fear coursing through his veins. \"Sir Garrett, by the time we return to the capital and send word back, the dragon could devastate a dozen more villages. We have fifty trained knights here, armed and mounted. We should pursue it. We should find its lair and—\"\n\n\"And what?\" interrupted Sir Marcus harshly. \"Slay it? With swords and arrows? Do you know what you're suggesting, boy? Dragons are creatures of ancient magic. Knights are meat to such beasts.\"\n\n\"Then what do you suggest, Sir Marcus?\" Kael's voice remained calm, but his eyes flashed with determination. \"That we run? That we abandon the borderlands to whatever this dragon desires?\"\n\nGarrett held up a hand, silencing the brewing argument. \"We scout further. Enna, did you see which direction the dragon flew?\"\n\n\"North,\" the old woman said. \"Back toward the mountains. Where else would such a creature live?\"\n\n\"Then north we go,\" Garrett decided. \"But cautiously. We'll send word back to the capital through a messenger, and we'll follow the dragon's trail. Kael, you may be foolish, but you're right about one thing—we cannot abandon these people by running. We move at first light.\"\n\n## Part Two: Into the Northern Peaks\n\nThe trail was impossible to miss. The dragon had left a path of destruction through the forest like a terrible scar. Trees were snapped or burned to ash. The ground itself was scorched in places, and here and there, they found bones—animal bones, mostly, though Kael tried not to think too deeply about what other remains they might have encountered.\n\nThey rode for four days, climbing steadily into the northern peaks. The weather grew colder and more treacherous. Snow began to fall, and the mountain passes became narrow and dangerous. Twice, the group had to use ropes to navigate particularly treacherous sections of cliff face.\n\nOn the evening of the fourth day, they found a cave.\n\nIt was massive, large enough for a dragon to enter without stooping. The opening was blackened with soot, and the air that emerged was hot and reeked of sulfur. Inside, they could hear something—a low rumbling, like distant thunder.\n\n\"It sleeps,\" whispered Garrett. \"The dragon rests in its lair.\"\n\nThe knights dismounted, leaving their horses under guard with several of the younger warriors. They had prepared as best they could—reinforced armor, blessed weapons, and shields etched with ancient protective runes. Thirty knights would enter the cave. Twenty would remain behind as a reserve and to protect the camp.\n\nKael was among those chosen to enter.\n\nThey advanced slowly into the darkness, carrying torches that burned with eerie green flames—a special fire prepared by a hedge witch they had met in the last village, who insisted it would protect them from a dragon's fire. Whether that was true remained to be seen.\n\nThe cave opened into a massive cavern. Their torches seemed pitiful against the vastness, small flames swallowed by shadow. And there, in the center of the cavern, on a bed of gold and jewels and precious artifacts, lay the dragon.\n\nEven sleeping, it was the most magnificent and terrifying thing Kael had ever seen. Its scales were indeed like midnight touched by starlight, shifting between deep blue and silver as the torchlight moved across them. Its body was muscular and lean, built for both flight and combat. One massive claw rested across its chest. Its head, as large as a knight's horse, rested on a pile of golden goblets and gemstones.\n\nThe dragon's eyes were closed, but they were enormous—each one the size of a shield.\n\n\"Steady,\" Garrett whispered. \"We must strike quickly. All archers, aim for the eyes. Swordsmen, target the wings once it rises. We aim to cripple, not to slay. Our goal is to drive it away, to make this mountain lair no longer safe for it.\"\n\nThey took their positions. Archers formed a line at the back, drawing their blessed arrows. The swordsmen formed a defensive line in front, shields raised.\n\nThen Garrett gave the signal.\n\nThree arrows flew through the air in the darkness, heading straight for the dragon's face. Two of them hit true, striking the creature's left eyelid. The other missed, clattering off the gemstones beside the dragon's head.\n\nThe effect was immediate and catastrophic.\n\nThe dragon's eyes snapped open, burning like two suns in the darkness. Its mouth opened, and a roar emerged that shook the very mountains, a sound so loud and terrible that several of the knights dropped their torches and covered their ears. Dust and pebbles rained down from the cavern ceiling.\n\n\"THIEVES!\" the dragon's voice boomed, and Kael realized with a shock that he understood the words. \"THIEVES WHO DARE ENTER MY LAIR!\"\n\nThe dragon rose to its full height, and the knights understood just how completely outmatched they were. This creature was larger than a castle tower. Its wingspan, when fully extended, seemed to fill half the cavern. The gold and jewels that had been beneath it cascaded across the floor like water.\n\n\"Fire!\" Garrett shouted.\n\nThe archers launched a volley of blessed arrows. Many found their marks, but the dragon's scales seemed nearly impervious to the projectiles. Those that did penetrate drew only shallow scratches and wisps of smoke.\n\nThe dragon inhaled.\n\n\"RUN!\" Kael screamed, but it was too late.\n\nFire emerged from the dragon's maw—not the orange-red flame of natural fire, but a terrible white-blue inferno that burned hotter than any flame should. The hedge witch's protective magic held for a few seconds, but then it shattered like glass. Knights screamed as the flames engulfed them. Their armor, which should have protected them, became a prison that cooked them alive.\n\nHalf the knights died in that single breath.\n\nThe survivors fled, and the dragon descended upon them like a dark god of vengeance. Its massive claws caught one knight mid-stride, and that was the end of him. Its tail swept through a group of three others, crushing them against the cavern wall.\n\nKael found himself running alongside Garrett, both of them moving desperately toward the cavern entrance. Behind them, the dragon pursued, its footsteps causing avalanches of coin and jewels to cascade down.\n\nThey emerged from the cave just as the dragon reached the entrance. Its head emerged, and it unleashed another torrent of flame into the night sky. The dragon's fire caught several knights who had been standing guard outside, and the screams of men dying mixed with the triumphant roar of the ancient predator.\n\n\"Ride!\" Garrett shouted. \"Ride! Now!\"\n\nThe remaining knights ran for their horses. Kael pulled himself into Stormwind's saddle, and the horse bolted, racing down the mountain path. Behind them, the dragon emerged fully from its lair, its wings spreading to their tremendous span.\n\nOf the fifty knights that had ridden north from the capital, only eight made it down the mountain alive. The dragon had allowed them to flee—or perhaps it had simply tired of the hunt. It returned to its lair, carrying the body of Sir Marcus in its claws.\n\nThat night, in their camp far down the mountain, Garrett wept openly. He was the commander, and he took responsibility for the deaths of the men under his charge.\n\n\"We were fools,\" he said bitterly. \"We brought swords to a war fought by gods. We were lambs sent against a wolf.\"\n\nKael sat across the fire from the older knight, his mind churning. \"There has to be a way. The dragon is intelligent—we heard it speak. It has motivations, desires. It came to Thornhome specifically for the bell. It came south for a reason. It's not just a wild beast.\"\n\n\"What are you suggesting?\" asked Garrett.\n\n\"I'm suggesting we find out why the dragon is here. Why now? Why after three hundred years? There must be something we're missing.\"\n\nGarrett looked at the young knight for a long moment. \"You're either the bravest person I know or the most foolish. Perhaps both. But you're right—we need answers. We return to the capital. We consult the royal library. We find out what the scholars know about this dragon.\"\n\n## Part Three: Knowledge and Destiny\n\nThe return to the capital took a week. When they arrived, they were met with shock and horror. The king, Aldric II, was stunned to learn of the dragon's return. He immediately convened the royal council and ordered the royal scholar, Magister Elwin, to search the archives.\n\nMagister Elwin was ancient—older than anyone could remember. Some whispered that he had studied magic for so long that he had nearly transcended mortality. His white beard reached his waist, and his eyes held the wisdom of centuries.\n\nIt took him three days to find what they sought.\n\n\"The dragon,\" Elwin announced, his old voice carrying clearly in the council chamber, \"is named Sypharis. He is one of the last of the true dragon-kind, a creature of immense age and power. According to the records, Sypharis was sealed away three hundred and twelve years ago by a council of mages and warriors. The dragon had been terrorizing the lands for nearly a century, and finally, the peoples united against him.\"\n\n\"Where was he sealed?\" the king asked.\n\n\"In the northern peaks, beneath a mountain monastery. Holy monks conducted prayers that bound him to sleep, and powerful mages created enchantments that held him imprisoned. The dragon was meant to sleep for a thousand years, but it appears the seals have been broken.\"\n\n\"Why would someone break the seal?\" asked the king's general, Lord Crassus.\n\n\"The question,\" said Elwin slowly, \"is not why would someone break the seal, but rather—Sypharis himself must have broken it. As time passes and ages change, even the mightiest enchantments weaken. It appears Sypharis has awakened on his own.\"\n\nKael stepped forward. \"The dragon came to the village of Thornhome specifically searching for an ancient bell, supposedly made from dragon bone. Why would a dragon seek something made from the bones of its own kind?\"\n\nElwin's eyes fixed on the young knight with sudden intensity. \"You encountered the dragon?\"\n\n\"I did. We—we lost many men trying to drive it back.\"\n\n\"Then you may have been chosen by fate itself, young knight. Bring me everything you can remember about the dragon. Every word it spoke, every movement, every detail. I need to understand what Sypharis wants.\"\n\nFor hours, Kael told the scholar everything. Elwin listened intently, occasionally asking questions or asking Kael to repeat certain details. Finally, the old mage leaned back, stroking his beard.\n\n\"I believe I understand,\" Elwin said at last. \"Three hundred years ago, a dragon bone bell was crafted by the most skilled artisans in the kingdom. It was imbued with magic—specifically, it was designed to nullify the enchantments that bound Sypharis. The magic was subtle and long-lasting. Over three centuries, as the bell was moved and its magic dispersed, it would slowly weaken the seal. And if Sypharis held it, if he bonded with it completely, he could break the seal entirely.\"\n\n\"So the dragon is now free,\" said Lord Crassus grimly. \"What does it want?\"\n\n\"What any imprisoned creature wants,\" replied Elwin. \"Revenge. Sypharis was bound away for a thousand years. The magic has held for three centuries already. In time, the seal might have held for the full thousand years, leaving him imprisoned until the world itself changed beyond recognition. Now that he is free, he will seek to punish those who imprisoned him and to reclaim what was taken from him.\"\n\n\"What was taken from him?\" asked the king.\n\n\"Everything,\" said Elwin quietly. \"Freedom. Territory. His hoard. When the dragon was sealed, his entire lair was claimed by the kingdom. The treasure, the artifacts—all of it was distributed among nobles and priests. Sypharis will want it back.\"\n\nKing Aldric stood. \"Then we must gather all the knights and armies of the realm. We will march north and slay this dragon before it destroys our kingdom entirely.\"\n\n\"Your Majesty,\" said Kael carefully, \"if I may speak?\"\n\nThe king looked at him with interest. \"You may. You have already proven yourself in this matter, young knight.\"\n\n\"Sypharis is too powerful to be slain by conventional armies. We learned this at great cost. But the magister said the dragon was bound by magic. Is there a way to bind it again?\"\n\nAll eyes turned to Elwin, who stroked his beard thoughtfully. \"Theoretically, yes. If we could recreate the ritual that originally bound Sypharis, we might be able to imprison him again. But"
+            }
+          ],
+          "role": "assistant"
+        }
+      },
+      "stopReason": "max_tokens",
+      "usage": {
+        "cacheReadInputTokenCount": 0,
+        "cacheReadInputTokens": 0,
+        "cacheWriteInputTokenCount": 0,
+        "cacheWriteInputTokens": 0,
+        "inputTokens": 44,
+        "outputTokens": 4001,
+        "serverToolUsage": {},
+        "totalTokens": 4045
+      }
+    },
+    "headers": {
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json"
+      ],
+      "date": [
+        "Sat, 01 Nov 2025 00:26:14 GMT"
+      ],
+      "x-amzn-requestid": [
+        "4734ffe5-ffe8-45fc-94de-f8e488070ad3"
+      ]
+    },
+    "status": 200
+  }
+}

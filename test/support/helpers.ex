@@ -490,6 +490,22 @@ defmodule ReqLLM.Test.Helpers do
   """
   def reasoning_overlay(model_spec, base_opts, min_tokens \\ nil) do
     case ReqLLM.Model.from(model_spec) do
+      {:ok, %{capabilities: %{reasoning: true}, provider: :amazon_bedrock}} ->
+        cfg = param_bundles()
+        opts = Keyword.put(base_opts, :reasoning_effort, cfg.reasoning[:reasoning_effort] || :low)
+
+        # AWS Bedrock requires:
+        # 1. temperature=1.0 when thinking is enabled
+        # 2. max_tokens > thinking.budget_tokens (4000 for :low effort)
+        # Bedrock maps :low reasoning_effort to 4000 budget_tokens
+        min_max_tokens = max(min_tokens || 4001, 4001)
+
+        opts
+        |> Keyword.put(:temperature, 1.0)
+        |> Keyword.update(:max_tokens, min_max_tokens, fn current ->
+          max(current, min_max_tokens)
+        end)
+
       {:ok, %{capabilities: %{reasoning: true}}} ->
         cfg = param_bundles()
         opts = Keyword.put(base_opts, :reasoning_effort, cfg.reasoning[:reasoning_effort] || :low)
@@ -506,7 +522,27 @@ defmodule ReqLLM.Test.Helpers do
   end
 
   def reasoning_overlay(model_spec, _provider, base_opts, min_tokens) do
-    reasoning_overlay(model_spec, base_opts, min_tokens)
+    case ReqLLM.Model.from(model_spec) do
+      {:ok, %{capabilities: %{reasoning: true}, provider: :amazon_bedrock}} ->
+        # AWS Bedrock requires:
+        # 1. temperature=1.0 when thinking is enabled
+        # 2. max_tokens > thinking.budget_tokens (4000 for :low effort)
+        # See: https://docs.claude.com/en/docs/build-with-claude/extended-thinking
+        opts = reasoning_overlay(model_spec, base_opts, min_tokens)
+
+        # Bedrock maps :low reasoning_effort to 4000 budget_tokens
+        # So max_tokens must be > 4000
+        min_max_tokens = 4001
+
+        opts
+        |> Keyword.put(:temperature, 1.0)
+        |> Keyword.update(:max_tokens, min_max_tokens, fn current ->
+          max(current, min_max_tokens)
+        end)
+
+      _ ->
+        reasoning_overlay(model_spec, base_opts, min_tokens)
+    end
   end
 
   @doc """

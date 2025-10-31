@@ -28,6 +28,14 @@ defmodule ReqLLM.Providers.AmazonBedrock.Anthropic do
   def supports_converse_tool_choice?, do: true
 
   @doc """
+  Preserve inference profile prefix for all Anthropic models.
+
+  All Anthropic inference profile models require the region prefix to be preserved
+  in the API request path.
+  """
+  def preserve_inference_profile?(_model_id), do: true
+
+  @doc """
   Formats a ReqLLM context into Anthropic request format for Bedrock.
 
   Delegates to the native Anthropic.Context module and adds Bedrock-specific
@@ -148,9 +156,18 @@ defmodule ReqLLM.Providers.AmazonBedrock.Anthropic do
             content
             |> Enum.filter(fn
               %{type: "tool_use", name: _} -> true
+              %{"type" => "tool_use", "name" => _} -> true
+              %{type: "tool_result", tool_use_id: _} -> true
+              %{"type" => "tool_result", "toolUseId" => _} -> true
               _ -> false
             end)
-            |> Enum.map(fn %{name: name} -> name end)
+            |> Enum.map(fn
+              %{name: name} -> name
+              %{"name" => name} -> name
+              # For tool_result, we don't have the tool name, so use a generic placeholder
+              # Bedrock just needs toolConfig to be present, not necessarily accurate
+              _ -> "__tool_result_placeholder__"
+            end)
 
           _ ->
             []
@@ -187,8 +204,22 @@ defmodule ReqLLM.Providers.AmazonBedrock.Anthropic do
   defp maybe_add_thinking(body, opts) do
     # Check if additional_model_request_fields has thinking config (from pre_validate_options)
     # Note: additional_model_request_fields is nested under :provider_options after Options.process
-    case get_in(opts, [:provider_options, :additional_model_request_fields, :thinking]) do
-      %{type: "enabled", budget_tokens: budget} ->
+    thinking_config =
+      get_in(opts, [:provider_options, :additional_model_request_fields, :thinking])
+
+    tool_choice = opts[:tool_choice]
+
+    # AWS Bedrock doesn't allow thinking when tool_choice forces a specific tool
+    # See: https://docs.claude.com/en/docs/build-with-claude/extended-thinking
+    forced_tool_choice? =
+      case tool_choice do
+        %{type: "tool", name: _} -> true
+        %{"type" => "tool", "name" => _} -> true
+        _ -> false
+      end
+
+    case thinking_config do
+      %{type: "enabled", budget_tokens: budget} when not forced_tool_choice? ->
         Map.put(body, :thinking, %{type: "enabled", budget_tokens: budget})
 
       _ ->

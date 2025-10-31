@@ -28,6 +28,33 @@ defmodule ReqLLM.Providers.AmazonBedrock.Meta do
   def supports_converse_tool_choice?, do: false
 
   @doc """
+  Normalizes tool schema for Meta Llama models.
+
+  Meta Llama models on Bedrock have a bug where they return empty content arrays
+  when tool schemas include "additionalProperties": false. This function strips
+  that field recursively from the schema.
+
+  See: https://github.com/agentjido/req_llm/issues/XXX
+  """
+  def normalize_tool_schema(json_schema) when is_map(json_schema) do
+    strip_additional_properties(json_schema)
+  end
+
+  defp strip_additional_properties(schema) when is_map(schema) do
+    schema
+    |> Map.delete("additionalProperties")
+    |> Map.new(fn {key, value} ->
+      {key, strip_additional_properties(value)}
+    end)
+  end
+
+  defp strip_additional_properties(list) when is_list(list) do
+    Enum.map(list, &strip_additional_properties/1)
+  end
+
+  defp strip_additional_properties(other), do: other
+
+  @doc """
   Formats a ReqLLM context into Meta Llama request format for Bedrock.
 
   Delegates to the generic Meta provider and returns the formatted request.
