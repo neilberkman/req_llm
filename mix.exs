@@ -32,54 +32,57 @@ defmodule ReqLLM.MixProject do
       homepage_url: @source_url,
       source_ref: "v#{@version}",
       docs: [
-        main: "readme",
+        main: "overview",
         extras: [
-          "README.md",
+          {"README.md", title: "Overview", filename: "overview"},
           "CHANGELOG.md",
           "CONTRIBUTING.md",
           "guides/getting-started.md",
           "guides/core-concepts.md",
-          "guides/api-reference.md",
           "guides/data-structures.md",
           "guides/model-metadata.md",
           "guides/mix-tasks.md",
           "guides/fixture-testing.md",
-          "guides/streaming-migration.md",
-          "guides/coverage-testing.md",
           "guides/adding_a_provider.md",
-          "guides/providers/README.md",
-          "guides/providers/anthropic.md",
-          "guides/providers/openai.md",
-          "guides/providers/google.md",
-          "guides/providers/groq.md",
-          "guides/providers/openrouter.md",
-          "guides/providers/xai.md"
+          "guides/anthropic.md",
+          "guides/openai.md",
+          "guides/google.md",
+          "guides/xai.md",
+          "guides/groq.md",
+          "guides/openrouter.md",
+          "guides/amazon_bedrock.md",
+          "guides/cerebras.md",
+          "guides/meta.md",
+          "guides/zai.md",
+          "guides/zai_coder.md"
         ],
         groups_for_extras: [
+          Overview: [
+            "README.md"
+          ],
           Guides: [
             "guides/getting-started.md",
             "guides/core-concepts.md",
-            "guides/api-reference.md",
             "guides/data-structures.md",
-            "guides/streaming-migration.md"
+            "guides/model-metadata.md"
           ],
           "Development & Testing": [
             "guides/mix-tasks.md",
             "guides/fixture-testing.md",
-            "guides/coverage-testing.md",
             "guides/adding_a_provider.md"
           ],
-          "Provider Guides": [
-            "guides/providers/README.md",
-            "guides/providers/anthropic.md",
-            "guides/providers/openai.md",
-            "guides/providers/google.md",
-            "guides/providers/groq.md",
-            "guides/providers/openrouter.md",
-            "guides/providers/xai.md"
-          ],
-          Reference: [
-            "guides/model-metadata.md"
+          Providers: [
+            "guides/anthropic.md",
+            "guides/openai.md",
+            "guides/google.md",
+            "guides/xai.md",
+            "guides/groq.md",
+            "guides/openrouter.md",
+            "guides/amazon_bedrock.md",
+            "guides/cerebras.md",
+            "guides/meta.md",
+            "guides/zai.md",
+            "guides/zai_coder.md"
           ],
           Changelog: ["CHANGELOG.md"],
           Contributing: ["CONTRIBUTING.md"]
@@ -200,7 +203,10 @@ defmodule ReqLLM.MixProject do
         "credo --strict"
       ],
       q: ["quality"],
-      mc: ["req_llm.model_compat"]
+      docs: ["docs --formatter html"],
+      ms: ["req_llm.model_sync"],
+      mc: ["req_llm.model_compat"],
+      llm: ["req_llm.gen"]
     ]
   end
 end
