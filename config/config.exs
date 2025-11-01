@@ -18,6 +18,7 @@ config :req_llm, :sample_text_models, ~w(
     amazon_bedrock:us.anthropic.claude-opus-4-1-20250805-v1:0
     amazon_bedrock:openai.gpt-oss-20b-1:0
     amazon_bedrock:openai.gpt-oss-120b-1:0
+    amazon_bedrock:us.meta.llama3-2-3b-instruct-v1:0
     openai:gpt-4o-mini
     openai:gpt-4-turbo
     google:gemini-2.0-flash
