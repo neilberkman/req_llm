@@ -4,9 +4,38 @@ Access AWS Bedrock's unified API for multiple AI model families including Anthro
 
 ## Configuration
 
-AWS Bedrock uses AWS Signature V4 authentication. Configure credentials via:
+AWS Bedrock supports two authentication methods: **API Keys** (introduced July 2025) for simplified development, and traditional **IAM credentials** with AWS Signature V4.
 
-### Option 1: Environment Variables (Recommended)
+### API Keys (Simplest)
+
+Generate short-term (up to 12 hours) or long-term API keys from the Bedrock console.
+
+**Environment Variable:**
+
+```bash
+AWS_BEARER_TOKEN_BEDROCK=your-api-key
+AWS_REGION=us-east-1
+```
+
+**Provider Options:**
+
+```elixir
+ReqLLM.generate_text(
+  "bedrock:anthropic.claude-3-sonnet-20240229-v1:0",
+  "Hello",
+  provider_options: [api_key: "your-api-key", region: "us-east-1"]
+)
+```
+
+**Limitations**: Cannot be used with InvokeModelWithBidirectionalStream, Agents, or Data Automation operations.
+
+**Recommendation**: Use short-term keys for production, long-term keys for exploration only.
+
+### IAM Credentials
+
+Traditional AWS authentication using IAM access keys with Signature V4.
+
+#### Option 1: Environment Variables
 
 ```bash
 AWS_ACCESS_KEY_ID=AKIA...
@@ -14,7 +43,7 @@ AWS_SECRET_ACCESS_KEY=...
 AWS_REGION=us-east-1
 ```
 
-### Option 2: ReqLLM Keys (Composite Key)
+#### Option 2: ReqLLM Keys (Composite Key)
 
 ```elixir
 ReqLLM.put_key(:aws_bedrock, %{
@@ -24,7 +53,7 @@ ReqLLM.put_key(:aws_bedrock, %{
 })
 ```
 
-### Option 3: Provider Options
+#### Option 3: Provider Options
 
 ```elixir
 ReqLLM.generate_text(
@@ -37,12 +66,6 @@ ReqLLM.generate_text(
   ]
 )
 ```
-
-### Authentication Types
-
-#### Long-term Credentials (IAM User)
-
-Standard AWS access key and secret key from an IAM user.
 
 #### Temporary Credentials (STS AssumeRole)
 
@@ -60,6 +83,14 @@ provider_options: [
 ## Provider Options
 
 Passed via `:provider_options` keyword:
+
+### `api_key`
+
+- **Type**: String
+- **Purpose**: Bedrock API key for simplified authentication
+- **Fallback**: `AWS_BEARER_TOKEN_BEDROCK` env var
+- **Example**: `provider_options: [api_key: "your-api-key"]`
+- **Note**: Alternative to IAM credentials (access_key_id/secret_access_key)
 
 ### `region`
 
