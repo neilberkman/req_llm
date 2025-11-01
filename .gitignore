@@ -28,6 +28,9 @@ req_llm-*.tar
 # Quibbler
 .quibbler/
 
+# Claude Code
+.claude/
+
 # Language Servers
 .elixir_ls
 .expert
