@@ -43,7 +43,7 @@
         "7f9a966d6b206c355901091927ad26f0f732dcaad1ce5e6763fbc8c9d997d40b"
       ],
       "x-amz-date": [
-        "20251101T002625Z"
+        "20251101T004251Z"
       ]
     },
     "method": "post",
@@ -52,7 +52,7 @@
   "response": {
     "body": {
       "metrics": {
-        "latencyMs": 8915
+        "latencyMs": 31058
       },
       "output": {
         "message": {
@@ -60,13 +60,13 @@
             {
               "reasoningContent": {
                 "reasoningText": {
-                  "signature": "EoYDCkgICRABGAIqQOLaDFevB1aRMOKsSYjr6jdyFx369DwljUayEmeVXEiY+7f6KitA648uWG9w5jDApM+J8sspv9cTi/M2HqFj5lcSDG75UmpmNxoggSJzlRoM0txIf96pU0yl3ligIjCXq+KcoEft/Lq6MPqUQNlEvOvYJU7rsTm25af9PIyVZXZY6wKlZyhqTlELsrsMjE0q6wFENj8RuTU7xWVmYv/tnP9Vkqtwqu/rrRU61gYFpYFRZO4wCi10V1DLwJjvSZC0x8uqB58w5mGRH+7GGjlqmZ4pGcPYBWgzuwtk0juhBUbx0jMRdM4E2/zaiLmAztIEhwVDWXEtMi0Z8PuUic87y46u+TZkNhjWbAVzsYmx5ABKNHxxwwpg+YrNvIodYr+vHamtpvpPGH3HJ0NJf6ByyZTLDTS6Pqv0SdUKojFF7aUECK9wzxZ3NK2G5WeT2H2I0556EgBJrJ0fbeDJ0udhlGKfFovsVkbbqMy4ztEyiD5xlT+0++VbVU6Nb6DsGAE=",
-                  "text": "The user has sent me a simple \"Hello world!\" greeting. This is a common phrase used in programming as a first example, but in this context it seems like a friendly greeting. I should respond in a warm and welcoming way."
+                  "signature": "Es0DCkgICRABGAIqQAe8BKbuJnOI4vTtTWWp4hJln9by6Ps3njtNzqYESziVkyP7r0HHNDquv7138EDAsnGI8f7lFkiAea4YLeq1vIoSDGiGmzXVlBmrPVFhnRoM4YLRoRWlVBWJlJL4IjAcMVM4lVyFNLw0Vro19IjgaIjdIfkvLGbCXX3RRKyJvm2MIfcUCnlB6Vj6u4ph+okqsgL3gB2nboWieppXaiSXIX3K26h/Y2M7NKCM6oN2gVsznGGCZTnGrqWmj7oKrgHI7Rusvb5qkY2rhWJDgO4uLtlGi/xlArfMONQpxoFOFuqDN4PxTUarTrr9MaCHXmW3vkjWy5OjrDLDEp4t7eb811fauNh8lFxZaNu6N9n4eV6AwjgxCJRijSBR0cHRhElaQXgZRSPhnumIH41mhxIQVmoacdclNcMU6G075XJE1mVbVqlrDvXWSwX5mdvCxUcnwYmTUH6d0Y9kpMMhaPR1wFxcO4PFjsg13PJsDoyt3Ol+pZ+9dKEnCrNVK/PCYjSZGmTH2AhsoHrTUghavndwUVFX4ikOf7wYJpjJw1AOP4UcMnw3zDWHZlrO4Uyz1UjCGrY5HyHVCHRdDS5TXxccZhXfNd4YAQ==",
+                  "text": "The human has greeted me with \"Hello world!\" - this is a common greeting in programming and computer science, often used as the first program someone writes when learning a new programming language. But it could also just be a friendly greeting. I should respond in a warm and friendly way."
                 }
               }
             },
             {
-              "text": "Hello! 👋 Welcome! How can I help you today?"
+              "text": "Hello! Welcome! It's nice to meet you. How are you doing today? Is there anything I can help you with?"
             }
           ],
           "role": "assistant"
@@ -79,9 +79,9 @@
         "cacheWriteInputTokenCount": 0,
         "cacheWriteInputTokens": 0,
         "inputTokens": 38,
-        "outputTokens": 75,
+        "outputTokens": 96,
         "serverToolUsage": {},
-        "totalTokens": 113
+        "totalTokens": 134
       }
     },
     "headers": {
@@ -92,10 +92,10 @@
         "application/json"
       ],
       "date": [
-        "Sat, 01 Nov 2025 00:26:34 GMT"
+        "Sat, 01 Nov 2025 00:43:22 GMT"
       ],
       "x-amzn-requestid": [
-        "0375825d-4805-43ae-a283-cfc7e02005ec"
+        "13b04769-b055-43f9-b7a3-03b2d9440d35"
       ]
     },
     "status": 200

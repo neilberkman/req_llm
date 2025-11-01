@@ -1,0 +1,93 @@
+{
+  "request": {
+    "body": {
+      "b64": "eyJtYXhfdG9rZW5zIjo1MCwibWVzc2FnZXMiOlt7ImNvbnRlbnQiOiJIZWxsbyB3b3JsZCEiLCJyb2xlIjoidXNlciJ9XSwibW9kZWwiOiJvcGVuYWkuZ3B0LW9zcy0yMGItMTowIiwic2VlZCI6NDIsInN0cmVhbSI6ZmFsc2UsInRlbXBlcmF0dXJlIjowLjB9"
+    },
+    "canonical_json": {
+      "max_tokens": 50,
+      "messages": [
+        {
+          "content": "Hello world!",
+          "role": "user"
+        }
+      ],
+      "model": "openai.gpt-oss-20b-1:0",
+      "seed": 42,
+      "stream": false,
+      "temperature": 0.0
+    },
+    "headers": {
+      "accept-encoding": [
+        "gzip"
+      ],
+      "authorization": "[REDACTED:authorization]",
+      "content-type": [
+        "application/json"
+      ],
+      "host": [
+        "bedrock-runtime.us-east-1.amazonaws.com"
+      ],
+      "user-agent": [
+        "req/0.5.15"
+      ],
+      "x-amz-content-sha256": [
+        "879f888be34554cdad886ecb81631e3895d9df6023cf4593f6e3103112b8b00e"
+      ],
+      "x-amz-date": [
+        "20251101T005608Z"
+      ]
+    },
+    "method": "post",
+    "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/openai.gpt-oss-20b-1:0/invoke"
+  },
+  "response": {
+    "body": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "logprobs": null,
+          "message": {
+            "content": "<reasoning>The user says \"Hello world!\" This is a greeting. We should respond politely. Probably a friendly greeting.</reasoning>Hello! 👋 How can I help you today?",
+            "refusal": null,
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1761958569,
+      "id": "chatcmpl-9fcfb55c-2b4d-4176-8d61-0be0456e6a2f",
+      "model": "openai.gpt-oss-20b-1:0",
+      "object": "chat.completion",
+      "service_tier": "auto",
+      "usage": {
+        "completion_tokens": 43,
+        "prompt_tokens": 72,
+        "total_tokens": 115
+      }
+    },
+    "headers": {
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json"
+      ],
+      "date": [
+        "Sat, 01 Nov 2025 00:56:09 GMT"
+      ],
+      "x-amzn-bedrock-input-token-count": [
+        "72"
+      ],
+      "x-amzn-bedrock-invocation-latency": [
+        "589"
+      ],
+      "x-amzn-bedrock-output-token-count": [
+        "43"
+      ],
+      "x-amzn-requestid": [
+        "6d25fbf0-b119-4235-b356-9e090b4763db"
+      ]
+    },
+    "status": 200
+  }
+}

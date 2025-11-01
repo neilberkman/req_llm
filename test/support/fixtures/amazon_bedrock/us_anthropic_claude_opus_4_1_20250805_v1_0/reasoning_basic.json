@@ -1,0 +1,103 @@
+{
+  "request": {
+    "body": {
+      "b64": "eyJhZGRpdGlvbmFsTW9kZWxSZXF1ZXN0RmllbGRzIjp7InRoaW5raW5nIjp7ImJ1ZGdldF90b2tlbnMiOjQwMDAsInR5cGUiOiJlbmFibGVkIn19LCJpbmZlcmVuY2VDb25maWciOnsibWF4VG9rZW5zIjo1MDAwLCJ0ZW1wZXJhdHVyZSI6MS4wfSwibWVzc2FnZXMiOlt7ImNvbnRlbnQiOlt7InRleHQiOiJTb2x2ZSAxMio3IGFuZCBzaG93IHlvdXIgaW50ZXJuYWwgdGhpbmtpbmcgKGJyaWVmKS4ifV0sInJvbGUiOiJ1c2VyIn1dfQ=="
+    },
+    "canonical_json": {
+      "additionalModelRequestFields": {
+        "thinking": {
+          "budget_tokens": 4000,
+          "type": "enabled"
+        }
+      },
+      "inferenceConfig": {
+        "maxTokens": 5000,
+        "temperature": 1.0
+      },
+      "messages": [
+        {
+          "content": [
+            {
+              "text": "Solve 12*7 and show your internal thinking (brief)."
+            }
+          ],
+          "role": "user"
+        }
+      ]
+    },
+    "headers": {
+      "accept-encoding": [
+        "gzip"
+      ],
+      "authorization": "[REDACTED:authorization]",
+      "content-type": [
+        "application/json"
+      ],
+      "host": [
+        "bedrock-runtime.us-east-1.amazonaws.com"
+      ],
+      "user-agent": [
+        "req/0.5.15"
+      ],
+      "x-amz-content-sha256": [
+        "6977e56a858e5a9aa776d1bfe9e7be534e1e468954a005600705cf7c48718061"
+      ],
+      "x-amz-date": [
+        "20251101T004551Z"
+      ]
+    },
+    "method": "post",
+    "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-opus-4-1-20250805-v1:0/converse"
+  },
+  "response": {
+    "body": {
+      "metrics": {
+        "latencyMs": 13981
+      },
+      "output": {
+        "message": {
+          "content": [
+            {
+              "reasoningContent": {
+                "reasoningText": {
+                  "signature": "EoUDCkgICRABGAIqQNGJ0Xflzzeg+IY1Ofe+tl/bT6ZsEvU0iR2Fw3vPQo47rBeUxGzIbMbk7bOAKUM+cWzmEh1X2qAnlSu1HkjMB7sSDNMxl7UKspfClE/Q7BoMkV5oDSdYXv13/xC6IjAbGGZpSJn/33zprPYWwfW1RLTiWJMy7uIR/uEK2yCLttTZJxsi4yCOtla4NPYFUPEq6gHmt3NPrqjcVzj5+p92OndRNrjvRZHIrROokgISiundlhsgUVEMc+s47dKvvRgUVSopC0v+N1S77iCLWmKidT7k4rijae9pSzUztnDceUytlJ9+VYtGjZdbZ00hpGP2w6rqnjazb3RVKwtH5rn2FkttFAvkz3X2zpk6v+x6mQ+1S0WgL8FR7rzqsW0LceJVJkhry0YYQZdeE58dP/IRF2DcQqhU2drG7iR+NGvxLLmjtdDZdydUmbvjWUGaq+RRdUwsLtG1cBZdALziOFr3t3eUHmB8uzoFOgC0HV+Cfgp8hV7Vwrdx17LUfUQYAQ==",
+                  "text": "I need to calculate 12 * 7.\n\nLet me think through this:\n12 * 7 = (10 + 2) * 7\n= 10 * 7 + 2 * 7\n= 70 + 14\n= 84\n\nOr I could think of it as:\n12 * 7 = 12 * (5 + 2)\n= 12 * 5 + 12 * 2\n= 60 + 24\n= 84\n\nBoth methods give me 84."
+                }
+              }
+            },
+            {
+              "text": "**Internal thinking:**\n- Breaking down 12 × 7\n- Method: 12 × 7 = (10 + 2) × 7\n- = 70 + 14\n- = 84\n\n**Answer: 84**"
+            }
+          ],
+          "role": "assistant"
+        }
+      },
+      "stopReason": "end_turn",
+      "usage": {
+        "cacheReadInputTokenCount": 0,
+        "cacheReadInputTokens": 0,
+        "cacheWriteInputTokenCount": 0,
+        "cacheWriteInputTokens": 0,
+        "inputTokens": 50,
+        "outputTokens": 197,
+        "serverToolUsage": {},
+        "totalTokens": 247
+      }
+    },
+    "headers": {
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json"
+      ],
+      "date": [
+        "Sat, 01 Nov 2025 00:46:05 GMT"
+      ],
+      "x-amzn-requestid": [
+        "d5325af2-2907-4b37-b9ef-35f809c0dd8c"
+      ]
+    },
+    "status": 200
+  }
+}

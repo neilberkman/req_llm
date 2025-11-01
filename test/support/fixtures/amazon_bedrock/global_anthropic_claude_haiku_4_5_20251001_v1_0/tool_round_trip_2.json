@@ -1,0 +1,150 @@
+{
+  "request": {
+    "body": {
+      "b64": "eyJpbmZlcmVuY2VDb25maWciOnsibWF4VG9rZW5zIjo2NDAwLCJ0ZW1wZXJhdHVyZSI6MC4wfSwibWVzc2FnZXMiOlt7ImNvbnRlbnQiOlt7InRleHQiOiJVc2UgdGhlIGFkZCB0b29sIHRvIGNvbXB1dGUgMiArIDMuIEFmdGVyIHRoZSB0b29sIHJlc3VsdCBhcnJpdmVzLCByZXNwb25kIHdpdGggJ3N1bT08dmFsdWU+Jy4ifV0sInJvbGUiOiJ1c2VyIn0seyJjb250ZW50IjpbeyJ0ZXh0IjoiSSdsbCB1c2UgdGhlIGFkZCB0b29sIHRvIGNvbXB1dGUgMiArIDMuIn0seyJ0b29sVXNlIjp7ImlucHV0Ijp7ImEiOjIsImIiOjN9LCJuYW1lIjoiYWRkIiwidG9vbFVzZUlkIjoidG9vbHVzZV9HZ0lPMjFRMFNOLVJkSkRuQ2hDQmx3In19XSwicm9sZSI6ImFzc2lzdGFudCJ9LHsiY29udGVudCI6W3sidG9vbFJlc3VsdCI6eyJjb250ZW50IjpbeyJ0ZXh0IjoiNSJ9XSwidG9vbFVzZUlkIjoidG9vbHVzZV9HZ0lPMjFRMFNOLVJkSkRuQ2hDQmx3In19XSwicm9sZSI6InVzZXIifV0sInRvb2xDb25maWciOnsidG9vbHMiOlt7InRvb2xTcGVjIjp7ImRlc2NyaXB0aW9uIjoiQWRkIHR3byBpbnRlZ2VycyIsImlucHV0U2NoZW1hIjp7Impzb24iOnsiYWRkaXRpb25hbFByb3BlcnRpZXMiOmZhbHNlLCJwcm9wZXJ0aWVzIjp7ImEiOnsidHlwZSI6ImludGVnZXIifSwiYiI6eyJ0eXBlIjoiaW50ZWdlciJ9fSwicmVxdWlyZWQiOlsiYSIsImIiXSwidHlwZSI6Im9iamVjdCJ9fSwibmFtZSI6ImFkZCJ9fV19fQ=="
+    },
+    "canonical_json": {
+      "inferenceConfig": {
+        "maxTokens": 6400,
+        "temperature": 0.0
+      },
+      "messages": [
+        {
+          "content": [
+            {
+              "text": "Use the add tool to compute 2 + 3. After the tool result arrives, respond with 'sum=<value>'."
+            }
+          ],
+          "role": "user"
+        },
+        {
+          "content": [
+            {
+              "text": "I'll use the add tool to compute 2 + 3."
+            },
+            {
+              "toolUse": {
+                "input": {
+                  "a": 2,
+                  "b": 3
+                },
+                "name": "add",
+                "toolUseId": "tooluse_GgIO21Q0SN-RdJDnChCBlw"
+              }
+            }
+          ],
+          "role": "assistant"
+        },
+        {
+          "content": [
+            {
+              "toolResult": {
+                "content": [
+                  {
+                    "text": "5"
+                  }
+                ],
+                "toolUseId": "tooluse_GgIO21Q0SN-RdJDnChCBlw"
+              }
+            }
+          ],
+          "role": "user"
+        }
+      ],
+      "toolConfig": {
+        "tools": [
+          {
+            "toolSpec": {
+              "description": "Add two integers",
+              "inputSchema": {
+                "json": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "a": {
+                      "type": "integer"
+                    },
+                    "b": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "a",
+                    "b"
+                  ],
+                  "type": "object"
+                }
+              },
+              "name": "add"
+            }
+          }
+        ]
+      }
+    },
+    "headers": {
+      "accept-encoding": [
+        "gzip"
+      ],
+      "authorization": "[REDACTED:authorization]",
+      "content-type": [
+        "application/json"
+      ],
+      "host": [
+        "bedrock-runtime.us-east-1.amazonaws.com"
+      ],
+      "user-agent": [
+        "req/0.5.15"
+      ],
+      "x-amz-content-sha256": [
+        "8220a1689d5ecddd96b648b52201dd772d0f97ab53d0d7eca158dbf32875ccae"
+      ],
+      "x-amz-date": [
+        "20251101T002501Z"
+      ]
+    },
+    "method": "post",
+    "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/global.anthropic.claude-haiku-4-5-20251001-v1:0/converse"
+  },
+  "response": {
+    "body": {
+      "metrics": {
+        "latencyMs": 915
+      },
+      "output": {
+        "message": {
+          "content": [
+            {
+              "text": "sum=5"
+            }
+          ],
+          "role": "assistant"
+        }
+      },
+      "stopReason": "end_turn",
+      "usage": {
+        "cacheReadInputTokenCount": 0,
+        "cacheReadInputTokens": 0,
+        "cacheWriteInputTokenCount": 0,
+        "cacheWriteInputTokens": 0,
+        "inputTokens": 698,
+        "outputTokens": 6,
+        "serverToolUsage": {},
+        "totalTokens": 704
+      }
+    },
+    "headers": {
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json"
+      ],
+      "date": [
+        "Sat, 01 Nov 2025 00:25:02 GMT"
+      ],
+      "x-amzn-requestid": [
+        "e2ff992a-5fdf-440d-80fe-f5899a0708f1"
+      ]
+    },
+    "status": 200
+  }
+}

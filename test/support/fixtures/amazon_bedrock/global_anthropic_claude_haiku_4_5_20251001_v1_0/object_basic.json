@@ -1,0 +1,147 @@
+{
+  "request": {
+    "body": {
+      "b64": "eyJhZGRpdGlvbmFsTW9kZWxSZXF1ZXN0RmllbGRzIjp7InRoaW5raW5nIjp7ImJ1ZGdldF90b2tlbnMiOjQwMDAsInR5cGUiOiJlbmFibGVkIn19LCJpbmZlcmVuY2VDb25maWciOnsibWF4VG9rZW5zIjo0MDAxLCJ0ZW1wZXJhdHVyZSI6MS4wfSwibWVzc2FnZXMiOlt7ImNvbnRlbnQiOlt7InRleHQiOiJHZW5lcmF0ZSBhIHNvZnR3YXJlIGVuZ2luZWVyIHByb2ZpbGUifV0sInJvbGUiOiJ1c2VyIn1dLCJ0b29sQ29uZmlnIjp7InRvb2xzIjpbeyJ0b29sU3BlYyI6eyJkZXNjcmlwdGlvbiI6IkdlbmVyYXRlIHN0cnVjdHVyZWQgb3V0cHV0IG1hdGNoaW5nIHRoZSBwcm92aWRlZCBzY2hlbWEiLCJpbnB1dFNjaGVtYSI6eyJqc29uIjp7ImFkZGl0aW9uYWxQcm9wZXJ0aWVzIjpmYWxzZSwicHJvcGVydGllcyI6eyJhZ2UiOnsiZGVzY3JpcHRpb24iOiJQZXJzb24ncyBhZ2UgaW4geWVhcnMiLCJtaW5pbXVtIjoxLCJ0eXBlIjoiaW50ZWdlciJ9LCJuYW1lIjp7ImRlc2NyaXB0aW9uIjoiUGVyc29uJ3MgZnVsbCBuYW1lIiwidHlwZSI6InN0cmluZyJ9LCJvY2N1cGF0aW9uIjp7ImRlc2NyaXB0aW9uIjoiUGVyc29uJ3Mgam9iIG9yIHByb2Zlc3Npb24iLCJ0eXBlIjoic3RyaW5nIn19LCJyZXF1aXJlZCI6WyJuYW1lIiwiYWdlIl0sInR5cGUiOiJvYmplY3QifX0sIm5hbWUiOiJzdHJ1Y3R1cmVkX291dHB1dCJ9fV19fQ=="
+    },
+    "canonical_json": {
+      "additionalModelRequestFields": {
+        "thinking": {
+          "budget_tokens": 4000,
+          "type": "enabled"
+        }
+      },
+      "inferenceConfig": {
+        "maxTokens": 4001,
+        "temperature": 1.0
+      },
+      "messages": [
+        {
+          "content": [
+            {
+              "text": "Generate a software engineer profile"
+            }
+          ],
+          "role": "user"
+        }
+      ],
+      "toolConfig": {
+        "tools": [
+          {
+            "toolSpec": {
+              "description": "Generate structured output matching the provided schema",
+              "inputSchema": {
+                "json": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "age": {
+                      "description": "Person's age in years",
+                      "minimum": 1,
+                      "type": "integer"
+                    },
+                    "name": {
+                      "description": "Person's full name",
+                      "type": "string"
+                    },
+                    "occupation": {
+                      "description": "Person's job or profession",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "age"
+                  ],
+                  "type": "object"
+                }
+              },
+              "name": "structured_output"
+            }
+          }
+        ]
+      }
+    },
+    "headers": {
+      "accept-encoding": [
+        "gzip"
+      ],
+      "authorization": "[REDACTED:authorization]",
+      "content-type": [
+        "application/json"
+      ],
+      "host": [
+        "bedrock-runtime.us-east-1.amazonaws.com"
+      ],
+      "user-agent": [
+        "req/0.5.15"
+      ],
+      "x-amz-content-sha256": [
+        "6d9e17859921ac68a6e25e858385ac139251475c6e5630e284868a9fe76e7523"
+      ],
+      "x-amz-date": [
+        "20251101T002514Z"
+      ]
+    },
+    "method": "post",
+    "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/global.anthropic.claude-haiku-4-5-20251001-v1:0/converse"
+  },
+  "response": {
+    "body": {
+      "metrics": {
+        "latencyMs": 2139
+      },
+      "output": {
+        "message": {
+          "content": [
+            {
+              "reasoningContent": {
+                "reasoningText": {
+                  "signature": "EsYFCkgICRABGAIqQEzqVhrqgfCMwvi6qCcKBgTueEDf+/uovE7Qoi7ojqSzPCWNMwmc2J+0Yu6hoCKvmN3k+G7L5YHsv2zxyv/2pXsSDNwr1B8ph09ISfwSsRoMGj5WPOgbBfoTz8FfIjAbV/+v+stjN1EiB7VyPACdE/7IsaB3IpsESGLeLS9hTuDkIQRMgPUb2arLFADgTQgqqwT9kN1XUGU7lSWckTn0JDnj6hKMpbmgkr7tqWsYPGaub3P988yis4L026UcWH86zPZU0U47S3tHz7m9oj9pp27oAtwTgDMAFxSFZxMu6HDrI4C8VXwa3ArDrtwM78ev0ZXMUNkXRDqXZW2vg+2Vf43PJ96WbKNiYuq6Sz0Kv4jmrACyiw0pYCk7XELsvswBxfUYsW4GhUk6LbUZcS4otCBy7TKF+iGOAvp6iej04GUYqVySsOjaMTjlIPvJBjwDuxzO+18qkMQqog8EfOADoSJRrR+ycdkwK/RQS20k6JZe3F/uVSy3G8Rj4gm76ywM721VVMCwl6EFEzoQ7b0jXCcTYrTQFq/brgYOZ5FVsDFgSHvEHbHDwP+z/av8oYZEBNcrvnp7YLqs9Q5doxRld4p+DNi2PNn6uBo25pzFy2osPdzwvb7U/of9I/pWWn/Rn6bkl8S26Or16rWRQxeKeCl8hY0pgD8RC83zgpF+zGltDhXZSMS6DS3gyfF4p2oswETH77qq6pH8bXB60eg+AjSLSoRftLmLuJ6dKUk7qpf6A3+8jq2bk+Z7NdrzLS3XPOIPvhZmgdomWOfCJl1QGrYy/Us6zOU90+xtOX9eMPtmkKrB+1tTBZhonYrWuZ9fvjWlEnUoy8NYUeO/hp5sPjCH/nRgpXKtHTN3Bh+YF0/cetqgVvah8/p+GgoT3ZJ/MJN64F+G3H2znKV1I6dp4r7Le6lXAjhR9WOC85wYAQ==",
+                  "text": "The user is asking me to generate a software engineer profile. I should use the structured_output function to create this. The function requires:\n- name (required): Person's full name\n- age (required): Person's age in years\n- occupation (optional): Person's job or profession\n\nSince the user wants a software engineer profile, I should create a realistic example with:\n- A realistic name\n- A reasonable age for a software engineer\n- The occupation set to \"Software Engineer\" or similar\n\nI'll create a sample profile with reasonable values."
+                }
+              }
+            },
+            {
+              "toolUse": {
+                "input": {
+                  "age": 28,
+                  "name": "Alexandra Chen",
+                  "occupation": "Software Engineer"
+                },
+                "name": "structured_output",
+                "toolUseId": "tooluse_rskeutlaS0Gfsj9nLbnscg",
+                "type": "tool_use"
+              }
+            }
+          ],
+          "role": "assistant"
+        }
+      },
+      "stopReason": "tool_use",
+      "usage": {
+        "cacheReadInputTokenCount": 0,
+        "cacheReadInputTokens": 0,
+        "cacheWriteInputTokenCount": 0,
+        "cacheWriteInputTokens": 0,
+        "inputTokens": 657,
+        "outputTokens": 213,
+        "serverToolUsage": {},
+        "totalTokens": 870
+      }
+    },
+    "headers": {
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json"
+      ],
+      "date": [
+        "Sat, 01 Nov 2025 00:25:16 GMT"
+      ],
+      "x-amzn-requestid": [
+        "11b5d00f-161f-4cf5-b092-a3b63fdf7d79"
+      ]
+    },
+    "status": 200
+  }
+}

@@ -14,10 +14,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Context tools persistence for AWS Bedrock multi-turn conversations (fixes #158)
   - Tools automatically persist in context after first request
   - Bedrock-specific implementation with zero impact on other providers
-- AWS Bedrock Claude inference profile models with fixtures (3 models)
+- AWS Bedrock Claude inference profile models with complete fixtures (3 models)
   - global.anthropic.claude-sonnet-4-5-20250929-v1:0 (12 fixtures)
-  - global.anthropic.claude-haiku-4-5-20251001-v1:0 (4 fixtures)
-  - us.anthropic.claude-opus-4-1-20250805-v1:0 (4 fixtures)
+  - global.anthropic.claude-haiku-4-5-20251001-v1:0 (12 fixtures)
+  - us.anthropic.claude-opus-4-1-20250805-v1:0 (12 fixtures)
+- AWS Bedrock OpenAI OSS models with complete fixtures (2 models)
+  - openai.gpt-oss-20b-1:0 (10 fixtures)
+  - openai.gpt-oss-120b-1:0 (10 fixtures)
 
 ### Fixed
 
@@ -28,9 +31,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - AWS Bedrock Converse API usage field parsing
   - Fixed `parse_usage/1` to include all required fields (reasoning_tokens, total_tokens, cached_tokens)
   - Fixes KeyError when accessing usage fields from Converse API responses
-- AWS Bedrock provider now only advertises Anthropic models
+- AWS Bedrock model ID normalization for metadata lookup
+  - Fixed `normalize_model_id/1` to always strip region prefixes for Registry lookups
+  - Enables capabilities detection for inference profile models
+  - Separates metadata lookup (always normalized) from API requests (preserve_inference_profile? controls)
+- AWS Bedrock provider now only advertises Anthropic and OpenAI models
   - Removed Meta and Mistral from @model_families (not currently supported)
-  - Test metadata validation now skips non-Anthropic Bedrock models
+  - Added OpenAI to @model_families for gpt-oss models
+  - Test metadata validation now skips non-Anthropic/OpenAI Bedrock models
 
 ## [1.0.0-rc.8] - 2025-10-29
 

@@ -1,0 +1,93 @@
+{
+  "request": {
+    "body": {
+      "b64": "eyJtYXhfdG9rZW5zIjoxMCwibWVzc2FnZXMiOlt7ImNvbnRlbnQiOiJIaSB0aGVyZSEiLCJyb2xlIjoidXNlciJ9XSwibW9kZWwiOiJvcGVuYWkuZ3B0LW9zcy0yMGItMTowIiwic2VlZCI6NDIsInN0cmVhbSI6ZmFsc2UsInRlbXBlcmF0dXJlIjowLjB9"
+    },
+    "canonical_json": {
+      "max_tokens": 10,
+      "messages": [
+        {
+          "content": "Hi there!",
+          "role": "user"
+        }
+      ],
+      "model": "openai.gpt-oss-20b-1:0",
+      "seed": 42,
+      "stream": false,
+      "temperature": 0.0
+    },
+    "headers": {
+      "accept-encoding": [
+        "gzip"
+      ],
+      "authorization": "[REDACTED:authorization]",
+      "content-type": [
+        "application/json"
+      ],
+      "host": [
+        "bedrock-runtime.us-east-1.amazonaws.com"
+      ],
+      "user-agent": [
+        "req/0.5.15"
+      ],
+      "x-amz-content-sha256": [
+        "b19390abe230975afaa778ca7e5fe96c0deb882222b8cd82c4e145ff15f09db1"
+      ],
+      "x-amz-date": [
+        "20251101T005612Z"
+      ]
+    },
+    "method": "post",
+    "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/openai.gpt-oss-20b-1:0/invoke"
+  },
+  "response": {
+    "body": {
+      "choices": [
+        {
+          "finish_reason": "length",
+          "index": 0,
+          "logprobs": null,
+          "message": {
+            "content": "<reasoning>The user says \"Hi there!\"</reasoning>",
+            "refusal": null,
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1761958572,
+      "id": "chatcmpl-757ab162-b023-4dc6-8207-69dcc4e5b276",
+      "model": "openai.gpt-oss-20b-1:0",
+      "object": "chat.completion",
+      "service_tier": "auto",
+      "usage": {
+        "completion_tokens": 10,
+        "prompt_tokens": 72,
+        "total_tokens": 82
+      }
+    },
+    "headers": {
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json"
+      ],
+      "date": [
+        "Sat, 01 Nov 2025 00:56:13 GMT"
+      ],
+      "x-amzn-bedrock-input-token-count": [
+        "72"
+      ],
+      "x-amzn-bedrock-invocation-latency": [
+        "197"
+      ],
+      "x-amzn-bedrock-output-token-count": [
+        "10"
+      ],
+      "x-amzn-requestid": [
+        "51819034-5f9d-49ac-be0f-ccc61920e6b6"
+      ]
+    },
+    "status": 200
+  }
+}
