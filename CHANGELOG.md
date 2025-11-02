@@ -7,43 +7,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- Allow provider `base_url`s to be overriden in config
+## [1.0.0] - 2025-11-02
 
 ### Added
 
+- **Google Vertex AI provider** with comprehensive Claude 4.x support
+  - OAuth2 authentication with service accounts
+  - Full Claude model support (Haiku 4.5, Sonnet 4.5, Opus 4.1)
+  - Extended thinking and prompt caching capabilities
+  - Complete fixtures for all Vertex AI Claude models
+- **AWS Bedrock inference profile models** with complete fixture coverage
+  - Anthropic Claude inference profiles (Haiku 4.5, Sonnet 4.5, Opus 4.1)
+  - OpenAI OSS models (gpt-oss-20b, gpt-oss-120b)
+  - Meta Llama inference profiles
+  - Cohere Command R and Command R Plus models
+- **Provider base URL override** capability via application config
+  - Enables testing with mock services
+  - Configured per-provider in application config
 - AWS Bedrock API key authentication support (introduced by AWS in July 2025)
   - Simple Bearer token authentication as alternative to IAM credentials
   - `api_key` provider option with `AWS_BEARER_TOKEN_BEDROCK` environment variable fallback
   - Short-term keys (up to 12 hours) recommended for production
   - Long-term keys available for exploration
   - Limitations: Cannot use with InvokeModelWithBidirectionalStream, Agents, or Data Automation
-- Context tools persistence for AWS Bedrock multi-turn conversations (fixes #158)
+- **Context tools persistence** for AWS Bedrock multi-turn conversations
   - Tools automatically persist in context after first request
   - Bedrock-specific implementation with zero impact on other providers
-- AWS Bedrock Claude inference profile models with complete fixtures (3 models)
-  - global.anthropic.claude-sonnet-4-5-20250929-v1:0 (12 fixtures)
-  - global.anthropic.claude-haiku-4-5-20251001-v1:0 (12 fixtures)
-  - us.anthropic.claude-opus-4-1-20250805-v1:0 (12 fixtures)
-- AWS Bedrock OpenAI OSS models with complete fixtures (2 models)
-  - openai.gpt-oss-20b-1:0 (10 fixtures)
-  - openai.gpt-oss-120b-1:0 (10 fixtures)
-- AWS Bedrock Meta Llama inference profile model with basic fixtures (1 model)
-  - us.meta.llama3-2-3b-instruct-v1:0 (4 fixtures: basic, streaming, token_limit, usage)
-- AWS Bedrock Cohere Command R models with complete fixtures (2 models)
-  - cohere.command-r-v1:0 (10 fixtures)
-  - cohere.command-r-plus-v1:0 (10 fixtures)
-- Google Vertex AI Anthropic Claude models with complete fixtures (3 models)
-  - claude-haiku-4-5@20251001 (12 fixtures)
-  - claude-sonnet-4-5@20250929 (12 fixtures)
-  - claude-opus-4-1@20250805 (12 fixtures)
-- Google Vertex AI provider guide with comprehensive documentation
-  - OAuth2 authentication with service accounts
-  - Full Claude 4.x model support (Haiku, Sonnet, Opus)
-  - Extended thinking and prompt caching support
-  - Model-specific request fields configuration
+- **Schema map-subtyped list support** for complex nested structures
+  - Properly handles `{:list, {:map, schema}}` type definitions
+  - Generates correct JSON Schema for nested object arrays
+
+### Enhanced
+
+- **Google provider v1beta API** as default version
+  - Fixes streaming compatibility issues
+  - Updated all test fixtures to use v1beta
+- **Test configuration** expanded with additional LLM providers
+  - Enhanced catalog_allow settings for broader provider coverage
+- **Documentation organization** with refactored guides structure
+  - Improved provider-specific documentation
+  - Better task organization in mix.exs
 
 ### Fixed
 
+- **Streaming protocol callback renamed** from `decode_sse_event` to `decode_stream_event`
+  - More protocol-agnostic naming (supports SSE, AWS Event Stream, etc.)
+  - Affects all providers implementing streaming
+- **Groq UTF-8 boundary handling** in streaming responses
+  - Prevents crashes when UTF-8 characters split across chunk boundaries
+- **Schema boolean encoding** preventing invalid string coercion
+  - Boolean values now correctly encoded in normalized schemas
+- **OpenAI model list typo** corrected in documentation
 - AWS Bedrock Anthropic inference profile model ID preservation
   - Added `preserve_inference_profile?/1` callback to Anthropic Bedrock formatter
   - Ensures region prefixes (global., us.) are preserved in API requests
@@ -59,6 +73,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added Meta to @model_families for Llama models using Converse API
   - Added OpenAI to @model_families for gpt-oss models
   - Cohere Command R models use Converse API directly with full tool support (no custom formatter needed)
+
+### Notes
+
+This is the first stable 1.0 release of ReqLLM, marking production readiness with comprehensive provider support, robust streaming, and extensive test coverage. The library now supports 15+ providers with 750+ models and includes advanced features like prompt caching, structured output, tool calling, and embeddings.
 
 ## [1.0.0-rc.8] - 2025-10-29
 
@@ -462,6 +480,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Quality tooling with Dialyzer, Credo, and formatter
 - LiveFixture testing framework for API mocking
 
+[1.0.0]: https://github.com/agentjido/req_llm/releases/tag/v1.0.0
 [1.0.0-rc.8]: https://github.com/agentjido/req_llm/releases/tag/v1.0.0-rc.8
 [1.0.0-rc.7]: https://github.com/agentjido/req_llm/releases/tag/v1.0.0-rc.7
 [1.0.0-rc.6]: https://github.com/agentjido/req_llm/releases/tag/v1.0.0-rc.6
