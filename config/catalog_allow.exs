@@ -125,7 +125,14 @@ amazon_bedrock_models = ~w(
   cohere.command-r-plus-v1:0
 )
 
-# Google Vertex AI - Disabled (requires GCP project ID)
+# Google Vertex AI - All Gemini 2.5 models
+google_vertex_models = ~w(
+  gemini-2.5-flash
+  gemini-2.5-flash-lite
+  gemini-2.5-pro
+)
+
+# Google Vertex AI - Claude models
 google_vertex_anthropic_models = []
 
 # zAI - All models
@@ -146,6 +153,7 @@ config :req_llm, :catalog,
     xai: xai_models,
     openrouter: openrouter_models,
     amazon_bedrock: amazon_bedrock_models,
+    google_vertex: google_vertex_models,
     google_vertex_anthropic: google_vertex_anthropic_models,
     zai: zai_models,
     zai_coder: zai_coder_models,
