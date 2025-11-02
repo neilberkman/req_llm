@@ -116,8 +116,11 @@ defmodule ReqLLM.Providers.AmazonBedrock.AWSEventStream do
           >>
 
           if :erlang.crc32(message_without_crc) == message_crc do
+            # Parse headers to get event metadata
+            parsed_headers = parse_headers(headers)
+
             # Parse the body - typically JSON with base64-encoded content
-            case decode_body(body) do
+            case decode_body(body, parsed_headers) do
               {:ok, decoded} ->
                 {:ok, decoded, remaining}
 
@@ -144,7 +147,45 @@ defmodule ReqLLM.Providers.AmazonBedrock.AWSEventStream do
     {:incomplete, data}
   end
 
-  defp decode_body(body) do
+  defp parse_headers(headers_binary) when byte_size(headers_binary) == 0 do
+    %{}
+  end
+
+  defp parse_headers(headers_binary) do
+    parse_header_pairs(headers_binary, %{})
+  end
+
+  defp parse_header_pairs(<<>>, acc), do: acc
+
+  defp parse_header_pairs(data, acc) do
+    # Each header is: name_len(1) + name + value_type(1) + value_len(2) + value
+    case data do
+      <<name_len::8, rest::binary>> when byte_size(rest) >= name_len ->
+        <<name::binary-size(name_len), value_type::8, rest2::binary>> = rest
+
+        case value_type do
+          # String type (7)
+          7 when byte_size(rest2) >= 2 ->
+            <<value_len::16-big, rest3::binary>> = rest2
+
+            if byte_size(rest3) >= value_len do
+              <<value::binary-size(value_len), remaining::binary>> = rest3
+              parse_header_pairs(remaining, Map.put(acc, name, value))
+            else
+              acc
+            end
+
+          # Other types not implemented yet
+          _ ->
+            acc
+        end
+
+      _ ->
+        acc
+    end
+  end
+
+  defp decode_body(body, headers) do
     # AWS event streams for Bedrock typically have {"bytes": "base64_content"}
     # where the base64 content is the actual JSON payload
     case Jason.decode(body) do
@@ -160,7 +201,15 @@ defmodule ReqLLM.Providers.AmazonBedrock.AWSEventStream do
 
       {:ok, decoded} ->
         # Direct JSON (some AWS services)
-        {:ok, decoded}
+        # For Converse API, wrap in event type from headers if present
+        case Map.get(headers, ":event-type") do
+          nil ->
+            {:ok, decoded}
+
+          event_type ->
+            # Convert "contentBlockDelta" to the wrapper format expected by parse_stream_chunk
+            {:ok, %{event_type => decoded}}
+        end
 
       {:error, error} ->
         {:error, error}

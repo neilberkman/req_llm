@@ -1,0 +1,85 @@
+{
+  "request": {
+    "body": {
+      "b64": "eyJpbmZlcmVuY2VDb25maWciOnsibWF4VG9rZW5zIjoxMDAsInRlbXBlcmF0dXJlIjowLjV9LCJtZXNzYWdlcyI6W3siY29udGVudCI6W3sidGV4dCI6IldyaXRlIGEgdmVyeSBsb25nIHN0b3J5IGFib3V0IGRyYWdvbnMgYW5kIGFkdmVudHVyZXMifV0sInJvbGUiOiJ1c2VyIn1dfQ=="
+    },
+    "canonical_json": {
+      "inferenceConfig": {
+        "maxTokens": 100,
+        "temperature": 0.5
+      },
+      "messages": [
+        {
+          "content": [
+            {
+              "text": "Write a very long story about dragons and adventures"
+            }
+          ],
+          "role": "user"
+        }
+      ]
+    },
+    "headers": {
+      "accept-encoding": [
+        "gzip"
+      ],
+      "authorization": "[REDACTED:authorization]",
+      "content-type": [
+        "application/json"
+      ],
+      "host": [
+        "bedrock-runtime.us-east-1.amazonaws.com"
+      ],
+      "user-agent": [
+        "req/0.5.15"
+      ],
+      "x-amz-content-sha256": [
+        "af3f637afd9c02d90b55ab65f033e5438add0479d2f6b78eb0e25cc0524c5965"
+      ],
+      "x-amz-date": [
+        "20251102T171012Z"
+      ]
+    },
+    "method": "post",
+    "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/cohere.command-r-plus-v1:0/converse"
+  },
+  "response": {
+    "body": {
+      "metrics": {
+        "latencyMs": 2640
+      },
+      "output": {
+        "message": {
+          "content": [
+            {
+              "text": "Title: The Dragon's Legacy\n\nChapter 1: The Dragon Rider\n\nOnce upon a time, in a land shrouded by magic and mystery, there lived a brave and adventurous girl named Lyra. Lyra had always felt a deep connection to the mythical creatures that roamed her world, especially the majestic dragons. She spent her days exploring the enchanted forests, climbing the towering mountains, and dreaming of the day when she would encounter a dragon of her own.\n\nLyra possessed a"
+            }
+          ],
+          "role": "assistant"
+        }
+      },
+      "stopReason": "max_tokens",
+      "usage": {
+        "inputTokens": 9,
+        "outputTokens": 100,
+        "serverToolUsage": {},
+        "totalTokens": 109
+      }
+    },
+    "headers": {
+      "connection": [
+        "keep-alive"
+      ],
+      "content-type": [
+        "application/json"
+      ],
+      "date": [
+        "Sun, 02 Nov 2025 17:10:15 GMT"
+      ],
+      "x-amzn-requestid": [
+        "15389c4a-4c46-4cca-b8af-fe8d089a05f2"
+      ]
+    },
+    "status": 200
+  }
+}

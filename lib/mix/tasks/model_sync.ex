@@ -450,8 +450,13 @@ defmodule Mix.Tasks.ReqLlm.ModelSync do
 
   defp merge_patch_data(models_data, provider_data, {:exclude, exclusions}, verbose?) do
     provider_id = normalize_provider_id(provider_data["id"])
+    original_id = provider_data["id"]
 
-    case Map.get(models_data, provider_id) do
+    # Try normalized ID first, then original (for models.dev data with hyphens)
+    # Important: Patch files must use the original hyphenated ID (e.g., "google-vertex-anthropic")
+    # because models_data map keys come directly from models.dev before normalization.
+    # The code then normalizes the provider ID when writing the output file.
+    case Map.get(models_data, provider_id) || Map.get(models_data, original_id) do
       nil ->
         if verbose? do
           IO.puts("    Skipping exclusions for unknown provider: #{provider_id}")
@@ -471,14 +476,19 @@ defmodule Mix.Tasks.ReqLlm.ModelSync do
         end
 
         updated_provider_data = Map.put(existing_provider_data, "models", filtered_models)
-        Map.put(models_data, provider_id, updated_provider_data)
+
+        models_data
+        |> Map.delete(original_id)
+        |> Map.put(provider_id, updated_provider_data)
     end
   end
 
   defp merge_patch_data(models_data, provider_data, {:models, patch_models}, verbose?) do
     provider_id = normalize_provider_id(provider_data["id"])
+    original_id = provider_data["id"]
 
-    case Map.get(models_data, provider_id) do
+    # Try normalized ID first, then original (for models.dev data with hyphens)
+    case Map.get(models_data, provider_id) || Map.get(models_data, original_id) do
       nil ->
         patch_models_map =
           patch_models
@@ -537,7 +547,9 @@ defmodule Mix.Tasks.ReqLlm.ModelSync do
           |> Map.put("models", merged_models)
           |> Map.put("provider", merged_provider_config)
 
-        Map.put(models_data, provider_id, updated_provider_data)
+        models_data
+        |> Map.delete(original_id)
+        |> Map.put(provider_id, updated_provider_data)
     end
   end
 

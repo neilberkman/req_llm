@@ -28,6 +28,7 @@ defmodule ReqLLM.Context do
   @derive Jason.Encoder
   typedstruct enforce: true do
     field(:messages, [Message.t()], default: [])
+    field(:tools, [ReqLLM.Tool.t()], default: [])
   end
 
   # Canonical public interface
@@ -161,12 +162,13 @@ defmodule ReqLLM.Context do
       # response.context now contains both user and assistant messages
 
   """
-  @spec merge_response(t(), ReqLLM.Response.t()) :: ReqLLM.Response.t()
-  def merge_response(context, response) do
+  @spec merge_response(t(), ReqLLM.Response.t(), keyword()) :: ReqLLM.Response.t()
+  def merge_response(context, response, opts \\ []) do
     case {context, response.message} do
       {%__MODULE__{} = ctx, %Message{} = msg} ->
         updated_messages = ctx.messages ++ [msg]
-        updated_context = %__MODULE__{messages: updated_messages}
+        tools = persist_tools(ctx.tools, Keyword.get(opts, :tools))
+        updated_context = %__MODULE__{messages: updated_messages, tools: tools}
         %{response | context: updated_context}
 
       _ ->
@@ -611,6 +613,18 @@ defmodule ReqLLM.Context do
   end
 
   # Private functions
+
+  # Determine which tools to persist in context based on opts
+  defp persist_tools(context_tools, opts_tools) do
+    case opts_tools do
+      # No tools in opts, keep existing context tools
+      nil -> context_tools
+      # Empty list means explicitly no tools
+      [] -> []
+      # New tools provided, use them
+      tools when is_list(tools) -> tools
+    end
+  end
 
   defp generate_id do
     Uniq.UUID.uuid7()

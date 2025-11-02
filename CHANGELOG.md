@@ -9,6 +9,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Allow provider `base_url`s to be overriden in config
 
+### Added
+
+- AWS Bedrock API key authentication support (introduced by AWS in July 2025)
+  - Simple Bearer token authentication as alternative to IAM credentials
+  - `api_key` provider option with `AWS_BEARER_TOKEN_BEDROCK` environment variable fallback
+  - Short-term keys (up to 12 hours) recommended for production
+  - Long-term keys available for exploration
+  - Limitations: Cannot use with InvokeModelWithBidirectionalStream, Agents, or Data Automation
+- Context tools persistence for AWS Bedrock multi-turn conversations (fixes #158)
+  - Tools automatically persist in context after first request
+  - Bedrock-specific implementation with zero impact on other providers
+- AWS Bedrock Claude inference profile models with complete fixtures (3 models)
+  - global.anthropic.claude-sonnet-4-5-20250929-v1:0 (12 fixtures)
+  - global.anthropic.claude-haiku-4-5-20251001-v1:0 (12 fixtures)
+  - us.anthropic.claude-opus-4-1-20250805-v1:0 (12 fixtures)
+- AWS Bedrock OpenAI OSS models with complete fixtures (2 models)
+  - openai.gpt-oss-20b-1:0 (10 fixtures)
+  - openai.gpt-oss-120b-1:0 (10 fixtures)
+- AWS Bedrock Meta Llama inference profile model with basic fixtures (1 model)
+  - us.meta.llama3-2-3b-instruct-v1:0 (4 fixtures: basic, streaming, token_limit, usage)
+- AWS Bedrock Cohere Command R models with complete fixtures (2 models)
+  - cohere.command-r-v1:0 (10 fixtures)
+  - cohere.command-r-plus-v1:0 (10 fixtures)
+- Google Vertex AI Anthropic Claude models with complete fixtures (3 models)
+  - claude-haiku-4-5@20251001 (12 fixtures)
+  - claude-sonnet-4-5@20250929 (12 fixtures)
+  - claude-opus-4-1@20250805 (12 fixtures)
+- Google Vertex AI provider guide with comprehensive documentation
+  - OAuth2 authentication with service accounts
+  - Full Claude 4.x model support (Haiku, Sonnet, Opus)
+  - Extended thinking and prompt caching support
+  - Model-specific request fields configuration
+
+### Fixed
+
+- AWS Bedrock Anthropic inference profile model ID preservation
+  - Added `preserve_inference_profile?/1` callback to Anthropic Bedrock formatter
+  - Ensures region prefixes (global., us.) are preserved in API requests
+  - Fixes 400 "invalid model identifier" errors for inference profile models
+- AWS Bedrock Converse API usage field parsing
+  - Fixed `parse_usage/1` to include all required fields (reasoning_tokens, total_tokens, cached_tokens)
+  - Fixes KeyError when accessing usage fields from Converse API responses
+- AWS Bedrock model ID normalization for metadata lookup
+  - Fixed `normalize_model_id/1` to always strip region prefixes for Registry lookups
+  - Enables capabilities detection for inference profile models
+  - Separates metadata lookup (always normalized) from API requests (preserve_inference_profile? controls)
+- AWS Bedrock provider model family support
+  - Added Meta to @model_families for Llama models using Converse API
+  - Added OpenAI to @model_families for gpt-oss models
+  - Cohere Command R models use Converse API directly with full tool support (no custom formatter needed)
+
 ## [1.0.0-rc.8] - 2025-10-29
 
 ### Added

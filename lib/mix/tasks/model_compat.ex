@@ -313,13 +313,28 @@ defmodule Mix.Tasks.ReqLlm.ModelCompat do
     operation = parse_operation_type(opts[:type])
     category = operation_to_category(operation)
 
-    env = [
-      {"REQ_LLM_MODELS", spec},
-      {"REQ_LLM_OPERATION", Atom.to_string(operation)},
-      {"REQ_LLM_FIXTURES_MODE", mode},
-      {"REQ_LLM_DEBUG", "1"},
-      {"REQ_LLM_INCLUDE_RESPONSES", "1"}
-    ]
+    # Propagate AWS credentials from current environment
+    aws_env_vars =
+      for key <- [
+            "AWS_ACCESS_KEY_ID",
+            "AWS_SECRET_ACCESS_KEY",
+            "AWS_SESSION_TOKEN",
+            "AWS_REGION",
+            "AWS_DEFAULT_REGION"
+          ],
+          value = System.get_env(key),
+          not is_nil(value) do
+        {key, value}
+      end
+
+    env =
+      [
+        {"REQ_LLM_MODELS", spec},
+        {"REQ_LLM_OPERATION", Atom.to_string(operation)},
+        {"REQ_LLM_FIXTURES_MODE", mode},
+        {"REQ_LLM_DEBUG", "1"},
+        {"REQ_LLM_INCLUDE_RESPONSES", "1"}
+      ] ++ aws_env_vars
 
     Mix.shell().info("  Testing #{spec} (#{operation})...")
 
