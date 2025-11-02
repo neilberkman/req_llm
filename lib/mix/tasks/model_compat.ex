@@ -202,6 +202,15 @@ defmodule Mix.Tasks.ReqLlm.ModelCompat do
 
     models
     |> Enum.filter(fn {provider, _} -> MapSet.member?(implemented, provider) end)
+    |> Enum.map(fn {provider, provider_models} ->
+      allowed_models =
+        Enum.filter(provider_models, fn model ->
+          ReqLLM.Catalog.allowed_spec?(provider, model["id"])
+        end)
+
+      {provider, allowed_models}
+    end)
+    |> Enum.reject(fn {_provider, models} -> Enum.empty?(models) end)
     |> Enum.sort_by(fn {provider, _} -> provider end)
     |> Enum.each(fn {provider, provider_models} ->
       Mix.shell().info(
@@ -448,7 +457,10 @@ defmodule Mix.Tasks.ReqLlm.ModelCompat do
           provider_name(provider) <> IO.ANSI.reset()
       )
 
-      Enum.each(provider_results, &print_result/1)
+      provider_results
+      |> Enum.sort_by(& &1.model_id)
+      |> Enum.each(&print_result/1)
+
       Mix.shell().info("")
     end)
 
@@ -684,7 +696,11 @@ defmodule Mix.Tasks.ReqLlm.ModelCompat do
     registry
     |> Enum.flat_map(fn {provider, models} ->
       if MapSet.member?(implemented, provider) do
-        Enum.map(models, fn m -> {provider, m["id"]} end)
+        models
+        |> Enum.filter(fn m ->
+          ReqLLM.Catalog.allowed_spec?(provider, m["id"])
+        end)
+        |> Enum.map(fn m -> {provider, m["id"]} end)
       else
         []
       end
@@ -693,8 +709,15 @@ defmodule Mix.Tasks.ReqLlm.ModelCompat do
 
   defp pairs_for_provider(registry, provider) do
     case Map.get(registry, provider) do
-      nil -> []
-      models -> Enum.map(models, fn m -> {provider, m["id"]} end)
+      nil ->
+        []
+
+      models ->
+        models
+        |> Enum.filter(fn m ->
+          ReqLLM.Catalog.allowed_spec?(provider, m["id"])
+        end)
+        |> Enum.map(fn m -> {provider, m["id"]} end)
     end
   end
 

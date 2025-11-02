@@ -35,11 +35,16 @@ defmodule ReqLLM.Catalog do
 
   Reads configuration from `Application.get_env(:req_llm, :catalog, [])` and calls `load/1`.
 
+  When `:catalog_enabled?` is false, bypasses filtering and returns all models.
+
   Returns `{:ok, catalog}` or `{:error, reason}`.
   """
   @spec load() :: {:ok, map()} | {:error, term()}
   def load do
     config = Application.get_env(:req_llm, :catalog, [])
+    enabled? = Application.get_env(:req_llm, :catalog_enabled?, false)
+
+    config = if enabled?, do: config, else: Keyword.put(config, :allow, %{})
     load(config)
   end
 
@@ -167,6 +172,9 @@ defmodule ReqLLM.Catalog do
         nil ->
           nil
 
+        v when v in [true, :all, "*"] ->
+          {provider_id, provider}
+
         allowed_models when is_list(allowed_models) ->
           allowed_models = Enum.map(allowed_models, &to_string/1)
 
@@ -174,7 +182,7 @@ defmodule ReqLLM.Catalog do
             case provider["models"] do
               models when is_map(models) ->
                 models
-                |> Enum.filter(fn {model_id, _model} -> model_id in allowed_models end)
+                |> Enum.filter(fn {model_id, _model} -> match_any?(model_id, allowed_models) end)
                 |> Map.new()
 
               _ ->
@@ -189,6 +197,26 @@ defmodule ReqLLM.Catalog do
     end)
     |> Enum.reject(&is_nil/1)
     |> Map.new()
+  end
+
+  defp match_any?(model_id, patterns) do
+    Enum.any?(patterns, fn pattern ->
+      if String.contains?(pattern, ["*", "?"]) do
+        glob_to_regex(pattern) |> Regex.match?(model_id)
+      else
+        pattern == model_id
+      end
+    end)
+  end
+
+  defp glob_to_regex(glob) do
+    regex_str =
+      glob
+      |> Regex.escape()
+      |> String.replace("\\*", ".*")
+      |> String.replace("\\?", ".")
+
+    Regex.compile!("^#{regex_str}$")
   end
 
   defp apply_overrides(catalog, []), do: catalog
@@ -281,4 +309,105 @@ defmodule ReqLLM.Catalog do
   end
 
   defp normalize_keys(value), do: value
+
+  @doc """
+  Returns the allowed patterns map from catalog config.
+
+  Reads directly from Application config `:catalog` `:allow` key.
+  Patterns can be:
+  - `:all` - All models for the provider
+  - List of model IDs or glob patterns with `*`
+
+  ## Examples
+
+      allowed_patterns()
+      # => %{anthropic: :all, openai: ["gpt-4o-mini", "gpt-*"]}
+  """
+  @spec allowed_patterns() :: %{atom() => :all | [String.t()]}
+  def allowed_patterns do
+    catalog_config = Application.get_env(:req_llm, :catalog, [])
+
+    allow = Keyword.get(catalog_config, :allow, %{})
+
+    allow
+    |> normalize_keys()
+    |> Map.new(fn {provider_id, patterns} ->
+      provider_atom =
+        if is_binary(provider_id), do: String.to_atom(provider_id), else: provider_id
+
+      {provider_atom, patterns}
+    end)
+  end
+
+  @doc """
+  Checks if a specific model is allowed based on catalog patterns.
+
+  ## Examples
+
+      allowed_spec?(:anthropic, "claude-3-5-sonnet")
+      # => true (if anthropic: :all in catalog)
+      
+      allowed_spec?(:openai, "gpt-4o-mini")
+      # => true (if matches pattern)
+  """
+  @spec allowed_spec?(atom(), String.t()) :: boolean()
+  def allowed_spec?(provider, model_id) when is_atom(provider) and is_binary(model_id) do
+    patterns = Map.get(allowed_patterns(), provider, [])
+    match_pattern?(model_id, patterns)
+  end
+
+  defp match_pattern?(_model_id, :all), do: true
+  defp match_pattern?(_model_id, []), do: false
+
+  defp match_pattern?(model_id, patterns) when is_list(patterns) do
+    Enum.any?(patterns, fn pattern ->
+      if String.contains?(pattern, "*") do
+        glob_match?(model_id, pattern)
+      else
+        model_id == pattern
+      end
+    end)
+  end
+
+  defp glob_match?(id, pattern) do
+    regex_pattern =
+      pattern
+      |> Regex.escape()
+      |> String.replace("\\*", ".*")
+      |> String.replace("\\?", ".")
+
+    Regex.match?(~r/^#{regex_pattern}$/, id)
+  end
+
+  @doc """
+  Resolves all allowed model specs from the catalog and registry.
+
+  Expands provider patterns to concrete "provider:model_id" specs.
+
+  ## Examples
+
+      resolve_allowed_specs()
+      # => ["anthropic:claude-3-5-sonnet", "openai:gpt-4o-mini", ...]
+  """
+  @spec resolve_allowed_specs() :: [String.t()]
+  def resolve_allowed_specs do
+    case load() do
+      {:ok, catalog} ->
+        catalog
+        |> Enum.flat_map(fn {provider_id, provider_data} ->
+          provider_atom = String.to_atom(provider_id)
+          models = Map.get(provider_data, "models", %{})
+
+          models
+          |> Enum.map(fn {_model_id, model} ->
+            id = Map.get(model, "id")
+            "#{provider_atom}:#{id}"
+          end)
+        end)
+        |> Enum.sort()
+
+      {:error, _} ->
+        []
+    end
+  end
 end
