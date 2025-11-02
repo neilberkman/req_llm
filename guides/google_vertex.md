@@ -1,6 +1,6 @@
 # Google Vertex AI
 
-Access Claude models through Google Cloud's Vertex AI platform. All Claude 4.x models including Opus, Sonnet, and Haiku with full tool calling and reasoning support.
+Access Claude and Gemini models through Google Cloud's Vertex AI platform. Supports Claude 4.x (Opus, Sonnet, Haiku) and Gemini 2.5 (Flash, Flash Lite, Pro) with full tool calling and reasoning support.
 
 ## Configuration
 
@@ -111,6 +111,28 @@ Vertex AI supports the same Claude options as native Anthropic:
 - **Purpose**: Cache TTL (default ~5min if omitted)
 - **Example**: `provider_options: [anthropic_prompt_cache_ttl: "1h"]`
 
+### Gemini-Specific Options
+
+Vertex AI supports Google Gemini options for Gemini models:
+
+#### `google_thinking_budget`
+
+- **Type**: Integer
+- **Purpose**: Thinking token budget for Gemini 2.5 models
+- **Example**: `provider_options: [google_thinking_budget: 4096]`
+
+#### `google_safety_settings`
+
+- **Type**: List of maps
+- **Purpose**: Safety filter configurations
+- **Example**: `provider_options: [google_safety_settings: [%{category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE"}]]`
+
+#### `google_candidate_count`
+
+- **Type**: Integer
+- **Purpose**: Number of response candidates (default: 1)
+- **Example**: `provider_options: [google_candidate_count: 1]`
+
 ## Supported Models
 
 ### Claude 4.5 Family
@@ -135,6 +157,24 @@ Vertex AI supports the same Claude options as native Anthropic:
 - **Sonnet 3.5 v2**: `google_vertex_anthropic:claude-3-5-sonnet@20241022`
 - **Haiku 3.5**: `google_vertex_anthropic:claude-3-5-haiku@20241022`
 
+### Gemini 2.5 Family
+
+- **Gemini 2.5 Flash**: `google_vertex_anthropic:gemini-2.5-flash`
+  - Fast multimodal model
+  - Full tool calling and reasoning support
+  - 1M context, 65K output
+
+- **Gemini 2.5 Flash Lite**: `google_vertex_anthropic:gemini-2.5-flash-lite`
+  - Lightweight fast model
+  - Full tool calling and reasoning support
+  - 1M context, 65K output
+  - Most cost-effective
+
+- **Gemini 2.5 Pro**: `google_vertex_anthropic:gemini-2.5-pro`
+  - Highest capability Gemini model
+  - Advanced reasoning and complex tasks
+  - 1M context, 65K output
+
 ### Model ID Format
 
 Vertex uses the `@` symbol for versioning:
@@ -146,7 +186,8 @@ Vertex uses the `@` symbol for versioning:
 
 - **Authentication**: OAuth2 with service account tokens (auto-refreshed)
 - **Endpoint**: Model-specific paths under `aiplatform.googleapis.com`
-- **API**: Uses Anthropic's raw message format (compatible with native API)
+- **Claude API**: Uses Anthropic's raw message format (compatible with native API)
+- **Gemini API**: Uses Google's native Gemini format (same as direct Google provider)
 - **Streaming**: Standard Server-Sent Events (SSE)
 - **Region routing**: Global endpoint for newest models, regional for specific deployments
 
@@ -156,4 +197,5 @@ All differences handled automatically by ReqLLM.
 
 - [Vertex AI Documentation](https://cloud.google.com/vertex-ai/docs)
 - [Claude on Vertex AI](https://cloud.google.com/vertex-ai/generative-ai/docs/partner-models/use-claude)
+- [Gemini on Vertex AI](https://cloud.google.com/vertex-ai/generative-ai/docs/multimodal/overview)
 - [Service Account Setup](https://cloud.google.com/iam/docs/service-accounts-create)
