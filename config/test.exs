@@ -11,7 +11,13 @@ config :req_llm, :catalog,
     openai: :all,
     google: :all,
     groq: :all,
-    xai: :all
+    xai: :all,
+    openrouter: :all,
+    amazon_bedrock: :all,
+    google_vertex_anthropic: :all,
+    zai: :all,
+    zai_coder: :all,
+    cerebras: :all
   },
   overrides: [],
   custom: []
