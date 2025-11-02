@@ -1,14 +1,36 @@
 {
   "request": {
     "body": {
-      "b64": "eyJjb250ZW50cyI6W3sicGFydHMiOlt7InRleHQiOiJXcml0ZSBhIHZlcnkgbG9uZyBzdG9yeSBhYm91dCBkcmFnb25zIGFuZCBhZHZlbnR1cmVzIn1dLCJyb2xlIjoidXNlciJ9XSwiZ2VuZXJhdGlvbkNvbmZpZyI6eyJjYW5kaWRhdGVDb3VudCI6MSwibWF4T3V0cHV0VG9rZW5zIjoxMDAsInRlbXBlcmF0dXJlIjowLjV9fQ=="
+      "b64": "eyJjb250ZW50cyI6W3sicGFydHMiOlt7InRleHQiOiJVc2UgdGhlIGFkZCB0b29sIHRvIGNvbXB1dGUgMiArIDMuIEFmdGVyIHRoZSB0b29sIHJlc3VsdCBhcnJpdmVzLCByZXNwb25kIHdpdGggJ3N1bT08dmFsdWU+Jy4ifV0sInJvbGUiOiJ1c2VyIn0seyJwYXJ0cyI6W3siZnVuY3Rpb25DYWxsIjp7ImFyZ3MiOnsiYSI6MiwiYiI6M30sIm5hbWUiOiJhZGQifX1dLCJyb2xlIjoibW9kZWwifSx7InBhcnRzIjpbeyJ0ZXh0IjoiNSJ9XSwicm9sZSI6InVzZXIifV0sImdlbmVyYXRpb25Db25maWciOnsiY2FuZGlkYXRlQ291bnQiOjEsIm1heE91dHB1dFRva2VucyI6NjU1MywidGVtcGVyYXR1cmUiOjAuMH19"
     },
     "canonical_json": {
       "contents": [
         {
           "parts": [
             {
-              "text": "Write a very long story about dragons and adventures"
+              "text": "Use the add tool to compute 2 + 3. After the tool result arrives, respond with 'sum=<value>'."
+            }
+          ],
+          "role": "user"
+        },
+        {
+          "parts": [
+            {
+              "functionCall": {
+                "args": {
+                  "a": 2,
+                  "b": 3
+                },
+                "name": "add"
+              }
+            }
+          ],
+          "role": "model"
+        },
+        {
+          "parts": [
+            {
+              "text": "5"
             }
           ],
           "role": "user"
@@ -16,8 +38,8 @@
       ],
       "generationConfig": {
         "candidateCount": 1,
-        "maxOutputTokens": 100,
-        "temperature": 0.5
+        "maxOutputTokens": 6553,
+        "temperature": 0.0
       }
     },
     "headers": {
@@ -36,44 +58,43 @@
       ]
     },
     "method": "post",
-    "url": "https://aiplatform.googleapis.com/v1/projects/disco-park-312913/locations/global/publishers/google/models/gemini-2.5-pro:generateContent"
+    "url": "https://aiplatform.googleapis.com/v1/projects/disco-park-312913/locations/global/publishers/google/models/gemini-2.5-flash-lite:generateContent"
   },
   "response": {
     "body": {
       "candidates": [
         {
-          "avgLogprobs": -15.925492286682129,
+          "avgLogprobs": -1.9134392884249488e-4,
           "content": {
             "parts": [
               {
-                "text": "The"
+                "text": "sum=5"
               }
             ],
             "role": "model"
           },
-          "finishReason": "MAX_TOKENS"
+          "finishReason": "STOP"
         }
       ],
-      "createTime": "2025-11-02T20:09:42.288281Z",
-      "modelVersion": "gemini-2.5-pro",
-      "responseId": "hroHaZnMEa_J998PxbrmyQo",
+      "createTime": "2025-11-02T21:46:16.944275Z",
+      "modelVersion": "gemini-2.5-flash-lite",
+      "responseId": "KNEHaZPROdeH998Ps4KKQQ",
       "usageMetadata": {
-        "candidatesTokenCount": 1,
+        "candidatesTokenCount": 3,
         "candidatesTokensDetails": [
           {
             "modality": "TEXT",
-            "tokenCount": 1
+            "tokenCount": 3
           }
         ],
-        "promptTokenCount": 9,
+        "promptTokenCount": 32,
         "promptTokensDetails": [
           {
             "modality": "TEXT",
-            "tokenCount": 9
+            "tokenCount": 32
           }
         ],
-        "thoughtsTokenCount": 97,
-        "totalTokenCount": 107,
+        "totalTokenCount": 35,
         "trafficType": "ON_DEMAND"
       }
     },
@@ -85,7 +106,7 @@
         "application/json; charset=UTF-8"
       ],
       "date": [
-        "Sun, 02 Nov 2025 20:09:43 GMT"
+        "Sun, 02 Nov 2025 21:46:17 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"

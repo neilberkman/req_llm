@@ -1,0 +1,70 @@
+{
+  "captured_at": "2025-11-02T21:48:15.601926Z",
+  "chunks": [
+    {
+      "b64": "W3sKICAiY2FuZGlkYXRlcyI6IFsKICAgIHsKICAgICAgImNvbnRlbnQiOiB7CiAgICAgICAgInJvbGUiOiAibW9kZWwiLAogICAgICAgICJwYXJ0cyI6IFsKICAgICAgICAgIHsKICAgICAgICAgICAgInRleHQiOiAiSGVyZSdzIG15IHRoaW5raW5nIHByb2Nlc3M6XG5cbjEuICAqKkJyZWFrIGRvd24gdGhlIHByb2JsZW06KiogVGhlIGdvYWwgaXMgdG8gbXVsdGlwbHkgMTUgYnkgMy5cbjIuICAqKlVzZSB0aGUgZGlzdHJpYnV0aXZlIHByb3BlcnR5OioqIEkgY2FuIHNwbGl0IDE1IGludG8gMTAgYW5kIDUsIHdoaWNoIGFyZSBlYXNpZXIgbnVtYmVycyB0byB3b3JrIHdpdGguXG4zLiAgKipNdWx0aXBseSIKICAgICAgICAgIH0KICAgICAgICBdCiAgICAgIH0KICAgIH0KICBdLAogICJ1c2FnZU1ldGFkYXRhIjogewogICAgInRyYWZmaWNUeXBlIjogIk9OX0RFTUFORCIKICB9LAogICJtb2RlbFZlcnNpb24iOiAiZ2VtaW5pLTIuNS1wcm8iLAogICJjcmVhdGVUaW1lIjogIjIwMjUtMTEtMDJUMjE6NDg6MDYuMjA5MDIxWiIsCiAgInJlc3BvbnNlSWQiOiAibHRFSGFmM2dES19KOTk4UHhicm15UW8iCn0K"
+    },
+    {
+      "b64": "LA0KewogICJjYW5kaWRhdGVzIjogWwogICAgewogICAgICAiY29udGVudCI6IHsKICAgICAgICAicm9sZSI6ICJtb2RlbCIsCiAgICAgICAgInBhcnRzIjogWwogICAgICAgICAgewogICAgICAgICAgICAidGV4dCI6ICIgZWFjaCBwYXJ0OioqXG4gICAgKiAgIEZpcnN0LCBtdWx0aXBseSAxMCBieSAzLCB3aGljaCBlcXVhbHMgMzAuXG4gICAgKiAgIE5leHQsIG11bHRpcGx5IDUgYnkgMywgd2hpY2ggZXF1YWxzIDE1LlxuNC4gICoqQWRkIHRoZSByZXN1bHRzOioqIEFkZCB0aGUgdHdvIHByb2R1Y3RzIHRvZ2V0aGVyOiAzMCArIDE1ID0gNCIKICAgICAgICAgIH0KICAgICAgICBdCiAgICAgIH0KICAgIH0KICBdLAogICJ1c2FnZU1ldGFkYXRhIjogewogICAgInRyYWZmaWNUeXBlIjogIk9OX0RFTUFORCIKICB9LAogICJtb2RlbFZlcnNpb24iOiAiZ2VtaW5pLTIuNS1wcm8iLAogICJjcmVhdGVUaW1lIjogIjIwMjUtMTEtMDJUMjE6NDg6MDYuMjA5MDIxWiIsCiAgInJlc3BvbnNlSWQiOiAibHRFSGFmM2dES19KOTk4UHhicm15UW8iCn0K"
+    },
+    {
+      "b64": "LA0KewogICJjYW5kaWRhdGVzIjogWwogICAgewogICAgICAiY29udGVudCI6IHsKICAgICAgICAicm9sZSI6ICJtb2RlbCIsCiAgICAgICAgInBhcnRzIjogWwogICAgICAgICAgewogICAgICAgICAgICAidGV4dCI6ICI1LlxuXG5UaGVyZWZvcmUsIDE1ICogMyA9IDQ1LiIKICAgICAgICAgIH0KICAgICAgICBdCiAgICAgIH0sCiAgICAgICJmaW5pc2hSZWFzb24iOiAiU1RPUCIKICAgIH0KICBdLAogICJ1c2FnZU1ldGFkYXRhIjogewogICAgInByb21wdFRva2VuQ291bnQiOiAzMSwKICAgICJjYW5kaWRhdGVzVG9rZW5Db3VudCI6IDE1MCwKICAgICJ0b3RhbFRva2VuQ291bnQiOiAxMTIyLAogICAgInRyYWZmaWNUeXBlIjogIk9OX0RFTUFORCIsCiAgICAicHJvbXB0VG9rZW5zRGV0YWlscyI6IFsKICAgICAgewogICAgICAgICJtb2RhbGl0eSI6ICJURVhUIiwKICAgICAgICAidG9rZW5Db3VudCI6IDMxCiAgICAgIH0KICAgIF0sCiAgICAiY2FuZGlkYXRlc1Rva2Vuc0RldGFpbHMiOiBbCiAgICAgIHsKICAgICAgICAibW9kYWxpdHkiOiAiVEVYVCIsCiAgICAgICAgInRva2VuQ291bnQiOiAxNTAKICAgICAgfQogICAgXSwKICAgICJ0aG91Z2h0c1Rva2VuQ291bnQiOiA5NDEKICB9LAogICJtb2RlbFZlcnNpb24iOiAiZ2VtaW5pLTIuNS1wcm8iLAogICJjcmVhdGVUaW1lIjogIjIwMjUtMTEtMDJUMjE6NDg6MDYuMjA5MDIxWiIsCiAgInJlc3BvbnNlSWQiOiAibHRFSGFmM2dES19KOTk4UHhicm15UW8iCn0K"
+    },
+    {
+      "b64": "XQ=="
+    }
+  ],
+  "request": {
+    "body": {
+      "b64": "eyJjb250ZW50cyI6W3sicGFydHMiOlt7InRleHQiOiJCcmllZmx5IHRoaW5rIHRocm91Z2ggeW91ciBhcHByb2FjaCwgdGhlbiBhbnN3ZXI6IFdoYXQgaXMgMTUqMz8ifV0sInJvbGUiOiJ1c2VyIn1dLCJnZW5lcmF0aW9uQ29uZmlnIjp7ImNhbmRpZGF0ZUNvdW50IjoxLCJtYXhPdXRwdXRUb2tlbnMiOjUwMDAsInRlbXBlcmF0dXJlIjoxLjAsInRvcFAiOjAuOH0sInN5c3RlbUluc3RydWN0aW9uIjp7InBhcnRzIjpbeyJ0ZXh0IjoiWW91IGFyZSBhIGNhcmVmdWwsIHN0ZXAtYnktc3RlcCByZWFzb25lci4ifV19fQ=="
+    },
+    "canonical_json": {
+      "contents": [
+        {
+          "parts": [
+            {
+              "text": "Briefly think through your approach, then answer: What is 15*3?"
+            }
+          ],
+          "role": "user"
+        }
+      ],
+      "generationConfig": {
+        "candidateCount": 1,
+        "maxOutputTokens": 5000,
+        "temperature": 1.0,
+        "topP": 0.8
+      },
+      "systemInstruction": {
+        "parts": [
+          {
+            "text": "You are a careful, step-by-step reasoner."
+          }
+        ]
+      }
+    },
+    "headers": {
+      "accept": "text/event-stream",
+      "authorization": "[REDACTED:authorization]",
+      "content-type": "application/json"
+    },
+    "method": "POST",
+    "url": "https://aiplatform.googleapis.com/v1/projects/disco-park-312913/locations/global/publishers/google/models/gemini-2.5-pro:streamGenerateContent"
+  },
+  "response": {
+    "body": null,
+    "headers": {
+      "accept-ranges": "none",
+      "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+      "content-type": "application/json; charset=UTF-8",
+      "date": "Sun, 02 Nov 2025 21:48:14 GMT",
+      "server": "scaffolding on HTTPServer2",
+      "transfer-encoding": "chunked",
+      "vary": "Origin,Accept-Encoding",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "x-xss-protection": "0"
+    },
+    "status": 200
+  }
+}

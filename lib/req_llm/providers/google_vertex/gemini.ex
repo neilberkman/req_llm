@@ -39,7 +39,9 @@ defmodule ReqLLM.Providers.GoogleVertex.Gemini do
         google_thinking_budget: opts[:google_thinking_budget],
         google_safety_settings: opts[:google_safety_settings],
         google_candidate_count: opts[:google_candidate_count],
-        google_grounding: opts[:google_grounding]
+        google_grounding: opts[:google_grounding],
+        # Object generation options
+        compiled_schema: opts[:compiled_schema]
       }
     }
 
@@ -47,11 +49,42 @@ defmodule ReqLLM.Providers.GoogleVertex.Gemini do
     encoded_request = Google.encode_body(temp_request)
 
     # Extract the body from the encoded request
-    case encoded_request.body do
-      body when is_binary(body) -> Jason.decode!(body)
-      body when is_map(body) -> body
-    end
+    body =
+      case encoded_request.body do
+        body when is_binary(body) -> Jason.decode!(body)
+        body when is_map(body) -> body
+      end
+
+    # Vertex AI has stricter validation than direct Google API:
+    # Remove "id" field from function_call parts (Vertex rejects it)
+    sanitize_function_calls(body)
   end
+
+  # Removes "id" field from function_call parts in contents
+  # Vertex AI Gemini API does not accept this field, while direct Google API includes it
+  defp sanitize_function_calls(%{"contents" => contents} = body) when is_list(contents) do
+    sanitized_contents =
+      Enum.map(contents, fn
+        %{"parts" => parts} = content when is_list(parts) ->
+          sanitized_parts =
+            Enum.map(parts, fn
+              %{"functionCall" => fc} = part ->
+                Map.put(part, "functionCall", Map.delete(fc, "id"))
+
+              other ->
+                other
+            end)
+
+          Map.put(content, "parts", sanitized_parts)
+
+        other ->
+          other
+      end)
+
+    Map.put(body, "contents", sanitized_contents)
+  end
+
+  defp sanitize_function_calls(body), do: body
 
   @doc """
   Parses a Gemini response from Vertex AI into ReqLLM format.

@@ -119,19 +119,39 @@ defmodule ReqLLM.Provider.DSL do
       ~a[temperature max_tokens top_p]  # => [:temperature, :max_tokens, :top_p]
   """
   defmacro __using__(opts) do
-    # Validate required options
-    id = Keyword.fetch!(opts, :id)
+    # Support both old format (id: + metadata:) and new format (ids: [...])
+    provider_ids =
+      case {Keyword.get(opts, :ids), Keyword.get(opts, :id), Keyword.get(opts, :metadata)} do
+        {ids, nil, nil} when is_list(ids) ->
+          # New format: ids: [{:provider_id1, "path1.json"}, {:provider_id2, "path2.json"}]
+          Enum.map(ids, fn
+            {id, metadata_path} when is_atom(id) and is_binary(metadata_path) ->
+              {id, metadata_path}
+
+            other ->
+              raise ArgumentError,
+                    "Provider :ids must be a list of {id, metadata_path} tuples, got: #{inspect(other)}"
+          end)
+
+        {nil, id, metadata_path} when is_atom(id) ->
+          # Old format (backwards compat): id: :provider_id, metadata: "path.json"
+          [{id, metadata_path}]
+
+        {nil, nil, _} ->
+          raise ArgumentError, "Provider must specify either :id or :ids"
+
+        _ ->
+          raise ArgumentError,
+                "Provider cannot specify both :id and :ids - use one or the other"
+      end
+
     base_url = Keyword.fetch!(opts, :base_url)
-    metadata_path = Keyword.get(opts, :metadata)
     provider_schema = Keyword.get(opts, :provider_schema, [])
     default_env_key = Keyword.get(opts, :default_env_key)
     context_wrapper = Keyword.get(opts, :context_wrapper)
     response_wrapper = Keyword.get(opts, :response_wrapper)
 
-    if !is_atom(id) do
-      raise ArgumentError, "Provider :id must be an atom, got: #{inspect(id)}"
-    end
-
+    # Validate base_url
     if !is_binary(base_url) do
       raise ArgumentError, "Provider :base_url must be a string, got: #{inspect(base_url)}"
     end
@@ -141,19 +161,24 @@ defmodule ReqLLM.Provider.DSL do
             "Provider :default_env_key must be a string, got: #{inspect(default_env_key)}"
     end
 
+    # Store first provider ID for backwards compat (provider_id/0 function)
+    [{primary_id, primary_metadata_path} | _] = provider_ids
+
     quote do
       use ReqLLM.Provider.Defaults
 
-      @provider_id unquote(id)
+      @provider_ids unquote(provider_ids)
+      @provider_id unquote(primary_id)
       @base_url unquote(base_url)
-      @metadata_path unquote(metadata_path)
+      @metadata_path unquote(primary_metadata_path)
       @provider_schema_opts unquote(provider_schema)
       @default_env_key unquote(default_env_key)
       @context_wrapper unquote(context_wrapper)
       @response_wrapper unquote(response_wrapper)
 
-      if @metadata_path do
-        @external_resource @metadata_path
+      # Mark all metadata files as external resources
+      for {_id, metadata_path} <- @provider_ids, metadata_path do
+        @external_resource metadata_path
       end
 
       @before_compile ReqLLM.Provider.DSL
@@ -168,6 +193,7 @@ defmodule ReqLLM.Provider.DSL do
 
   defmacro __before_compile__(env) do
     # Get the compiled module's attributes
+    provider_ids = Module.get_attribute(env.module, :provider_ids)
     provider_id = Module.get_attribute(env.module, :provider_id)
     metadata_path = Module.get_attribute(env.module, :metadata_path)
     provider_schema_opts = Module.get_attribute(env.module, :provider_schema_opts)
@@ -175,7 +201,13 @@ defmodule ReqLLM.Provider.DSL do
     context_wrapper = Module.get_attribute(env.module, :context_wrapper)
     response_wrapper = Module.get_attribute(env.module, :response_wrapper)
 
-    # Load metadata if file exists
+    # Load metadata for ALL provider IDs
+    all_provider_metadata =
+      Enum.map(provider_ids, fn {id, path} ->
+        {id, load_metadata(path)}
+      end)
+
+    # Primary metadata (backwards compat)
     metadata = load_metadata(metadata_path)
 
     # Build provider schema and extended generation schema
@@ -185,6 +217,7 @@ defmodule ReqLLM.Provider.DSL do
     quote do
       # Store metadata as module attribute
       @req_llm_metadata unquote(Macro.escape(metadata))
+      @req_llm_all_provider_metadata unquote(Macro.escape(all_provider_metadata))
 
       # Build the provider schema at compile time
       @provider_schema unquote(provider_schema_definition)
@@ -195,6 +228,9 @@ defmodule ReqLLM.Provider.DSL do
       # Optional helpers for accessing provider info
       def metadata, do: @req_llm_metadata
       def provider_id, do: unquote(provider_id)
+
+      # New function for multi-provider support
+      def provider_ids, do: @req_llm_all_provider_metadata
 
       # Provider option helpers
       def supported_provider_options do

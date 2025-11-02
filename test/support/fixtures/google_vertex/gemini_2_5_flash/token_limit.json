@@ -1,0 +1,113 @@
+{
+  "request": {
+    "body": {
+      "b64": "eyJjb250ZW50cyI6W3sicGFydHMiOlt7InRleHQiOiJXcml0ZSBhIHZlcnkgbG9uZyBzdG9yeSBhYm91dCBkcmFnb25zIGFuZCBhZHZlbnR1cmVzIn1dLCJyb2xlIjoidXNlciJ9XSwiZ2VuZXJhdGlvbkNvbmZpZyI6eyJjYW5kaWRhdGVDb3VudCI6MSwibWF4T3V0cHV0VG9rZW5zIjo0MDAxLCJ0ZW1wZXJhdHVyZSI6MS4wfX0="
+    },
+    "canonical_json": {
+      "contents": [
+        {
+          "parts": [
+            {
+              "text": "Write a very long story about dragons and adventures"
+            }
+          ],
+          "role": "user"
+        }
+      ],
+      "generationConfig": {
+        "candidateCount": 1,
+        "maxOutputTokens": 4001,
+        "temperature": 1.0
+      }
+    },
+    "headers": {
+      "accept": [
+        "application/json"
+      ],
+      "accept-encoding": [
+        "gzip"
+      ],
+      "authorization": "[REDACTED:authorization]",
+      "content-type": [
+        "application/json"
+      ],
+      "user-agent": [
+        "req/0.5.15"
+      ]
+    },
+    "method": "post",
+    "url": "https://aiplatform.googleapis.com/v1/projects/disco-park-312913/locations/global/publishers/google/models/gemini-2.5-flash:generateContent"
+  },
+  "response": {
+    "body": {
+      "candidates": [
+        {
+          "avgLogprobs": -1.2871330015120968,
+          "content": {
+            "parts": [
+              {
+                "text": "The ancient world of Aerthos shimmered with untold stories, its mountains sharp against sapphire skies, its forests murmuring secrets passed down through millennia of rustling leaves. But the deepest secrets, the most profound magics, resided in the hearts of its oldest inhabitants: the dragons. For ages beyond counting, they had been the guardians of Aerthos, their scales reflecting the dawn, their roars shaking the very foundations of reality, their wisdom etched into the elemental forces they commanded.\n\nYet, a shadow had begun to fall. Whispers of diminished power, of draconic silence in peaks that once echoed with their cries, filtered through the towns and villages. The ley lines of Aerthos, once vibrant and thrumming with life-giving magic, felt strangely muted, like a forgotten melody.\n\nOur story begins in the coastal city of Silverstream, a bustling port where salt spray mingled with the scent of spices from distant lands. Elara, a young woman with eyes the colour of sea glass and a mind as keen as a freshly honed blade, spent her days buried in the city's vast, dust-laden archives. She was an apprentice cartographer and scholar, her true passion the ancient lore of Aerthos, particularly its most majestic and enigmatic creatures – the dragons.\n\nMaster Lyra, her mentor, a woman whose wrinkles held maps of a thousand journeys and whose gaze seemed to pierce time itself, often found Elara poring over crumbling scrolls depicting dragons not as fearsome beasts, but as benevolent, majestic beings.\n\n\"The old tales speak of a balance, Elara,\" Lyra had once said, her voice like rustling dry leaves. \"A harmony between the world, its people, and the great drakes. Disturb that balance, and the world itself weeps.\"\n\nOne crisp autumn morning, a grizzled, frantic merchant stumbled into Silverstream, his face etched with terror. He spoke of an \"unnatural silence\" in the Dragon’s Peak mountains, a place renowned for its resident Wind Drake, Aetheria. No soaring shadow, no resonant cry. Just an oppressive, magic-draining quiet. Then came reports from the Whispering Woods, a forest so ancient it was said to dream, where the Earth Dragon, Terrax, made his home. The trees were wilting, and a strange, cold blight was spreading.\n\nLyra summoned Elara. Her face was grim, her usual calm replaced by a stark urgency. \"The time has come, child. The balance is breaking. The dragons are fading. I believe... it is the return of the Obsidian Blight.\"\n\nElara’s breath caught. The Obsidian Blight was a legend, a malevolent force said to consume all magic, turning life to dust. It was the stuff of nightmares, not reality.\n\n\"But how, Master? Why?\" Elara asked, her voice barely a whisper.\n\nLyra placed a heavy, intricately carved wooden box on the table. Inside, nestled on velvet, lay a compass whose needle spun wildly, and a pendant, a smooth, obsidian shard that felt cool to the touch, humming faintly. \"The Obsidian Heart, it is said, is rising again. An artifact of immense darkness, it feeds upon pure magic, and none is purer than that of the Ancient Drakes. This compass points to concentrations of dragon magic, or where it once flourished. This pendant… it will shield you, and perhaps, with a dragon’s blessing, serve as a key.\"\n\nLyra’s eyes met Elara’s, fierce and unwavering. \"You, Elara, with your thirst for knowledge and your pure heart, are the only one who might understand what is happening. Find the dragons. Learn from them. Help them. Or Aerthos will wither.\"\n\nAnd so, Elara’s ordinary life ended, replaced by an extraordinary quest. Her first destination: the Whispering Woods, guided by the erratic compass and a tattered map Lyra had provided.\n\nThe journey to the Whispering Woods was long and arduous. Elara traveled alone at first, her satchel heavy with provisions, scrolls, and the unsettling hum of the obsidian pendant. The forest itself was a place of deep shadows and ancient, gnarled trees. But instead of the vibrant life Elara had read about, she found an eerie stillness. The air was cold, the leaves brittle, and a strange, black moss crept over the bark of the once-mighty Sentinels.\n\nDays into her trek, she stumbled upon a crude campsite, its fire long dead. A grizzled figure emerged from the shadows, bow drawn. He was Kael, a ranger of the Northern Peaks, known for his keen senses and surly disposition. He eyed Elara suspiciously.\n\n\"Lost, little scholar?\" he grunted, his eyes like chipped flint.\n\nElara explained her mission, her voice clear despite her apprehension. Kael scoffed at first, dismissing dragons as dangerous legends. But when Elara showed him the compass, its needle trembling violently in the direction of the blighted forest, and the obsidian pendant, which seemed to pulsate faintly in his presence, his hardened cynicism wavered. He too had felt the change in the forest, the creeping cold, the unnatural silence. He had come seeking answers, just like her.\n\nReluctantly, Kael agreed to guide her. His tracking skills proved invaluable, leading them deeper into the Blight-scarred woods. They found evidence of the Blight’s advance: withered streams, petrified wildlife, and grotesque, crystalline growths that pulsed with a faint, malevolent light.\n\nFinally, guided by the compass’s frantic spinning, they reached a clearing choked with the blighted moss. There, amidst the dying ancient trees, lay Terrax, the Earth Dragon. He was colossal, his scales the colour of granite and moss, his body usually a vibrant testament to Aerthos’s strength. But now, he was still, his scales dull, cracked, and covered in the same black moss. His eyes, usually pools of ancient wisdom, were clouded with pain.\n\nElara, heart aching, approached him slowly. Kael, though wary, kept watch. She placed a trembling hand on one of Terrax’s massive claws. The obsidian pendant in her hand flared with a soft, protective light. Terrax’s eyes slowly opened, focusing on her. He was weak, too weak to roar. But in his gaze, Elara saw not fury, but an ancient sorrow.\n\nThrough a painful telepathic whisper, Terrax communicated. *“The Blight… it feeds… from the heart of Aerthos… stolen… to power the Obsidian Heart… a human… corrupted by its promise…”*\n\nHe spoke of a man, Lord Valerius, a scholar once renowned for his brilliance, who had delved too deeply into forbidden lore. Valerius, consumed by a lust for ultimate power, had sought out the dormant Obsidian Heart, a relic of pure shadow magic hidden beneath the deepest mountains. He had awakened it, and in doing so, unleashed its slow, insidious drain on Aerthos’s ley lines, targeting the dragons as their primary energy source.\n\nTerrax, with the last of his strength, shared a vision: a soaring peak shrouded in storms, and a name: \"Aetheria.\" The Wind Drake, the fastest, most elusive of their kind. If anyone could understand the full scope of Valerius’s plan, it would be her.\n\nWith a heavy heart, Elara promised Terrax she would help. He offered her a single, moss-covered scale, which glowed faintly with residual earth magic, saying, *“It will guide you… and protect you… from the creeping cold.”*\n\nTheir next destination was Dragon's Peak, a colossal mountain range where the clouds perpetually swirled around jagged summits. The air grew thin, the cold biting. Kael, in his element, navigated treacherous paths and avoided deadly rockslides. The journey was a constant struggle against the elements and the creeping despair brought by the Blight, which even here caused gusts of unnaturally cold wind and strange, localized blizzards.\n\nThey found Aetheria not in her usual aerie, but clinging precariously to the side of a sheer cliff, her shimmering blue scales dull, her magnificent wings torn and battered. She was smaller than Terrax, but radiating an ethereal grace even in her weakened state. She had been fighting the Blight, trying to protect her domain, but it was relentless.\n\nAetheria confirmed Terrax's warning. Valerius sought to sever the dragons from the ley lines entirely, to absorb their ancient magic into the Obsidian Heart, making himself a god. He was building something, a vast arcane engine in the Obsidian Wastes, a desolate region beyond Dragon's Peak, to fully unleash the Heart’s power.\n\nShe shared a terrifying truth: the Blight wasn't just draining magic; it was twisting it, polluting it. The very essence of Aerthos was being corrupted. Aetheria gave Elara a single, crystalline feather, humming with wind magic. *“Find Ignis,”* she urged, *“The Fire Drake. He holds the key to purifying what has been poisoned. But he is volatile, and deeply wounded.”*\n\nThe Obsidian Wastes were a stark contrast to the verdant forest and soaring mountains. A vast, volcanic plain of black rock, spewing noxious fumes and molten rivers. Here, the Blight was palpable, thick in the air, a choking miasma"
+              }
+            ],
+            "role": "model"
+          },
+          "finishReason": "MAX_TOKENS"
+        }
+      ],
+      "createTime": "2025-11-02T21:45:32.231735Z",
+      "modelVersion": "gemini-2.5-flash",
+      "responseId": "_NAHabeSDteH998Ps4KKQQ",
+      "usageMetadata": {
+        "candidatesTokenCount": 1953,
+        "candidatesTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 1953
+          }
+        ],
+        "promptTokenCount": 9,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 9
+          }
+        ],
+        "thoughtsTokenCount": 2013,
+        "totalTokenCount": 3975,
+        "trafficType": "ON_DEMAND"
+      }
+    },
+    "headers": {
+      "alt-svc": [
+        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+      ],
+      "content-type": [
+        "application/json; charset=UTF-8"
+      ],
+      "date": [
+        "Sun, 02 Nov 2025 21:45:53 GMT"
+      ],
+      "server": [
+        "scaffolding on HTTPServer2"
+      ],
+      "transfer-encoding": [
+        "chunked"
+      ],
+      "vary": [
+        "Origin",
+        "X-Origin",
+        "Referer"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "SAMEORIGIN"
+      ],
+      "x-xss-protection": [
+        "0"
+      ]
+    },
+    "status": 200
+  }
+}

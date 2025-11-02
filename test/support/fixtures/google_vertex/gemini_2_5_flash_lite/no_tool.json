@@ -1,14 +1,14 @@
 {
   "request": {
     "body": {
-      "b64": "eyJjb250ZW50cyI6W3sicGFydHMiOlt7InRleHQiOiJIaSB0aGVyZSEifV0sInJvbGUiOiJ1c2VyIn1dLCJnZW5lcmF0aW9uQ29uZmlnIjp7ImNhbmRpZGF0ZUNvdW50IjoxLCJtYXhPdXRwdXRUb2tlbnMiOjEwLCJ0ZW1wZXJhdHVyZSI6MC4wfX0="
+      "b64": "eyJjb250ZW50cyI6W3sicGFydHMiOlt7InRleHQiOiJUZWxsIG1lIGEgam9rZSBhYm91dCBjYXRzIn1dLCJyb2xlIjoidXNlciJ9XSwiZ2VuZXJhdGlvbkNvbmZpZyI6eyJjYW5kaWRhdGVDb3VudCI6MSwibWF4T3V0cHV0VG9rZW5zIjoxMzEwNiwidGVtcGVyYXR1cmUiOjEuMH0sInRvb2xzIjpbeyJmdW5jdGlvbkRlY2xhcmF0aW9ucyI6W3siZGVzY3JpcHRpb24iOiJHZXQgY3VycmVudCB3ZWF0aGVyIGluZm9ybWF0aW9uIGZvciBhIGxvY2F0aW9uIiwibmFtZSI6ImdldF93ZWF0aGVyIiwicGFyYW1ldGVycyI6eyJwcm9wZXJ0aWVzIjp7ImxvY2F0aW9uIjp7InR5cGUiOiJzdHJpbmcifX0sInJlcXVpcmVkIjpbImxvY2F0aW9uIl0sInR5cGUiOiJvYmplY3QifX1dfV19"
     },
     "canonical_json": {
       "contents": [
         {
           "parts": [
             {
-              "text": "Hi there!"
+              "text": "Tell me a joke about cats"
             }
           ],
           "role": "user"
@@ -16,9 +16,30 @@
       ],
       "generationConfig": {
         "candidateCount": 1,
-        "maxOutputTokens": 10,
-        "temperature": 0.0
-      }
+        "maxOutputTokens": 13106,
+        "temperature": 1.0
+      },
+      "tools": [
+        {
+          "functionDeclarations": [
+            {
+              "description": "Get current weather information for a location",
+              "name": "get_weather",
+              "parameters": {
+                "properties": {
+                  "location": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "location"
+                ],
+                "type": "object"
+              }
+            }
+          ]
+        }
+      ]
     },
     "headers": {
       "accept": [
@@ -42,37 +63,37 @@
     "body": {
       "candidates": [
         {
-          "avgLogprobs": -0.04960278570652008,
+          "avgLogprobs": -0.3361431360244751,
           "content": {
             "parts": [
               {
-                "text": "Hi there! How can I help you today?"
+                "text": "I'm sorry, I don't have any jokes about cats. I can provide weather information for a location."
               }
             ],
             "role": "model"
           },
-          "finishReason": "MAX_TOKENS"
+          "finishReason": "STOP"
         }
       ],
-      "createTime": "2025-11-02T20:09:38.200312Z",
+      "createTime": "2025-11-02T21:46:17.304257Z",
       "modelVersion": "gemini-2.5-flash-lite",
-      "responseId": "groHaficDNug4_UP0q6W4Qg",
+      "responseId": "KdEHaYHJEtug4_UP0q6W4Qg",
       "usageMetadata": {
-        "candidatesTokenCount": 10,
+        "candidatesTokenCount": 24,
         "candidatesTokensDetails": [
           {
             "modality": "TEXT",
-            "tokenCount": 10
+            "tokenCount": 24
           }
         ],
-        "promptTokenCount": 3,
+        "promptTokenCount": 20,
         "promptTokensDetails": [
           {
             "modality": "TEXT",
-            "tokenCount": 3
+            "tokenCount": 20
           }
         ],
-        "totalTokenCount": 13,
+        "totalTokenCount": 44,
         "trafficType": "ON_DEMAND"
       }
     },
@@ -84,7 +105,7 @@
         "application/json; charset=UTF-8"
       ],
       "date": [
-        "Sun, 02 Nov 2025 20:09:38 GMT"
+        "Sun, 02 Nov 2025 21:46:17 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"

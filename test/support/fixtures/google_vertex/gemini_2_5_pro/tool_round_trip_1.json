@@ -1,0 +1,145 @@
+{
+  "request": {
+    "body": {
+      "b64": "eyJjb250ZW50cyI6W3sicGFydHMiOlt7InRleHQiOiJVc2UgdGhlIGFkZCB0b29sIHRvIGNvbXB1dGUgMiArIDMuIEFmdGVyIHRoZSB0b29sIHJlc3VsdCBhcnJpdmVzLCByZXNwb25kIHdpdGggJ3N1bT08dmFsdWU+Jy4ifV0sInJvbGUiOiJ1c2VyIn1dLCJnZW5lcmF0aW9uQ29uZmlnIjp7ImNhbmRpZGF0ZUNvdW50IjoxLCJtYXhPdXRwdXRUb2tlbnMiOjY1NTMsInRlbXBlcmF0dXJlIjowLjB9LCJ0b29scyI6W3siZnVuY3Rpb25EZWNsYXJhdGlvbnMiOlt7ImRlc2NyaXB0aW9uIjoiQWRkIHR3byBpbnRlZ2VycyIsIm5hbWUiOiJhZGQiLCJwYXJhbWV0ZXJzIjp7InByb3BlcnRpZXMiOnsiYSI6eyJ0eXBlIjoiaW50ZWdlciJ9LCJiIjp7InR5cGUiOiJpbnRlZ2VyIn19LCJyZXF1aXJlZCI6WyJhIiwiYiJdLCJ0eXBlIjoib2JqZWN0In19XX1dfQ=="
+    },
+    "canonical_json": {
+      "contents": [
+        {
+          "parts": [
+            {
+              "text": "Use the add tool to compute 2 + 3. After the tool result arrives, respond with 'sum=<value>'."
+            }
+          ],
+          "role": "user"
+        }
+      ],
+      "generationConfig": {
+        "candidateCount": 1,
+        "maxOutputTokens": 6553,
+        "temperature": 0.0
+      },
+      "tools": [
+        {
+          "functionDeclarations": [
+            {
+              "description": "Add two integers",
+              "name": "add",
+              "parameters": {
+                "properties": {
+                  "a": {
+                    "type": "integer"
+                  },
+                  "b": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "a",
+                  "b"
+                ],
+                "type": "object"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "headers": {
+      "accept": [
+        "application/json"
+      ],
+      "accept-encoding": [
+        "gzip"
+      ],
+      "authorization": "[REDACTED:authorization]",
+      "content-type": [
+        "application/json"
+      ],
+      "user-agent": [
+        "req/0.5.15"
+      ]
+    },
+    "method": "post",
+    "url": "https://aiplatform.googleapis.com/v1/projects/disco-park-312913/locations/global/publishers/google/models/gemini-2.5-pro:generateContent"
+  },
+  "response": {
+    "body": {
+      "candidates": [
+        {
+          "avgLogprobs": -2.8212141036987304,
+          "content": {
+            "parts": [
+              {
+                "functionCall": {
+                  "args": {
+                    "a": 2,
+                    "b": 3
+                  },
+                  "name": "add"
+                },
+                "thoughtSignature": "CqIJAePx/156YMwbo7Bi51+X7wgT7EHBfFF+Jl1XcVo2U7Hy9AxsoszvHadJKczaJVpCojTZZvEPvDCPUSVn16GIuU2F92+TH17aLe29vXMVBXKQjckTFA1qAMY1ngXu2wMWm/lctwzidC6MUdE2qguKuuPZxNmGXBLnywLhYHvW3IfiTV9nhsIeRta1cGzEvf987ZRPPbA3AM9xRyC5iTrP1yLI6L9ssqKds/nbFWRq5poLB9eIq8rKJmenMuze8nhoyHyS85pJbF4MH7Yxtuxt0wiCgJNSlex/c99Nok31rUm5w2rmGfWHt8HeOdw5wNm7iELLnDB7d75nFoo8cREpH1weBq30cgGuSocIoimPcnCZ9+ngkHcSHVIgWSuQyBhsyGXCR1UGPsBJ5N3NE1hE7v5+NOKan3FH8GihMfUvgA1hVpXpALiWnxuoe64tc0I8NJre0NLR8X5yCI3ho2bDpho5Se5ON443OH04t7tcW5/B3tdPG3PxXAAcau2o5Wyr4cMRAPwaRUaryjrtttE40eWKprI5Bo3upT/imfwN74ceqelYIpA8OZgESnwybYb2bYb+clbw5cSLXciFx1Yvj6Cf+K/i351LNAPvQ2Um+Yeb4rsnQzcW5eeqEANAiqlZdJqryCKgyfjxc2XMJI6PPFPFTriLzzEUws6p4nP9NKkQzQoaGRSuHnN9MLUgvmc7+lzpcODRlLy/ugFoxe7TtlRq5begFj6Yec0AjFFmG7piA1ZB/WAvTil+PePk/P0x8tL5P1JSJUoppG1EtIFDL2Rn/Ljqa35BDLJnlSwJ8szAa60v1vFDOp5S2Dy6WZlx93u2Qydvr06UxtCl1l7Y5N28EYCTqyKu1+p81DVntqIlDdWFo84gTpjXW9KL8SU1jRb8PanlGLQ1jCp2N9U/4ADaZqFNeH1/aS5/ItFvGM0BuiMlU5BaW1PrHU5BlI7JSlfo/LeVMULAwSNZHFeKPWexpYD53gM3LiFzt0yU+wt2G7jg7ZW7UtsXg+2zeJpDTL3SqAAImarahuMWKqhkq7QtMGu4b6rbXcJFgnyPibu2OCdmvZ5LwHHC4o85YI6fXO9ZysI1Q9NCHwQuoKOtwIWRncCudKP7J7Kv57W6/vXef9s9pELIW73qBVT5cwtr5tLCUxXwUiUZUlbwO5fLeihU6HlSuoOxxp1Ob806J6F+VkAGd8TDeVFSjEjVpOZFsfJdCwU3GoRW7447Yh8LJZQ4p9NN8tZTPWJzotJNEi+TWuOes4wxfX1WaJ+MifjhPGH3G1GC7+zy1Ck6Jw5EARB0jHL7s3BcVcsg9qC2sYlHzE3kBLlZwRVgjrEsyoagpVbq2Ud0075N6p1DQIurnxRdUojZQu/PZ6H1ITnyOtAUrOZczn1iKJGuWWejKaD3jyDfyy5VxnAorVaBjwWIAbMhc94O4inCgpTApsyeRXvocMPr7U3a1qdSX7T2EYQRfxcWOwx6HR4BjSsxgUNq747DBcSs46+xkPa/hOYYDXK8tukqNpnsrT9ByE+G/XvyBuGra/XATN5Ku0bX4ebljuTE01it/TD2XVKKCb+lvPms7A=="
+              }
+            ],
+            "role": "model"
+          },
+          "finishReason": "STOP"
+        }
+      ],
+      "createTime": "2025-11-02T21:47:37.849024Z",
+      "modelVersion": "gemini-2.5-pro",
+      "responseId": "edEHaYDpM9KZ4_UPntS-6AE",
+      "usageMetadata": {
+        "candidatesTokenCount": 5,
+        "candidatesTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 5
+          }
+        ],
+        "promptTokenCount": 37,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 37
+          }
+        ],
+        "thoughtsTokenCount": 332,
+        "totalTokenCount": 374,
+        "trafficType": "ON_DEMAND"
+      }
+    },
+    "headers": {
+      "alt-svc": [
+        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+      ],
+      "content-type": [
+        "application/json; charset=UTF-8"
+      ],
+      "date": [
+        "Sun, 02 Nov 2025 21:47:41 GMT"
+      ],
+      "server": [
+        "scaffolding on HTTPServer2"
+      ],
+      "transfer-encoding": [
+        "chunked"
+      ],
+      "vary": [
+        "Origin",
+        "X-Origin",
+        "Referer"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "SAMEORIGIN"
+      ],
+      "x-xss-protection": [
+        "0"
+      ]
+    },
+    "status": 200
+  }
+}

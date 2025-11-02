@@ -1,14 +1,14 @@
 {
   "request": {
     "body": {
-      "b64": "eyJjb250ZW50cyI6W3sicGFydHMiOlt7InRleHQiOiJIZWxsbyB3b3JsZCEifV0sInJvbGUiOiJ1c2VyIn1dLCJnZW5lcmF0aW9uQ29uZmlnIjp7ImNhbmRpZGF0ZUNvdW50IjoxLCJtYXhPdXRwdXRUb2tlbnMiOjUwLCJ0ZW1wZXJhdHVyZSI6MC4wfX0="
+      "b64": "eyJjb250ZW50cyI6W3sicGFydHMiOlt7InRleHQiOiJIaSB0aGVyZSEifV0sInJvbGUiOiJ1c2VyIn1dLCJnZW5lcmF0aW9uQ29uZmlnIjp7ImNhbmRpZGF0ZUNvdW50IjoxLCJtYXhPdXRwdXRUb2tlbnMiOjUwMCwidGVtcGVyYXR1cmUiOjAuMH19"
     },
     "canonical_json": {
       "contents": [
         {
           "parts": [
             {
-              "text": "Hello world!"
+              "text": "Hi there!"
             }
           ],
           "role": "user"
@@ -16,7 +16,7 @@
       ],
       "generationConfig": {
         "candidateCount": 1,
-        "maxOutputTokens": 50,
+        "maxOutputTokens": 500,
         "temperature": 0.0
       }
     },
@@ -36,17 +36,17 @@
       ]
     },
     "method": "post",
-    "url": "https://aiplatform.googleapis.com/v1/projects/disco-park-312913/locations/global/publishers/google/models/gemini-2.5-flash-lite:generateContent"
+    "url": "https://aiplatform.googleapis.com/v1/projects/disco-park-312913/locations/global/publishers/google/models/gemini-2.5-flash:generateContent"
   },
   "response": {
     "body": {
       "candidates": [
         {
-          "avgLogprobs": -0.11630086898803711,
+          "avgLogprobs": -0.2889009316762288,
           "content": {
             "parts": [
               {
-                "text": "Hello there! How can I help you today?"
+                "text": "Hello! How can I help you today?"
               }
             ],
             "role": "model"
@@ -54,15 +54,15 @@
           "finishReason": "STOP"
         }
       ],
-      "createTime": "2025-11-02T20:09:36.542817Z",
-      "modelVersion": "gemini-2.5-flash-lite",
-      "responseId": "gLoHaeGQIa_J998PxbrmyQo",
+      "createTime": "2025-11-02T21:45:53.967283Z",
+      "modelVersion": "gemini-2.5-flash",
+      "responseId": "EdEHafOEO6_J998PxbrmyQo",
       "usageMetadata": {
-        "candidatesTokenCount": 10,
+        "candidatesTokenCount": 9,
         "candidatesTokensDetails": [
           {
             "modality": "TEXT",
-            "tokenCount": 10
+            "tokenCount": 9
           }
         ],
         "promptTokenCount": 3,
@@ -72,7 +72,8 @@
             "tokenCount": 3
           }
         ],
-        "totalTokenCount": 13,
+        "thoughtsTokenCount": 24,
+        "totalTokenCount": 36,
         "trafficType": "ON_DEMAND"
       }
     },
@@ -84,7 +85,7 @@
         "application/json; charset=UTF-8"
       ],
       "date": [
-        "Sun, 02 Nov 2025 20:09:36 GMT"
+        "Sun, 02 Nov 2025 21:45:54 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"

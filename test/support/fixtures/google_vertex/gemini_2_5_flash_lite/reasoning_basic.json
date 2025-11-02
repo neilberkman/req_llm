@@ -1,14 +1,14 @@
 {
   "request": {
     "body": {
-      "b64": "eyJjb250ZW50cyI6W3sicGFydHMiOlt7InRleHQiOiJXcml0ZSBhIHZlcnkgbG9uZyBzdG9yeSBhYm91dCBkcmFnb25zIGFuZCBhZHZlbnR1cmVzIn1dLCJyb2xlIjoidXNlciJ9XSwiZ2VuZXJhdGlvbkNvbmZpZyI6eyJjYW5kaWRhdGVDb3VudCI6MSwibWF4T3V0cHV0VG9rZW5zIjoxMDAsInRlbXBlcmF0dXJlIjowLjV9fQ=="
+      "b64": "eyJjb250ZW50cyI6W3sicGFydHMiOlt7InRleHQiOiJTb2x2ZSAxMio3IGFuZCBzaG93IHlvdXIgaW50ZXJuYWwgdGhpbmtpbmcgKGJyaWVmKS4ifV0sInJvbGUiOiJ1c2VyIn1dLCJnZW5lcmF0aW9uQ29uZmlnIjp7ImNhbmRpZGF0ZUNvdW50IjoxLCJtYXhPdXRwdXRUb2tlbnMiOjUwMDAsInRlbXBlcmF0dXJlIjoxLjB9fQ=="
     },
     "canonical_json": {
       "contents": [
         {
           "parts": [
             {
-              "text": "Write a very long story about dragons and adventures"
+              "text": "Solve 12*7 and show your internal thinking (brief)."
             }
           ],
           "role": "user"
@@ -16,8 +16,8 @@
       ],
       "generationConfig": {
         "candidateCount": 1,
-        "maxOutputTokens": 100,
-        "temperature": 0.5
+        "maxOutputTokens": 5000,
+        "temperature": 1.0
       }
     },
     "headers": {
@@ -42,37 +42,37 @@
     "body": {
       "candidates": [
         {
-          "avgLogprobs": -0.49506055694265466,
+          "avgLogprobs": -0.15502542956122037,
           "content": {
             "parts": [
               {
-                "text": "The wind, a relentless sculptor, had carved the peaks of the Dragon's Tooth Mountains into jagged sentinels, their snow-capped heads perpetually bowed against the sky. Here, in the shadow of the colossal peaks, lay the village of Oakhaven, a cluster of sturdy stone houses clinging to the mountainside like hardy moss. For generations, Oakhaven had lived in a precarious peace with the great scaled beasts that ruled the skies above. They were a force of nature, respected and"
+                "text": "Here's my internal thinking to solve 12 * 7:\n\n1.  **Decomposition:** I see 12 as 10 + 2.\n2.  **Distributive Property:** I'll multiply 7 by each part of the decomposed number separately:\n    *   7 * 10 = 70\n    *   7 * 2 = 14\n3.  **Addition:** I'll add the results: 70 + 14.\n4.  **Final Calculation:** 70 + 10 = 80, then 80 + 4 = 84.\n\n**Answer:** 84"
               }
             ],
             "role": "model"
           },
-          "finishReason": "MAX_TOKENS"
+          "finishReason": "STOP"
         }
       ],
-      "createTime": "2025-11-02T20:09:37.405268Z",
+      "createTime": "2025-11-02T21:46:18.818508Z",
       "modelVersion": "gemini-2.5-flash-lite",
-      "responseId": "gboHaZTeGJqP998P7JuBqA8",
+      "responseId": "KtEHacz6MZqP998P7JuBqA8",
       "usageMetadata": {
-        "candidatesTokenCount": 97,
+        "candidatesTokenCount": 145,
         "candidatesTokensDetails": [
           {
             "modality": "TEXT",
-            "tokenCount": 97
+            "tokenCount": 145
           }
         ],
-        "promptTokenCount": 9,
+        "promptTokenCount": 14,
         "promptTokensDetails": [
           {
             "modality": "TEXT",
-            "tokenCount": 9
+            "tokenCount": 14
           }
         ],
-        "totalTokenCount": 106,
+        "totalTokenCount": 159,
         "trafficType": "ON_DEMAND"
       }
     },
@@ -84,7 +84,7 @@
         "application/json; charset=UTF-8"
       ],
       "date": [
-        "Sun, 02 Nov 2025 20:09:38 GMT"
+        "Sun, 02 Nov 2025 21:46:19 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"

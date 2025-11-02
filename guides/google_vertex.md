@@ -159,18 +159,18 @@ Vertex AI supports Google Gemini options for Gemini models:
 
 ### Gemini 2.5 Family
 
-- **Gemini 2.5 Flash**: `google_vertex_anthropic:gemini-2.5-flash`
+- **Gemini 2.5 Flash**: `google_vertex:gemini-2.5-flash`
   - Fast multimodal model
   - Full tool calling and reasoning support
   - 1M context, 65K output
 
-- **Gemini 2.5 Flash Lite**: `google_vertex_anthropic:gemini-2.5-flash-lite`
+- **Gemini 2.5 Flash Lite**: `google_vertex:gemini-2.5-flash-lite`
   - Lightweight fast model
   - Full tool calling and reasoning support
   - 1M context, 65K output
   - Most cost-effective
 
-- **Gemini 2.5 Pro**: `google_vertex_anthropic:gemini-2.5-pro`
+- **Gemini 2.5 Pro**: `google_vertex:gemini-2.5-pro`
   - Highest capability Gemini model
   - Advanced reasoning and complex tasks
   - 1M context, 65K output

@@ -58,10 +58,12 @@ defmodule ReqLLM.Providers.GoogleVertex do
   @behaviour ReqLLM.Provider
 
   use ReqLLM.Provider.DSL,
-    # Constants
-    id: :google_vertex_anthropic,
+    # Register under both provider IDs with their respective model catalogs
+    ids: [
+      {:google_vertex, "priv/models_dev/google_vertex.json"},
+      {:google_vertex_anthropic, "priv/models_dev/google_vertex_anthropic.json"}
+    ],
     base_url: "https://{region}-aiplatform.googleapis.com",
-    metadata: "priv/models_dev/google_vertex_anthropic.json",
     default_env_key: "GOOGLE_APPLICATION_CREDENTIALS",
     provider_schema: [
       service_account_json: [

@@ -1,14 +1,14 @@
 {
   "request": {
     "body": {
-      "b64": "eyJjb250ZW50cyI6W3sicGFydHMiOlt7InRleHQiOiJIaSB0aGVyZSEifV0sInJvbGUiOiJ1c2VyIn1dLCJnZW5lcmF0aW9uQ29uZmlnIjp7ImNhbmRpZGF0ZUNvdW50IjoxLCJtYXhPdXRwdXRUb2tlbnMiOjEwLCJ0ZW1wZXJhdHVyZSI6MC4wfX0="
+      "b64": "eyJjb250ZW50cyI6W3sicGFydHMiOlt7InRleHQiOiJIZWxsbyB3b3JsZCEifV0sInJvbGUiOiJ1c2VyIn1dLCJnZW5lcmF0aW9uQ29uZmlnIjp7ImNhbmRpZGF0ZUNvdW50IjoxLCJtYXhPdXRwdXRUb2tlbnMiOjQwMDEsInRlbXBlcmF0dXJlIjoxLjB9fQ=="
     },
     "canonical_json": {
       "contents": [
         {
           "parts": [
             {
-              "text": "Hi there!"
+              "text": "Hello world!"
             }
           ],
           "role": "user"
@@ -16,8 +16,8 @@
       ],
       "generationConfig": {
         "candidateCount": 1,
-        "maxOutputTokens": 10,
-        "temperature": 0.0
+        "maxOutputTokens": 4001,
+        "temperature": 1.0
       }
     },
     "headers": {
@@ -42,16 +42,29 @@
     "body": {
       "candidates": [
         {
+          "avgLogprobs": -1.6161421140034993,
           "content": {
+            "parts": [
+              {
+                "text": "Hello back, world! How can I help you today?"
+              }
+            ],
             "role": "model"
           },
-          "finishReason": "MAX_TOKENS"
+          "finishReason": "STOP"
         }
       ],
-      "createTime": "2025-11-02T20:09:36.029919Z",
+      "createTime": "2025-11-02T21:45:26.303253Z",
       "modelVersion": "gemini-2.5-flash",
-      "responseId": "gLoHad_pAe2X4_UPppWYwAI",
+      "responseId": "9tAHaZXBEtKZ4_UPntS-6AE",
       "usageMetadata": {
+        "candidatesTokenCount": 12,
+        "candidatesTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 12
+          }
+        ],
         "promptTokenCount": 3,
         "promptTokensDetails": [
           {
@@ -59,8 +72,8 @@
             "tokenCount": 3
           }
         ],
-        "thoughtsTokenCount": 9,
-        "totalTokenCount": 12,
+        "thoughtsTokenCount": 35,
+        "totalTokenCount": 50,
         "trafficType": "ON_DEMAND"
       }
     },
@@ -72,7 +85,7 @@
         "application/json; charset=UTF-8"
       ],
       "date": [
-        "Sun, 02 Nov 2025 20:09:36 GMT"
+        "Sun, 02 Nov 2025 21:45:26 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"

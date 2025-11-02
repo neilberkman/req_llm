@@ -1,0 +1,168 @@
+{
+  "request": {
+    "body": {
+      "b64": "eyJjb250ZW50cyI6W3sicGFydHMiOlt7InRleHQiOiJXaGF0J3MgdGhlIHdlYXRoZXIgbGlrZSBpbiBQYXJpcywgRnJhbmNlPyJ9XSwicm9sZSI6InVzZXIifV0sImdlbmVyYXRpb25Db25maWciOnsiY2FuZGlkYXRlQ291bnQiOjEsIm1heE91dHB1dFRva2VucyI6MTMxMDYsInRlbXBlcmF0dXJlIjoxLjB9LCJ0b29scyI6W3siZnVuY3Rpb25EZWNsYXJhdGlvbnMiOlt7ImRlc2NyaXB0aW9uIjoiR2V0IGN1cnJlbnQgd2VhdGhlciBpbmZvcm1hdGlvbiBmb3IgYSBsb2NhdGlvbiIsIm5hbWUiOiJnZXRfd2VhdGhlciIsInBhcmFtZXRlcnMiOnsicHJvcGVydGllcyI6eyJsb2NhdGlvbiI6eyJ0eXBlIjoic3RyaW5nIn0sInVuaXQiOnsiZW51bSI6WyJjZWxzaXVzIiwiZmFocmVuaGVpdCJdLCJ0eXBlIjoic3RyaW5nIn19LCJyZXF1aXJlZCI6WyJsb2NhdGlvbiJdLCJ0eXBlIjoib2JqZWN0In19LHsiZGVzY3JpcHRpb24iOiJUZWxsIGEgZnVubnkgam9rZSIsIm5hbWUiOiJ0ZWxsX2pva2UiLCJwYXJhbWV0ZXJzIjp7InByb3BlcnRpZXMiOnsidG9waWMiOnsiZGVzY3JpcHRpb24iOiJUb3BpYyBmb3IgdGhlIGpva2UiLCJ0eXBlIjoic3RyaW5nIn19LCJ0eXBlIjoib2JqZWN0In19LHsiZGVzY3JpcHRpb24iOiJHZXQgdGhlIGN1cnJlbnQgdGltZSIsIm5hbWUiOiJnZXRfdGltZSIsInBhcmFtZXRlcnMiOnsicHJvcGVydGllcyI6e30sInR5cGUiOiJvYmplY3QifX1dfV19"
+    },
+    "canonical_json": {
+      "contents": [
+        {
+          "parts": [
+            {
+              "text": "What's the weather like in Paris, France?"
+            }
+          ],
+          "role": "user"
+        }
+      ],
+      "generationConfig": {
+        "candidateCount": 1,
+        "maxOutputTokens": 13106,
+        "temperature": 1.0
+      },
+      "tools": [
+        {
+          "functionDeclarations": [
+            {
+              "description": "Get current weather information for a location",
+              "name": "get_weather",
+              "parameters": {
+                "properties": {
+                  "location": {
+                    "type": "string"
+                  },
+                  "unit": {
+                    "enum": [
+                      "celsius",
+                      "fahrenheit"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "location"
+                ],
+                "type": "object"
+              }
+            },
+            {
+              "description": "Tell a funny joke",
+              "name": "tell_joke",
+              "parameters": {
+                "properties": {
+                  "topic": {
+                    "description": "Topic for the joke",
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            },
+            {
+              "description": "Get the current time",
+              "name": "get_time",
+              "parameters": {
+                "properties": {},
+                "type": "object"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "headers": {
+      "accept": [
+        "application/json"
+      ],
+      "accept-encoding": [
+        "gzip"
+      ],
+      "authorization": "[REDACTED:authorization]",
+      "content-type": [
+        "application/json"
+      ],
+      "user-agent": [
+        "req/0.5.15"
+      ]
+    },
+    "method": "post",
+    "url": "https://aiplatform.googleapis.com/v1/projects/disco-park-312913/locations/global/publishers/google/models/gemini-2.5-pro:generateContent"
+  },
+  "response": {
+    "body": {
+      "candidates": [
+        {
+          "avgLogprobs": -1.7013389042445592,
+          "content": {
+            "parts": [
+              {
+                "functionCall": {
+                  "args": {
+                    "location": "Paris, France"
+                  },
+                  "name": "get_weather"
+                },
+                "thoughtSignature": "CroFAePx/16x6Xn8kE/Rec53Bi7UYyO6IQx9S3wtENfjLKSlhgi/5OE9AScL0EJpXUEddktEM4/l1E9Z+DHYsaFdNYUgU+YNBfGNV5CoxvFqfh9Lbh9VPRgViqAbF5fG8R5BTrUs/sczHpjDVVS3LMEVuju4JVrRCI3riSnYOLtiS6TvmG1v43K9LYf9Eg/w15ztLlv24Y63sdmlmKyi8Hq+Yz38It3uu++IhBy+htboEJqIloxZUThPlpREIuKILCQ+4hrzgRvaDG6vonT2nzuoCpkpcYTzd3NKu0RGYDncR4hxy8JbmffmESv21ophMT0wXeth8b1MjwfmDkle3gB1S/LWkp1n1UfAfVJ1Dofnj/oktCfbvmS7LhZ4MqmHsyTEQw7AmYpJFqgooxrTX+1ZCXepuwXS0naUkkAVd/AWyBBcUUevnchY6bPP2cvYkM8625O5RwUEtlJBOH5PGxPgSTca1xbs6wW5xJIQS6e41XRetK2zpNXuwuzk2wIKtGFN4aC8DAsC0eVVBaCC2AJuY7Zd+xfOZJUnysdPeqvyV7DxW19zWJLqx2ZOte9PlDktP3ADhqYczL+V9IeEhTmpGn7oftf9snW2R16XX5T6lYDzb5iLVh9wVjHk5oO8J6H0e+sHf8R18RKSWXls14mj1S1SZw+CYIePQ00V9zlNzFbObDmrDycm5DmIp5N0kWIMPJJ+IDT+OIZeByuIj9DwIO58lhbep3dNfWZaHxfQmKtMHLYItH60xekYX516P6rWMrMft0BKNOn8plvwoDvZHxV3sKmJ84zs0p2AwB6+UEQNxl1/OlFZimr3OITUEYq+p0O1W+m/TL7MLccnUdUsA5Frhav5chR9OFbuepcXmiNgtN3koyxAgFvDYi9M30UVlX0JbBB0HZ7gOnW0T5F91lERr6GFdhHpy9Y="
+              }
+            ],
+            "role": "model"
+          },
+          "finishReason": "STOP"
+        }
+      ],
+      "createTime": "2025-11-02T21:47:35.241172Z",
+      "modelVersion": "gemini-2.5-pro",
+      "responseId": "d9EHaZTcDpaY4_UPvMS6-QY",
+      "usageMetadata": {
+        "candidatesTokenCount": 7,
+        "candidatesTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 7
+          }
+        ],
+        "promptTokenCount": 53,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 53
+          }
+        ],
+        "thoughtsTokenCount": 169,
+        "totalTokenCount": 229,
+        "trafficType": "ON_DEMAND"
+      }
+    },
+    "headers": {
+      "alt-svc": [
+        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+      ],
+      "content-type": [
+        "application/json; charset=UTF-8"
+      ],
+      "date": [
+        "Sun, 02 Nov 2025 21:47:37 GMT"
+      ],
+      "server": [
+        "scaffolding on HTTPServer2"
+      ],
+      "transfer-encoding": [
+        "chunked"
+      ],
+      "vary": [
+        "Origin",
+        "X-Origin",
+        "Referer"
+      ],
+      "x-content-type-options": [
+        "nosniff"
+      ],
+      "x-frame-options": [
+        "SAMEORIGIN"
+      ],
+      "x-xss-protection": [
+        "0"
+      ]
+    },
+    "status": 200
+  }
+}

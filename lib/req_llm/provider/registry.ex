@@ -596,8 +596,14 @@ defmodule ReqLLM.Provider.Registry do
       providers
       |> Task.async_stream(&extract_provider_info/1, ordered: false, timeout: 5000)
       |> Enum.reduce({%{}, []}, fn
-        {:ok, {:ok, {id, module, metadata}}}, {acc, failed} ->
-          {Map.put(acc, id, %{module: module, metadata: metadata, implemented: true}), failed}
+        {:ok, {:ok, registrations}}, {acc, failed} when is_list(registrations) ->
+          # Handle multiple registrations from a single module
+          new_acc =
+            Enum.reduce(registrations, acc, fn {id, module, metadata}, inner_acc ->
+              Map.put(inner_acc, id, %{module: module, metadata: metadata, implemented: true})
+            end)
+
+          {new_acc, failed}
 
         {:ok, {:error, {module, error}}}, {acc, failed} ->
           {acc, [{module, error} | failed]}
@@ -656,29 +662,40 @@ defmodule ReqLLM.Provider.Registry do
   @spec extract_provider_info(module()) ::
           {:ok, {atom(), module(), map()}} | {:error, {module(), term()}}
   def extract_provider_info(module) do
-    # Get provider metadata from DSL compilation
-    metadata =
-      if Code.ensure_loaded?(module) and function_exported?(module, :metadata, 0) do
-        module.metadata()
-      else
-        %{}
-      end
+    # Check if module supports multiple provider IDs (new format)
+    if Code.ensure_loaded?(module) and function_exported?(module, :provider_ids, 0) do
+      # New format: module can register under multiple provider IDs
+      provider_ids_with_metadata = module.provider_ids()
 
-    # Get provider ID from DSL function or fallback methods
-    provider_id =
-      cond do
-        function_exported?(module, :provider_id, 0) ->
-          module.provider_id()
+      # Return list of registrations
+      {:ok,
+       Enum.map(provider_ids_with_metadata, fn {provider_id, metadata} ->
+         {provider_id, module, metadata}
+       end)}
+    else
+      # Old format (backwards compat): single provider ID
+      metadata =
+        if Code.ensure_loaded?(module) and function_exported?(module, :metadata, 0) do
+          module.metadata()
+        else
+          %{}
+        end
 
-        function_exported?(module, :provider_info, 0) ->
-          module.provider_info().id
+      provider_id =
+        cond do
+          function_exported?(module, :provider_id, 0) ->
+            module.provider_id()
 
-        true ->
-          # Fallback: extract from module name
-          extract_provider_id_from_module_name(module)
-      end
+          function_exported?(module, :provider_info, 0) ->
+            module.provider_info().id
 
-    {:ok, {provider_id, module, metadata}}
+          true ->
+            # Fallback: extract from module name
+            extract_provider_id_from_module_name(module)
+        end
+
+      {:ok, [{provider_id, module, metadata}]}
+    end
   rescue
     error ->
       {:error, {module, Exception.message(error)}}

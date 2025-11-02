@@ -1,7 +1,7 @@
 {
   "request": {
     "body": {
-      "b64": "eyJjb250ZW50cyI6W3sicGFydHMiOlt7InRleHQiOiJIZWxsbyB3b3JsZCEifV0sInJvbGUiOiJ1c2VyIn1dLCJnZW5lcmF0aW9uQ29uZmlnIjp7ImNhbmRpZGF0ZUNvdW50IjoxLCJtYXhPdXRwdXRUb2tlbnMiOjUwLCJ0ZW1wZXJhdHVyZSI6MC4wfX0="
+      "b64": "eyJjb250ZW50cyI6W3sicGFydHMiOlt7InRleHQiOiJIZWxsbyB3b3JsZCEifV0sInJvbGUiOiJ1c2VyIn1dLCJnZW5lcmF0aW9uQ29uZmlnIjp7ImNhbmRpZGF0ZUNvdW50IjoxLCJtYXhPdXRwdXRUb2tlbnMiOjQwMDEsInRlbXBlcmF0dXJlIjoxLjB9fQ=="
     },
     "canonical_json": {
       "contents": [
@@ -16,8 +16,8 @@
       ],
       "generationConfig": {
         "candidateCount": 1,
-        "maxOutputTokens": 50,
-        "temperature": 0.0
+        "maxOutputTokens": 4001,
+        "temperature": 1.0
       }
     },
     "headers": {
@@ -42,16 +42,29 @@
     "body": {
       "candidates": [
         {
+          "avgLogprobs": -11.945928955078125,
           "content": {
+            "parts": [
+              {
+                "text": "Hello back to you! The classic greeting that has launched a million lines of code.\n\nHow can I help you today?"
+              }
+            ],
             "role": "model"
           },
-          "finishReason": "MAX_TOKENS"
+          "finishReason": "STOP"
         }
       ],
-      "createTime": "2025-11-02T20:09:38.748799Z",
+      "createTime": "2025-11-02T21:46:20.971122Z",
       "modelVersion": "gemini-2.5-pro",
-      "responseId": "groHaf_ZLfSZ4_UP7vy60AY",
+      "responseId": "LNEHafKiO9ug4_UP0q6W4Qg",
       "usageMetadata": {
+        "candidatesTokenCount": 25,
+        "candidatesTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 25
+          }
+        ],
         "promptTokenCount": 3,
         "promptTokensDetails": [
           {
@@ -59,8 +72,8 @@
             "tokenCount": 3
           }
         ],
-        "thoughtsTokenCount": 49,
-        "totalTokenCount": 52,
+        "thoughtsTokenCount": 1254,
+        "totalTokenCount": 1282,
         "trafficType": "ON_DEMAND"
       }
     },
@@ -72,7 +85,7 @@
         "application/json; charset=UTF-8"
       ],
       "date": [
-        "Sun, 02 Nov 2025 20:09:40 GMT"
+        "Sun, 02 Nov 2025 21:46:34 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"
