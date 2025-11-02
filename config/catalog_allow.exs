@@ -119,8 +119,14 @@ openrouter_models = ~w(
   z-ai/glm-4.6
 )
 
-# Amazon Bedrock - Cohere models only (other patterns need credentials)
+# Amazon Bedrock - Models with complete fixture coverage
 amazon_bedrock_models = ~w(
+  global.anthropic.claude-sonnet-4-5-20250929-v1:0
+  global.anthropic.claude-haiku-4-5-20251001-v1:0
+  us.anthropic.claude-opus-4-1-20250805-v1:0
+  openai.gpt-oss-20b-1:0
+  openai.gpt-oss-120b-1:0
+  us.meta.llama3-2-3b-instruct-v1:0
   cohere.command-r-v1:0
   cohere.command-r-plus-v1:0
 )
@@ -133,7 +139,11 @@ google_vertex_models = ~w(
 )
 
 # Google Vertex AI - Claude models
-google_vertex_anthropic_models = []
+google_vertex_anthropic_models = ~w(
+  claude-sonnet-4-5@20250929
+  claude-haiku-4-5@20251001
+  claude-opus-4-1@20250805
+)
 
 # zAI - All models
 zai_models = :all

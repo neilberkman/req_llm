@@ -535,8 +535,11 @@ defmodule ReqLLM.Provider.Registry do
       discovered_providers
       |> Task.async_stream(&extract_provider_info/1, ordered: false, timeout: 5000)
       |> Enum.reduce(%{}, fn
-        {:ok, {:ok, {id, module, _metadata}}}, acc ->
-          Map.put(acc, id, module)
+        {:ok, {:ok, registrations}}, acc when is_list(registrations) ->
+          # Handle multiple registrations from a single module
+          Enum.reduce(registrations, acc, fn {id, module, _metadata}, inner_acc ->
+            Map.put(inner_acc, id, module)
+          end)
 
         _, acc ->
           acc
