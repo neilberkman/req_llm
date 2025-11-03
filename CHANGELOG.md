@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Google Vertex AI provider guide missing from documentation
+  - Added google_vertex.md to mix.exs extras and Providers group
+
 ## [1.0.0] - 2025-11-02
 
 ### Added
