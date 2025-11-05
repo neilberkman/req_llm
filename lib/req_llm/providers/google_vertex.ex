@@ -43,6 +43,24 @@ defmodule ReqLLM.Providers.GoogleVertex do
         "Tell me a story"
       )
 
+      # Context caching for Gemini models only (not Claude - 90% discount on cached tokens!)
+      {:ok, cache} = ReqLLM.Providers.Google.CachedContent.create(
+        provider: :google_vertex,
+        model: "gemini-2.5-flash",
+        service_account_json: System.get_env("GOOGLE_APPLICATION_CREDENTIALS"),
+        project_id: "my-project",
+        region: "us-central1",
+        contents: [%{role: "user", parts: [%{text: large_document}]}],
+        system_instruction: "You are a helpful assistant.",
+        ttl: "3600s"
+      )
+
+      {:ok, response} = ReqLLM.generate_text(
+        "google-vertex:gemini-2.5-flash",
+        "Question about the document?",
+        provider_options: [cached_content: cache.name]
+      )
+
   ## Extending for New Models
 
   To add support for a new model family:
@@ -85,6 +103,11 @@ defmodule ReqLLM.Providers.GoogleVertex do
         type: :map,
         doc:
           "Additional model-specific request fields (e.g., thinking config for extended thinking support)"
+      ],
+      cached_content: [
+        type: :string,
+        doc:
+          "Reference to a previously created cached content. Use the full resource name: projects/{project}/locations/{region}/cachedContents/{cache_id}"
       ]
     ]
 

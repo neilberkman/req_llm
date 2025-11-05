@@ -9,12 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Google Context Caching** for Gemini models with up to 90% cost savings
-  - `ReqLLM.Providers.Google.CachedContent` module for cache CRUD operations
-  - Create, list, update, and delete cached content
-  - Support for both Google AI Studio and Vertex AI (requires Gemini models)
-  - `cached_content` provider option to reference existing caches
-  - Minimum token requirements: 1,024 (Flash) / 4,096 (Pro)
+- **Google Context Caching support** for Gemini models
+  - Explicit context caching API via `ReqLLM.Providers.Google.CachedContent`
+  - Create, list, get, update, and delete cached content resources
+  - Support for both Google AI Studio and Vertex AI
+  - 90% discount on cached tokens (Gemini 2.5) / 75% discount (Gemini 2.0)
+  - Configurable TTL and automatic token usage tracking
+  - New `cached_content` provider option for referencing cached content
+  - Full lifecycle management: create cache → use in requests → extend TTL → cleanup
 - **Real-time stream processing** with `ReqLLM.StreamResponse.process_stream/2`
   - Process streams incrementally with real-time callbacks
   - `on_result` callback for content chunks (fires immediately as text arrives)

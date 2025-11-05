@@ -40,6 +40,7 @@ defmodule ReqLLM.Providers.GoogleVertex.Gemini do
         google_safety_settings: opts[:google_safety_settings],
         google_candidate_count: opts[:google_candidate_count],
         google_grounding: opts[:google_grounding],
+        cached_content: opts[:cached_content],
         # Object generation options
         compiled_schema: opts[:compiled_schema]
       }

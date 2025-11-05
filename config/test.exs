@@ -5,8 +5,6 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:req_llm, :component]
 
-config :req_llm, :catalog_enabled?, true
-
 config :req_llm, :catalog,
   allow: %{
     anthropic: :all,
@@ -25,6 +23,7 @@ config :req_llm, :catalog,
   overrides: [],
   custom: []
 
+config :req_llm, :catalog_enabled?, true
 config :req_llm, :sample_embedding_models, ~w(
     openai:text-embedding-3-small
     google:text-embedding-004
