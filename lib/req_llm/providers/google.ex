@@ -1098,6 +1098,7 @@ defmodule ReqLLM.Providers.Google do
 
   defp convert_google_usage(%{"promptTokenCount" => prompt, "totalTokenCount" => total} = usage) do
     thoughts = usage["thoughtsTokenCount"] || 0
+    cached = usage["cachedContentTokenCount"] || 0
 
     completion =
       usage["candidatesTokenCount"] ||
@@ -1109,8 +1110,15 @@ defmodule ReqLLM.Providers.Google do
       "total_tokens" => total
     }
 
-    if thoughts > 0 do
-      Map.put(base, "completion_tokens_details", %{"reasoning_tokens" => thoughts})
+    base =
+      if thoughts > 0 do
+        Map.put(base, "completion_tokens_details", %{"reasoning_tokens" => thoughts})
+      else
+        base
+      end
+
+    if cached > 0 do
+      Map.put(base, "prompt_tokens_details", %{"cached_tokens" => cached})
     else
       base
     end
