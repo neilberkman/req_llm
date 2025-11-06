@@ -66,11 +66,11 @@
     "body": {
       "candidates": [
         {
-          "avgLogprobs": -1.1745081583658854,
+          "avgLogprobs": -0.6819496790568034,
           "content": {
             "parts": [
               {
-                "text": "{\n  \"name\": \"Jane Doe\",\n  \"age\": 28,\n  \"occupation\": \"Software Engineer\"\n}"
+                "text": "{\n  \"name\": \"Alex Ray\",\n  \"age\": 28,\n  \"occupation\": \"Software Engineer\"\n}"
               }
             ],
             "role": "model"
@@ -78,9 +78,9 @@
           "finishReason": "STOP"
         }
       ],
-      "createTime": "2025-11-02T21:47:47.993016Z",
+      "createTime": "2025-11-06T06:56:27.581376Z",
       "modelVersion": "gemini-2.5-pro",
-      "responseId": "g9EHafjNPJaY4_UPvMS6-QY",
+      "responseId": "m0YMaYC-I4uO4_UPxtuvuQ4",
       "usageMetadata": {
         "candidatesTokenCount": 30,
         "candidatesTokensDetails": [
@@ -96,8 +96,8 @@
             "tokenCount": 5
           }
         ],
-        "thoughtsTokenCount": 392,
-        "totalTokenCount": 427,
+        "thoughtsTokenCount": 181,
+        "totalTokenCount": 216,
         "trafficType": "ON_DEMAND"
       }
     },
@@ -109,7 +109,7 @@
         "application/json; charset=UTF-8"
       ],
       "date": [
-        "Sun, 02 Nov 2025 21:47:52 GMT"
+        "Thu, 06 Nov 2025 06:56:30 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"

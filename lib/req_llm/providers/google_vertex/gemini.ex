@@ -47,14 +47,10 @@ defmodule ReqLLM.Providers.GoogleVertex.Gemini do
     }
 
     # Let Google provider encode the body
-    encoded_request = Google.encode_body(temp_request)
+    %Req.Request{body: encoded_body} = Google.encode_body(temp_request)
 
-    # Extract the body from the encoded request
-    body =
-      case encoded_request.body do
-        body when is_binary(body) -> Jason.decode!(body)
-        body when is_map(body) -> body
-      end
+    # Extract and decode the body (always binary from encode_body)
+    body = Jason.decode!(encoded_body)
 
     # Vertex AI has stricter validation than direct Google API:
     # Remove "id" field from function_call parts (Vertex rejects it)

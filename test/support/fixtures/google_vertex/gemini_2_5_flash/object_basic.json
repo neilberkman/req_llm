@@ -66,11 +66,11 @@
     "body": {
       "candidates": [
         {
-          "avgLogprobs": -0.5226068178812663,
+          "avgLogprobs": -0.6405830383300781,
           "content": {
             "parts": [
               {
-                "text": "{\n  \"name\": \"Alice Johnson\",\n  \"age\": 30,\n  \"occupation\": \"Software Engineer\"\n}"
+                "text": "{\n  \"name\": \"Alice Wonderland\",\n  \"age\": 28,\n  \"occupation\": \"Software Engineer\"\n}"
               }
             ],
             "role": "model"
@@ -78,9 +78,9 @@
           "finishReason": "STOP"
         }
       ],
-      "createTime": "2025-11-02T21:45:57.540433Z",
+      "createTime": "2025-11-06T06:54:42.031483Z",
       "modelVersion": "gemini-2.5-flash",
-      "responseId": "FdEHaZH-INug4_UP0q6W4Qg",
+      "responseId": "MkYMafv1AdmY4_UP5N-lyAE",
       "usageMetadata": {
         "candidatesTokenCount": 30,
         "candidatesTokensDetails": [
@@ -96,8 +96,8 @@
             "tokenCount": 5
           }
         ],
-        "thoughtsTokenCount": 78,
-        "totalTokenCount": 113,
+        "thoughtsTokenCount": 113,
+        "totalTokenCount": 148,
         "trafficType": "ON_DEMAND"
       }
     },
@@ -109,7 +109,7 @@
         "application/json; charset=UTF-8"
       ],
       "date": [
-        "Sun, 02 Nov 2025 21:45:58 GMT"
+        "Thu, 06 Nov 2025 06:54:43 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"

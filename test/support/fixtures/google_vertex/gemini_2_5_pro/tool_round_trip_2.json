@@ -64,7 +64,7 @@
     "body": {
       "candidates": [
         {
-          "avgLogprobs": -10.059305826822916,
+          "avgLogprobs": -3.4020589192708335,
           "content": {
             "parts": [
               {
@@ -76,9 +76,9 @@
           "finishReason": "STOP"
         }
       ],
-      "createTime": "2025-11-02T21:47:41.676975Z",
+      "createTime": "2025-11-06T06:57:17.108394Z",
       "modelVersion": "gemini-2.5-pro",
-      "responseId": "fdEHae-oKdeH998Ps4KKQQ",
+      "responseId": "zUYMaerOBqid4_UPqdqoqQQ",
       "usageMetadata": {
         "candidatesTokenCount": 3,
         "candidatesTokensDetails": [
@@ -94,8 +94,8 @@
             "tokenCount": 32
           }
         ],
-        "thoughtsTokenCount": 419,
-        "totalTokenCount": 454,
+        "thoughtsTokenCount": 204,
+        "totalTokenCount": 239,
         "trafficType": "ON_DEMAND"
       }
     },
@@ -107,7 +107,7 @@
         "application/json; charset=UTF-8"
       ],
       "date": [
-        "Sun, 02 Nov 2025 21:47:45 GMT"
+        "Thu, 06 Nov 2025 06:57:19 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"

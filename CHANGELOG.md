@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Google Vertex AI Gemini model support** with multi-provider architecture
+  - Gemini 2.5 Pro, Gemini 2.5 Flash, and Gemini 2.5 Flash Lite models
+  - Unified `GoogleVertex` provider module supporting both Claude and Gemini families
+  - Multi-ID provider support: one provider implementation handles multiple provider IDs (`google_vertex` and `google_vertex_anthropic`)
+  - Complete test fixture coverage for all Gemini models
+  - Integrated with Google Context Caching for up to 90% cost savings
 - **Google Context Caching support** for Gemini models
   - Explicit context caching API via `ReqLLM.Providers.Google.CachedContent`
   - Create, list, get, update, and delete cached content resources
@@ -33,6 +39,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Provider DSL validation** for missing id/ids configuration
+  - Fixed pattern matching order to properly detect when neither `:id` nor `:ids` is provided
+  - Prevents `nil` (an atom) from incorrectly matching the valid ID pattern
+  - Now correctly raises `ArgumentError` with helpful message when provider ID is missing
 - **Google provider cached token extraction** from API responses
   - Extracts `cachedContentTokenCount` from `usageMetadata` for both implicit and explicit caching
   - Converts to OpenAI-compatible `prompt_tokens_details.cached_tokens` format

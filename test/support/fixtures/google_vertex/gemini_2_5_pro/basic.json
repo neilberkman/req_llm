@@ -42,11 +42,11 @@
     "body": {
       "candidates": [
         {
-          "avgLogprobs": -11.945928955078125,
+          "avgLogprobs": -10.399366760253907,
           "content": {
             "parts": [
               {
-                "text": "Hello back to you! The classic greeting that has launched a million lines of code.\n\nHow can I help you today?"
+                "text": "Hello there! The classic first step in any programming journey.\n\nHow can I help you today?"
               }
             ],
             "role": "model"
@@ -54,15 +54,15 @@
           "finishReason": "STOP"
         }
       ],
-      "createTime": "2025-11-02T21:46:20.971122Z",
+      "createTime": "2025-11-06T06:56:31.000097Z",
       "modelVersion": "gemini-2.5-pro",
-      "responseId": "LNEHafKiO9ug4_UP0q6W4Qg",
+      "responseId": "n0YMaWHqtuP1D-Hj1fgB",
       "usageMetadata": {
-        "candidatesTokenCount": 25,
+        "candidatesTokenCount": 20,
         "candidatesTokensDetails": [
           {
             "modality": "TEXT",
-            "tokenCount": 25
+            "tokenCount": 20
           }
         ],
         "promptTokenCount": 3,
@@ -72,8 +72,8 @@
             "tokenCount": 3
           }
         ],
-        "thoughtsTokenCount": 1254,
-        "totalTokenCount": 1282,
+        "thoughtsTokenCount": 898,
+        "totalTokenCount": 921,
         "trafficType": "ON_DEMAND"
       }
     },
@@ -85,7 +85,7 @@
         "application/json; charset=UTF-8"
       ],
       "date": [
-        "Sun, 02 Nov 2025 21:46:34 GMT"
+        "Thu, 06 Nov 2025 06:56:41 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"

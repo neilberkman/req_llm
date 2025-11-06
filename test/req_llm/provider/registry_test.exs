@@ -481,7 +481,11 @@ defmodule ReqLLM.Provider.RegistryTest do
     end
 
     test "extract_provider_info/1 extracts provider information" do
-      {:ok, {provider_id, module, metadata}} = Registry.extract_provider_info(TestProvider)
+      {:ok, provider_infos} = Registry.extract_provider_info(TestProvider)
+
+      assert is_list(provider_infos)
+      assert length(provider_infos) == 1
+      [{provider_id, module, metadata}] = provider_infos
 
       assert provider_id == :test_provider
       assert module == TestProvider
@@ -505,7 +509,11 @@ defmodule ReqLLM.Provider.RegistryTest do
         def decode_response(_response), do: {:ok, nil}
       end
 
-      {:ok, {provider_id, module, _metadata}} = Registry.extract_provider_info(NoIdProvider)
+      {:ok, provider_infos} = Registry.extract_provider_info(NoIdProvider)
+
+      assert is_list(provider_infos)
+      assert length(provider_infos) == 1
+      [{provider_id, module, _metadata}] = provider_infos
 
       # derived from module name
       assert provider_id == :noidprovider

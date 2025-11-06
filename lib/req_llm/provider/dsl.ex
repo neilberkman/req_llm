@@ -133,12 +133,12 @@ defmodule ReqLLM.Provider.DSL do
                     "Provider :ids must be a list of {id, metadata_path} tuples, got: #{inspect(other)}"
           end)
 
+        {nil, nil, _} ->
+          raise ArgumentError, "Provider must specify either :id or :ids"
+
         {nil, id, metadata_path} when is_atom(id) ->
           # Old format (backwards compat): id: :provider_id, metadata: "path.json"
           [{id, metadata_path}]
-
-        {nil, nil, _} ->
-          raise ArgumentError, "Provider must specify either :id or :ids"
 
         _ ->
           raise ArgumentError,

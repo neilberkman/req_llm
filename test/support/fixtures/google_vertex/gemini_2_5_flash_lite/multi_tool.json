@@ -91,13 +91,13 @@
     "body": {
       "candidates": [
         {
-          "avgLogprobs": -0.3342854976654053,
+          "avgLogprobs": -0.031727182013647895,
           "content": {
             "parts": [
               {
                 "functionCall": {
                   "args": {
-                    "location": "Paris"
+                    "location": "Paris, France"
                   },
                   "name": "get_weather"
                 }
@@ -108,15 +108,15 @@
           "finishReason": "STOP"
         }
       ],
-      "createTime": "2025-11-02T21:46:16.072807Z",
+      "createTime": "2025-11-06T06:57:54.532597Z",
       "modelVersion": "gemini-2.5-flash-lite",
-      "responseId": "KNEHaee4BNKZ4_UPntS-6AE",
+      "responseId": "8kYMafXAIKid4_UPqdqoqQQ",
       "usageMetadata": {
-        "candidatesTokenCount": 5,
+        "candidatesTokenCount": 7,
         "candidatesTokensDetails": [
           {
             "modality": "TEXT",
-            "tokenCount": 5
+            "tokenCount": 7
           }
         ],
         "promptTokenCount": 53,
@@ -126,7 +126,7 @@
             "tokenCount": 53
           }
         ],
-        "totalTokenCount": 58,
+        "totalTokenCount": 60,
         "trafficType": "ON_DEMAND"
       }
     },
@@ -138,7 +138,7 @@
         "application/json; charset=UTF-8"
       ],
       "date": [
-        "Sun, 02 Nov 2025 21:46:16 GMT"
+        "Thu, 06 Nov 2025 06:57:54 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"

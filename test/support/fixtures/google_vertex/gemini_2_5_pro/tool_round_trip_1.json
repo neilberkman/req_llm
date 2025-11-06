@@ -67,7 +67,7 @@
     "body": {
       "candidates": [
         {
-          "avgLogprobs": -2.8212141036987304,
+          "avgLogprobs": -2.078090286254883,
           "content": {
             "parts": [
               {
@@ -78,7 +78,7 @@
                   },
                   "name": "add"
                 },
-                "thoughtSignature": "CqIJAePx/156YMwbo7Bi51+X7wgT7EHBfFF+Jl1XcVo2U7Hy9AxsoszvHadJKczaJVpCojTZZvEPvDCPUSVn16GIuU2F92+TH17aLe29vXMVBXKQjckTFA1qAMY1ngXu2wMWm/lctwzidC6MUdE2qguKuuPZxNmGXBLnywLhYHvW3IfiTV9nhsIeRta1cGzEvf987ZRPPbA3AM9xRyC5iTrP1yLI6L9ssqKds/nbFWRq5poLB9eIq8rKJmenMuze8nhoyHyS85pJbF4MH7Yxtuxt0wiCgJNSlex/c99Nok31rUm5w2rmGfWHt8HeOdw5wNm7iELLnDB7d75nFoo8cREpH1weBq30cgGuSocIoimPcnCZ9+ngkHcSHVIgWSuQyBhsyGXCR1UGPsBJ5N3NE1hE7v5+NOKan3FH8GihMfUvgA1hVpXpALiWnxuoe64tc0I8NJre0NLR8X5yCI3ho2bDpho5Se5ON443OH04t7tcW5/B3tdPG3PxXAAcau2o5Wyr4cMRAPwaRUaryjrtttE40eWKprI5Bo3upT/imfwN74ceqelYIpA8OZgESnwybYb2bYb+clbw5cSLXciFx1Yvj6Cf+K/i351LNAPvQ2Um+Yeb4rsnQzcW5eeqEANAiqlZdJqryCKgyfjxc2XMJI6PPFPFTriLzzEUws6p4nP9NKkQzQoaGRSuHnN9MLUgvmc7+lzpcODRlLy/ugFoxe7TtlRq5begFj6Yec0AjFFmG7piA1ZB/WAvTil+PePk/P0x8tL5P1JSJUoppG1EtIFDL2Rn/Ljqa35BDLJnlSwJ8szAa60v1vFDOp5S2Dy6WZlx93u2Qydvr06UxtCl1l7Y5N28EYCTqyKu1+p81DVntqIlDdWFo84gTpjXW9KL8SU1jRb8PanlGLQ1jCp2N9U/4ADaZqFNeH1/aS5/ItFvGM0BuiMlU5BaW1PrHU5BlI7JSlfo/LeVMULAwSNZHFeKPWexpYD53gM3LiFzt0yU+wt2G7jg7ZW7UtsXg+2zeJpDTL3SqAAImarahuMWKqhkq7QtMGu4b6rbXcJFgnyPibu2OCdmvZ5LwHHC4o85YI6fXO9ZysI1Q9NCHwQuoKOtwIWRncCudKP7J7Kv57W6/vXef9s9pELIW73qBVT5cwtr5tLCUxXwUiUZUlbwO5fLeihU6HlSuoOxxp1Ob806J6F+VkAGd8TDeVFSjEjVpOZFsfJdCwU3GoRW7447Yh8LJZQ4p9NN8tZTPWJzotJNEi+TWuOes4wxfX1WaJ+MifjhPGH3G1GC7+zy1Ck6Jw5EARB0jHL7s3BcVcsg9qC2sYlHzE3kBLlZwRVgjrEsyoagpVbq2Ud0075N6p1DQIurnxRdUojZQu/PZ6H1ITnyOtAUrOZczn1iKJGuWWejKaD3jyDfyy5VxnAorVaBjwWIAbMhc94O4inCgpTApsyeRXvocMPr7U3a1qdSX7T2EYQRfxcWOwx6HR4BjSsxgUNq747DBcSs46+xkPa/hOYYDXK8tukqNpnsrT9ByE+G/XvyBuGra/XATN5Ku0bX4ebljuTE01it/TD2XVKKCb+lvPms7A=="
+                "thoughtSignature": "CtUHAePx/16Vi2Phu+I/luIv82n8BXn4bm8sWB7FYK0umhH/1ZoM0MH+IFy85RN7BXdHpucINkaSLAvDhRhK1EW5krBJdBuE9Y1eQxf5FfL3Enu4p3c3H/RmtUhLA98OoiIIbUX6/6NN6dN6GyiwZYC7PrjLq5ZNAS6kSf16fnjTQwgQkYBcqa9NSK5T2puj5VpuBtlIzZaOJmmzgtRqR6/57XM7HJXzeM50kO8oB9fnu5/I/R7gqiCP96CXYm5tlhUjImPRUsZfeyb08BSL37HAzOdn2/8OpMltyOLM92t0vpH9rpdY4fGCcPaIXLY/hDEvgnXKGrUaTnwwVLzM/vm0JR5U12soQfzTBJkq722pnHWkVa/na3oHdAMOhN6B3dHuC+Ss+kh6xgzPlpuWD4Rh6DqWCw2MoaaRQ/WtCtqbrxmfJjK8JUj/oeNobM/7QYId28DlrsKqeiXnkAc76pX9TLTK6BxCpPrqS7+xytZHEmrE670sqLzaMfRiRjDKBK0Hw/AU3yVEaE6fg3ykPB1OFM+I+kxF2k5UJ13/ZvtpOJMaEj84O6euFmkBRp5TLrIj0EPekerMxwrdO075KnoXSXNcbCMuLyxLTvYAmvgPnq5NqKMOV3iCmRX9ZfiI3goJK74qa0TojJZNrRrZCdw8bd/DYCEceZkDyi1CrV3k27b/NNvMwDl9F8DHV0POeK0l8pQ4OraQfL6BYhGW9P73qPqCUi4jPHFnKIXB41hKcTYtpVwhwsLjjfFNhGgzYeWA1GJVg0TXtbx0m6vs5thNS5qbRQ0xghxQNUDmzF6WrTdsCDve8YED6HX/mEwcAC24FesLagQnw0Bh0dd/fqRxAx2d6io+lUgp1/JfRCT8NJRV6vtZThUaICKNHFT+5oL12q18TiylAX3BVRQRH0+YzlKLcZHLjRlDxaYtG6Z2aqGS+0w7y9CJiPZdtQHDH3o7+w/LK+jMCvmszxIhsBOUcgmZ6Oc5Vyycr8FNDIPO1peHaT2Z8eNrUFAEhAqD9ZxoEd7H9SFpyqe4AuJcgb10l8DPnBEC/rVh9nTAEd3sPkngDxLoJ7bhKUgu1KshmXTXccHhogMFBdwF9t/LCp/oimvCD4Kt09HCGOQSlN8lNYudu1G8m5uIB/JbQSkRBAfv2abKOlbSrcLi4EeNK0xssZf1JxARnCVim8wOy7N4f83CREFtuXv0ejo8vA5gYalUOFBzphGJJs+9MgKOVkdvRHzA1qCryB7a2fEoGwoVbNfdZywN8/9tp/B6tl2eC8cZZYBi8fl4xAHicDZ9xcVdbqAb0ysp"
               }
             ],
             "role": "model"
@@ -86,9 +86,9 @@
           "finishReason": "STOP"
         }
       ],
-      "createTime": "2025-11-02T21:47:37.849024Z",
+      "createTime": "2025-11-06T06:57:13.039280Z",
       "modelVersion": "gemini-2.5-pro",
-      "responseId": "edEHaYDpM9KZ4_UPntS-6AE",
+      "responseId": "yUYMafCyAuq24_UP4ePV-AE",
       "usageMetadata": {
         "candidatesTokenCount": 5,
         "candidatesTokensDetails": [
@@ -104,8 +104,8 @@
             "tokenCount": 37
           }
         ],
-        "thoughtsTokenCount": 332,
-        "totalTokenCount": 374,
+        "thoughtsTokenCount": 281,
+        "totalTokenCount": 323,
         "trafficType": "ON_DEMAND"
       }
     },
@@ -117,7 +117,7 @@
         "application/json; charset=UTF-8"
       ],
       "date": [
-        "Sun, 02 Nov 2025 21:47:41 GMT"
+        "Thu, 06 Nov 2025 06:57:17 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"

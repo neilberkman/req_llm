@@ -91,7 +91,7 @@
     "body": {
       "candidates": [
         {
-          "avgLogprobs": -0.43511567796979633,
+          "avgLogprobs": -2.289783477783203,
           "content": {
             "parts": [
               {
@@ -101,7 +101,7 @@
                   },
                   "name": "get_weather"
                 },
-                "thoughtSignature": "CokCAePx/15JyFAt7zVevV/0kPfD/oboQn95ZF1DI0E4Bb7OnUbsON57x7vOdYKWaVFXcBonpum3e8lLo/U+Zm1k2Bxe/WZYi9pDjqowt2Bh3NA0VwAe2I732Ra6NVNTsl3L4t9s4BQsdP3Mnj9K63lM482+CllC8ubW+VD8J+i7ir+oVW/UUfwAI2+mq23IMpfyfGH7BdMXYf05kPl90ziNYOpyltIxtfqRh8q/kSUuEpcyi2xrS/b1CFKcxWeJSShFNC6jZN8ZX5UkIPmDkp8rzQqiprJ4tLb+bs7J+5FO2eI8gwvKp6WBlK5/azYdyN/v9lhQ24RtRjLqkGxzL8rS7D5I897Bz4dHOA=="
+                "thoughtSignature": "CuUCAePx/17mXaChIULRPuNGB0c6WZy439uXNApMxdI7jWFHQHxen7z3nY7TsZsfVUPpOy8nYAXsiaxjWze5MV/gTyinzMJmjj4Pg60txXbr7S1d+7OPYpryAkhBkmX69JM8vBpjK/oZA+16w5++e8blIhuu0SFPPDAO5/kqkf+C6OaugyekEyykHaDsXM09X7aBhEIrXbeV4uaMlJk3Z95hXm3+jEWkB8xkaZIptXvrlvLyT315e1xXZ5jGR4TNZGO1R1I6PqUV0pXdlwtf2DrI79iQajEY1a3/hvW3i8xQdcHuGMdKFOiyiaMZbLiD30XVPbpV24JXwVeaglRqmYUKYMXXO4PjU08rNeP1yUFA4WRutuRTmLzzXqLux2IAWEdtvCOU9cW0pF75yyHGaYUUOxScxC3O3cwP8m83KroBeBewvn3ze6TNTEHJ/QUElCfZ4Rp5SY621G6Cr4Rj5/voTBWu9/kt"
               }
             ],
             "role": "model"
@@ -109,9 +109,9 @@
           "finishReason": "STOP"
         }
       ],
-      "createTime": "2025-11-02T21:45:54.501618Z",
+      "createTime": "2025-11-06T06:55:27.854216Z",
       "modelVersion": "gemini-2.5-flash",
-      "responseId": "EtEHafLOHvSZ4_UP7vy60AY",
+      "responseId": "X0YMaciRNIu64_UP35qiuQw",
       "usageMetadata": {
         "candidatesTokenCount": 7,
         "candidatesTokensDetails": [
@@ -127,8 +127,8 @@
             "tokenCount": 53
           }
         ],
-        "thoughtsTokenCount": 57,
-        "totalTokenCount": 117,
+        "thoughtsTokenCount": 84,
+        "totalTokenCount": 144,
         "trafficType": "ON_DEMAND"
       }
     },
@@ -140,7 +140,7 @@
         "application/json; charset=UTF-8"
       ],
       "date": [
-        "Sun, 02 Nov 2025 21:45:55 GMT"
+        "Thu, 06 Nov 2025 06:55:28 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"

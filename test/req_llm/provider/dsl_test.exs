@@ -83,7 +83,7 @@ defmodule ReqLLM.Provider.DSLTest do
 
   describe "DSL validation" do
     test "validates required options" do
-      assert_raise KeyError, ~r/key :id not found/, fn ->
+      assert_raise ArgumentError, ~r/Provider must specify either :id or :ids/, fn ->
         defmodule MissingId do
           use ReqLLM.Provider.DSL, base_url: "https://test.com"
         end
@@ -97,10 +97,11 @@ defmodule ReqLLM.Provider.DSLTest do
     end
 
     test "validates option types" do
-      assert_raise ArgumentError, ~r/Provider :id must be an atom/, fn ->
-        defmodule InvalidIdProvider do
+      assert_raise ArgumentError, ~r/Provider cannot specify both :id and :ids/, fn ->
+        defmodule BothIdProvider do
           use ReqLLM.Provider.DSL,
-            id: "string_id",
+            id: :test_id,
+            ids: [{:test_id, "metadata.json"}],
             base_url: "https://test.com"
         end
       end

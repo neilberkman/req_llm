@@ -42,11 +42,11 @@
     "body": {
       "candidates": [
         {
-          "avgLogprobs": -0.11630086898803711,
+          "avgLogprobs": -0.1588197632839805,
           "content": {
             "parts": [
               {
-                "text": "Hello there! How can I help you today?"
+                "text": "Hello there! It's nice to hear from you. How can I help you today?"
               }
             ],
             "role": "model"
@@ -54,15 +54,15 @@
           "finishReason": "STOP"
         }
       ],
-      "createTime": "2025-11-02T21:46:05.050889Z",
+      "createTime": "2025-11-06T06:57:54.161134Z",
       "modelVersion": "gemini-2.5-flash-lite",
-      "responseId": "HdEHacmNA4-d4_UPxcrd6Qk",
+      "responseId": "8kYMae7qCYuO4_UPxtuvuQ4",
       "usageMetadata": {
-        "candidatesTokenCount": 10,
+        "candidatesTokenCount": 19,
         "candidatesTokensDetails": [
           {
             "modality": "TEXT",
-            "tokenCount": 10
+            "tokenCount": 19
           }
         ],
         "promptTokenCount": 3,
@@ -72,7 +72,7 @@
             "tokenCount": 3
           }
         ],
-        "totalTokenCount": 13,
+        "totalTokenCount": 22,
         "trafficType": "ON_DEMAND"
       }
     },
@@ -84,7 +84,7 @@
         "application/json; charset=UTF-8"
       ],
       "date": [
-        "Sun, 02 Nov 2025 21:46:05 GMT"
+        "Thu, 06 Nov 2025 06:57:54 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"

@@ -63,11 +63,11 @@
     "body": {
       "candidates": [
         {
-          "avgLogprobs": -0.3361431360244751,
+          "avgLogprobs": -0.3477589416503906,
           "content": {
             "parts": [
               {
-                "text": "I'm sorry, I don't have any jokes about cats. I can provide weather information for a location."
+                "text": "I'm sorry, I don't have any jokes about cats in my current toolkit. I can provide weather information."
               }
             ],
             "role": "model"
@@ -75,15 +75,15 @@
           "finishReason": "STOP"
         }
       ],
-      "createTime": "2025-11-02T21:46:17.304257Z",
+      "createTime": "2025-11-06T06:57:49.625598Z",
       "modelVersion": "gemini-2.5-flash-lite",
-      "responseId": "KdEHaYHJEtug4_UP0q6W4Qg",
+      "responseId": "7UYMab6XJtmY4_UP5N-lyAE",
       "usageMetadata": {
-        "candidatesTokenCount": 24,
+        "candidatesTokenCount": 25,
         "candidatesTokensDetails": [
           {
             "modality": "TEXT",
-            "tokenCount": 24
+            "tokenCount": 25
           }
         ],
         "promptTokenCount": 20,
@@ -93,7 +93,7 @@
             "tokenCount": 20
           }
         ],
-        "totalTokenCount": 44,
+        "totalTokenCount": 45,
         "trafficType": "ON_DEMAND"
       }
     },
@@ -105,7 +105,7 @@
         "application/json; charset=UTF-8"
       ],
       "date": [
-        "Sun, 02 Nov 2025 21:46:17 GMT"
+        "Thu, 06 Nov 2025 06:57:49 GMT"
       ],
       "server": [
         "scaffolding on HTTPServer2"
