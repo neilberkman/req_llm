@@ -908,9 +908,11 @@ defmodule ReqLLM.Providers.Google do
   end
 
   # Helper to build Google toolConfig from OpenAI-style tool_choice
-  defp build_google_tool_config(nil), do: nil
+  @doc false
+  def build_google_tool_config(nil), do: nil
 
-  defp build_google_tool_config(%{type: "function", function: %{name: name}}) do
+  @doc false
+  def build_google_tool_config(%{type: "function", function: %{name: name}}) do
     %{
       functionCallingConfig: %{
         mode: "ANY",
@@ -919,26 +921,37 @@ defmodule ReqLLM.Providers.Google do
     }
   end
 
-  defp build_google_tool_config(:required), do: build_google_tool_config("required")
-  defp build_google_tool_config(:auto), do: build_google_tool_config("auto")
-  defp build_google_tool_config(:none), do: build_google_tool_config("none")
+  @doc false
+  def build_google_tool_config(:required), do: build_google_tool_config("required")
+  @doc false
+  def build_google_tool_config(:auto), do: build_google_tool_config("auto")
+  @doc false
+  def build_google_tool_config(:none), do: build_google_tool_config("none")
 
-  defp build_google_tool_config("required") do
+  @doc false
+  def build_google_tool_config("required") do
     %{functionCallingConfig: %{mode: "ANY"}}
   end
 
-  defp build_google_tool_config("auto"), do: %{functionCallingConfig: %{mode: "AUTO"}}
-  defp build_google_tool_config("none"), do: %{functionCallingConfig: %{mode: "NONE"}}
-  defp build_google_tool_config(_), do: nil
+  @doc false
+  def build_google_tool_config("auto"), do: %{functionCallingConfig: %{mode: "AUTO"}}
+  @doc false
+  def build_google_tool_config("none"), do: %{functionCallingConfig: %{mode: "NONE"}}
+  @doc false
+  def build_google_tool_config(_), do: nil
 
-  defp build_grounding_tools(nil), do: []
-  defp build_grounding_tools(%{enable: true}), do: [%{google_search: %{}}]
+  @doc false
+  def build_grounding_tools(nil), do: []
+  @doc false
+  def build_grounding_tools(%{enable: true}), do: [%{google_search: %{}}]
 
-  defp build_grounding_tools(%{dynamic_retrieval: config}) when is_map(config) do
+  @doc false
+  def build_grounding_tools(%{dynamic_retrieval: config}) when is_map(config) do
     [%{google_search_retrieval: %{dynamic_retrieval_config: config}}]
   end
 
-  defp build_grounding_tools(_), do: []
+  @doc false
+  def build_grounding_tools(_), do: []
 
   defp extract_grounding_metadata(%{"candidates" => [candidate | _]}) do
     case candidate do
@@ -977,13 +990,16 @@ defmodule ReqLLM.Providers.Google do
   defp extract_grounding_metadata(_), do: nil
 
   # Helper to add thinking configuration if specified
-  defp maybe_add_thinking_config(config, nil), do: config
+  @doc false
+  def maybe_add_thinking_config(config, nil), do: config
 
-  defp maybe_add_thinking_config(config, budget) when is_integer(budget) and budget > 0 do
+  @doc false
+  def maybe_add_thinking_config(config, budget) when is_integer(budget) and budget > 0 do
     Map.put(config, :thinkingConfig, %{thinkingBudget: budget, includeThoughts: true})
   end
 
-  defp maybe_add_thinking_config(config, 0) do
+  @doc false
+  def maybe_add_thinking_config(config, 0) do
     config
   end
 
@@ -1246,7 +1262,8 @@ defmodule ReqLLM.Providers.Google do
   end
 
   # Split messages into system instruction and contents for Google Gemini
-  defp split_messages_for_gemini(messages) do
+  @doc false
+  def split_messages_for_gemini(messages) do
     {system_msgs, chat_msgs} =
       Enum.split_with(messages, fn message ->
         case message do

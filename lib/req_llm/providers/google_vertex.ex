@@ -94,7 +94,8 @@ defmodule ReqLLM.Providers.GoogleVertex do
 
   # Model family to formatter module mapping
   @model_families %{
-    "claude" => ReqLLM.Providers.GoogleVertex.Anthropic
+    "claude" => ReqLLM.Providers.GoogleVertex.Anthropic,
+    "gemini" => ReqLLM.Providers.GoogleVertex.Gemini
   }
 
   @impl ReqLLM.Provider
@@ -227,6 +228,11 @@ defmodule ReqLLM.Providers.GoogleVertex do
   defp build_model_path("claude", model_id, project_id, region) do
     # Anthropic models on Vertex use the publishers/anthropic path
     "/v1/projects/#{project_id}/locations/#{region}/publishers/anthropic/models/#{model_id}:rawPredict"
+  end
+
+  defp build_model_path("gemini", model_id, project_id, region) do
+    # Gemini models on Vertex use the publishers/google path
+    "/v1/projects/#{project_id}/locations/#{region}/publishers/google/models/#{model_id}:generateContent"
   end
 
   # Build base URL based on region
@@ -462,5 +468,10 @@ defmodule ReqLLM.Providers.GoogleVertex do
   defp build_stream_path("claude", model_id, project_id, region) do
     # Use streamRawPredict for streaming
     "/v1/projects/#{project_id}/locations/#{region}/publishers/anthropic/models/#{model_id}:streamRawPredict"
+  end
+
+  defp build_stream_path("gemini", model_id, project_id, region) do
+    # Use streamGenerateContent for streaming
+    "/v1/projects/#{project_id}/locations/#{region}/publishers/google/models/#{model_id}:streamGenerateContent"
   end
 end

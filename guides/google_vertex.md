@@ -1,6 +1,6 @@
 # Google Vertex AI
 
-Access Claude models through Google Cloud's Vertex AI platform. All Claude 4.x models including Opus, Sonnet, and Haiku with full tool calling and reasoning support.
+Access both Claude and Gemini models through Google Cloud's Vertex AI platform. Supports all Claude 4.x models (Opus, Sonnet, Haiku) and Gemini 2.5 models (Pro, Flash) with full tool calling, reasoning support, and context caching.
 
 ## Configuration
 
@@ -34,14 +34,16 @@ ReqLLM.generate_text(
 
 Passed via `:provider_options` keyword:
 
-### `service_account_json`
+### Common Options
+
+#### `service_account_json`
 
 - **Type**: String (file path)
 - **Purpose**: Path to Google Cloud service account JSON file
 - **Fallback**: `GOOGLE_APPLICATION_CREDENTIALS` env var
 - **Example**: `provider_options: [service_account_json: "/path/to/credentials.json"]`
 
-### `project_id`
+#### `project_id`
 
 - **Type**: String
 - **Purpose**: Google Cloud project ID
@@ -49,7 +51,7 @@ Passed via `:provider_options` keyword:
 - **Example**: `provider_options: [project_id: "my-project-123"]`
 - **Required**: Yes
 
-### `region`
+#### `region`
 
 - **Type**: String
 - **Default**: `"global"`
@@ -57,7 +59,7 @@ Passed via `:provider_options` keyword:
 - **Example**: `provider_options: [region: "us-central1"]`
 - **Note**: Use `"global"` for newest models, specific regions for regional deployment
 
-### `additional_model_request_fields`
+#### `additional_model_request_fields`
 
 - **Type**: Map
 - **Purpose**: Model-specific request fields (e.g., thinking configuration)
@@ -111,6 +113,41 @@ Vertex AI supports the same Claude options as native Anthropic:
 - **Purpose**: Cache TTL (default ~5min if omitted)
 - **Example**: `provider_options: [anthropic_prompt_cache_ttl: "1h"]`
 
+### Gemini-Specific Options
+
+#### `google_thinking_budget`
+
+- **Type**: Integer
+- **Purpose**: Thinking token budget for Gemini 2.5 reasoning models
+- **Example**: `provider_options: [google_thinking_budget: 4096]`
+- **Access**: `ReqLLM.Response.thinking(response)`
+
+#### `google_safety_settings`
+
+- **Type**: List of maps
+- **Purpose**: Configure safety filters
+- **Example**:
+  ```elixir
+  provider_options: [
+    google_safety_settings: [
+      %{category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE"}
+    ]
+  ]
+  ```
+
+#### `google_grounding`
+
+- **Type**: Map
+- **Purpose**: Enable Google Search grounding
+- **Example**: `provider_options: [google_grounding: %{google_search: %{}}]`
+
+#### `cached_content`
+
+- **Type**: String
+- **Purpose**: Reference to cached content for 90% cost savings
+- **Example**: `provider_options: [cached_content: cache.name]`
+- **See**: Context Caching section below
+
 ## Supported Models
 
 ### Claude 4.5 Family
@@ -135,12 +172,118 @@ Vertex AI supports the same Claude options as native Anthropic:
 - **Sonnet 3.5 v2**: `google_vertex_anthropic:claude-3-5-sonnet@20241022`
 - **Haiku 3.5**: `google_vertex_anthropic:claude-3-5-haiku@20241022`
 
+### Gemini 2.5 Family
+
+- **Gemini 2.5 Pro**: `google_vertex_anthropic:gemini-2.5-pro`
+  - Highest capability Gemini model
+  - Extended thinking support
+  - Context caching support
+
+- **Gemini 2.5 Flash**: `google_vertex_anthropic:gemini-2.5-flash`
+  - Fast, cost-effective
+  - Extended thinking support
+  - Context caching support
+
+- **Gemini 2.5 Flash Lite**: `google_vertex_anthropic:gemini-2.5-flash-lite`
+  - Fastest, most cost-effective
+  - Lightweight workloads
+
 ### Model ID Format
 
-Vertex uses the `@` symbol for versioning:
+Vertex uses different formats for Claude vs Gemini:
 
-- Format: `claude-{tier}-{version}@{date}`
-- Example: `claude-sonnet-4-5@20250929`
+- **Claude**: `claude-{tier}-{version}@{date}` (e.g., `claude-sonnet-4-5@20250929`)
+- **Gemini**: `gemini-{version}-{tier}` (e.g., `gemini-2.5-flash`)
+
+## Context Caching
+
+Both Claude and Gemini models on Vertex AI support context caching for up to 90% cost savings on repeated prompts.
+
+### Creating a Cache
+
+```elixir
+alias ReqLLM.Providers.Google.CachedContent
+
+{:ok, cache} = CachedContent.create(
+  provider: :google_vertex,
+  model: "gemini-2.5-flash",
+  service_account_json: "/path/to/credentials.json",
+  project_id: "your-project-id",
+  region: "us-central1",
+  contents: [
+    %{
+      role: "user",
+      parts: [%{text: "Large document content..."}]
+    }
+  ],
+  ttl: "3600s"
+)
+```
+
+### Using a Cache
+
+```elixir
+{:ok, response} = ReqLLM.generate_text(
+  "google_vertex_anthropic:gemini-2.5-flash",
+  "Question about the document?",
+  provider_options: [
+    cached_content: cache.name,
+    service_account_json: "/path/to/credentials.json",
+    project_id: "your-project-id",
+    region: "us-central1"
+  ]
+)
+
+# Check cache usage
+response.usage.cached_tokens  # Number of tokens served from cache
+```
+
+### Managing Caches
+
+```elixir
+# List all caches
+{:ok, caches} = CachedContent.list(
+  provider: :google_vertex,
+  service_account_json: "/path/to/credentials.json",
+  project_id: "your-project-id",
+  region: "us-central1"
+)
+
+# Get cache details
+{:ok, cache} = CachedContent.get(
+  provider: :google_vertex,
+  name: cache.name,
+  service_account_json: "/path/to/credentials.json",
+  project_id: "your-project-id",
+  region: "us-central1"
+)
+
+# Update TTL
+{:ok, updated} = CachedContent.update(
+  provider: :google_vertex,
+  name: cache.name,
+  ttl: "7200s",
+  service_account_json: "/path/to/credentials.json",
+  project_id: "your-project-id",
+  region: "us-central1"
+)
+
+# Delete cache
+:ok = CachedContent.delete(
+  provider: :google_vertex,
+  name: cache.name,
+  service_account_json: "/path/to/credentials.json",
+  project_id: "your-project-id",
+  region: "us-central1"
+)
+```
+
+### Cache Requirements
+
+- **Minimum tokens**: 1,024 for Flash models, 4,096 for Pro models
+- **TTL format**: String with 's' suffix (e.g., "600s", "3600s")
+- **Region**: Must match region used for inference
+- **Gemini only**: Context caching is only supported for Gemini models on Vertex (not Claude)
 
 ## Wire Format Notes
 

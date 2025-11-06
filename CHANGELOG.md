@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Google Vertex AI Gemini support** with full feature parity
+  - Gemini 2.5 Pro, Flash, and Flash Lite models
+  - Extended thinking/reasoning support via `google_thinking_budget`
+  - Safety settings and grounding configuration
+  - Full context caching integration
+  - Complete test fixtures for all Gemini models
 - **Google Context Caching** for Gemini models with up to 90% cost savings
   - `ReqLLM.Providers.Google.CachedContent` module for cache CRUD operations
   - Create, list, update, and delete cached content
