@@ -996,4 +996,11 @@ defmodule ReqLLM.Providers.AmazonBedrock do
         end
     end
   end
+
+  @impl ReqLLM.Provider
+  def credential_missing?(%ArgumentError{message: msg}) when is_binary(msg) do
+    String.contains?(msg, "AWS credentials required for Bedrock")
+  end
+
+  def credential_missing?(_), do: false
 end

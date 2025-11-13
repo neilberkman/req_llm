@@ -16,6 +16,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Prevents double-stream consumption bugs through single-pass processing
   - Enables real-time streaming to UIs (Phoenix LiveView, websockets, etc.)
   - No upfront `Enum.to_list` - callbacks fire as chunks arrive from the stream
+- **Credential fallback for fixture recording** in providers requiring cloud credentials
+  - Automatic fallback to existing fixtures when credentials are missing during RECORD mode
+  - Provider-specific credential detection via optional `credential_missing?/1` callback
+  - Implemented in AWS Bedrock, Google, and Google Vertex AI providers
+  - Enables comprehensive test coverage without requiring all developers to configure cloud credentials
+
 ### Enhanced
 
 - **AWS Event Stream parser documentation** clarifying Bedrock specialization
