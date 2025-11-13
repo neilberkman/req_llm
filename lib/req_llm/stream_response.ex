@@ -9,7 +9,7 @@ defmodule ReqLLM.StreamResponse do
   ## Structure
 
   - `stream` - Lazy enumerable of `ReqLLM.StreamChunk` structs for real-time consumption
-  - `metadata_task` - Concurrent Task for metadata collection (usage, finish_reason)
+  - `metadata_handle` - Concurrent handle for metadata collection (usage, finish_reason)
   - `cancel` - Function to terminate streaming and cleanup resources
   - `model` - Model specification that generated this response
   - `context` - Conversation context for multi-turn workflows
@@ -69,18 +69,18 @@ defmodule ReqLLM.StreamResponse do
 
   use TypedStruct
 
-  alias ReqLLM.{Context, Model, Response}
+  alias ReqLLM.{Context, Model, Response, StreamResponse.MetadataHandle}
 
   typedstruct enforce: true do
     @typedoc """
     A streaming response with concurrent metadata processing.
 
-    Contains a stream of chunks, a task for metadata collection, cancellation function,
+    Contains a stream of chunks, a handle for metadata collection, cancellation function,
     and contextual information for multi-turn conversations.
     """
 
     field(:stream, Enumerable.t(), doc: "Lazy stream of StreamChunk structs")
-    field(:metadata_task, Task.t(), doc: "Async task collecting usage and finish_reason")
+    field(:metadata_handle, MetadataHandle.t(), doc: "Handle collecting usage and finish_reason")
     field(:cancel, (-> :ok), doc: "Function to cancel streaming and cleanup resources")
     field(:model, Model.t(), doc: "Model specification that generated this response")
     field(:context, Context.t(), doc: "Conversation context including new messages")
@@ -450,7 +450,7 @@ defmodule ReqLLM.StreamResponse do
     }
 
     object = extract_object_from_message(message)
-    metadata = Task.await(stream_response.metadata_task)
+    metadata = MetadataHandle.await(stream_response.metadata_handle)
     usage = normalize_usage_fields(Map.get(metadata, :usage))
 
     %Response{
@@ -495,10 +495,11 @@ defmodule ReqLLM.StreamResponse do
   determined by the provider's streaming implementation.
   """
   @spec usage(t()) :: map() | nil
-  def usage(%__MODULE__{metadata_task: task}) do
-    case Task.await(task) do
-      %{usage: usage} -> usage
-      %{} -> nil
+  def usage(%__MODULE__{metadata_handle: handle}) do
+    metadata = MetadataHandle.await(handle)
+
+    case metadata do
+      %{usage: usage} when is_map(usage) -> usage
       _ -> nil
     end
   end
@@ -530,16 +531,15 @@ defmodule ReqLLM.StreamResponse do
   determined by the provider's streaming implementation.
   """
   @spec finish_reason(t()) :: atom() | nil
-  def finish_reason(%__MODULE__{metadata_task: task}) do
-    case Task.await(task) do
+  def finish_reason(%__MODULE__{metadata_handle: handle}) do
+    metadata = MetadataHandle.await(handle)
+
+    case metadata do
       %{finish_reason: finish_reason} when is_atom(finish_reason) ->
         finish_reason
 
       %{finish_reason: finish_reason} when is_binary(finish_reason) ->
         String.to_existing_atom(finish_reason)
-
-      %{} ->
-        nil
 
       _ ->
         nil
@@ -581,7 +581,7 @@ defmodule ReqLLM.StreamResponse do
   def to_response(%__MODULE__{} = stream_response) do
     # Consume stream and build message concurrently with metadata collection
     stream_chunks = Enum.to_list(stream_response.stream)
-    metadata = Task.await(stream_response.metadata_task)
+    metadata = MetadataHandle.await(stream_response.metadata_handle)
 
     # Check if this is a Responses API model
     if responses_api_model?(stream_response.model) do
