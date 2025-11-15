@@ -242,7 +242,7 @@ defmodule ReqLLM.Providers.AmazonBedrock do
 
   @impl ReqLLM.Provider
   def attach(%Req.Request{} = request, model_input, user_opts) do
-    %LLMDB.Model{} =
+    %ReqLLM.Model{} =
       model =
       case ReqLLM.model(model_input) do
         {:ok, m} -> m
@@ -270,7 +270,7 @@ defmodule ReqLLM.Providers.AmazonBedrock do
 
     # For Anthropic models: Remove thinking from additional_model_request_fields if it was removed by translate_options
     # This handles the case where thinking is incompatible with forced tool_choice
-    opts = maybe_clean_thinking_after_translation(opts, get_model_family(model.id), operation)
+    opts = maybe_clean_thinking_after_translation(opts, get_model_family(model.model), operation)
 
     # Construct the base URL with region
     region =
@@ -284,8 +284,7 @@ defmodule ReqLLM.Providers.AmazonBedrock do
 
     base_url = "https://bedrock-runtime.#{region}.amazonaws.com"
 
-    # Use model.model which preserves the originally requested ID (including inference profile prefix)
-    # model.id is the canonical ID, model.model is the requested ID (e.g., global.anthropic.claude-...)
+    # Use model.model which contains the requested model ID (including inference profile prefix like global.)
     model_id = model.model
 
     # Check if we should use Converse API
@@ -362,7 +361,7 @@ defmodule ReqLLM.Providers.AmazonBedrock do
 
     request_with_body
     |> Step.Error.attach()
-    |> ReqLLM.Step.Retry.attach(user_opts)
+    |> ReqLLM.Step.Retry.attach()
     |> put_aws_sigv4(aws_creds)
     # No longer attach streaming here - it's handled by attach_stream
     |> Req.Request.append_response_steps(llm_decode_response: &decode_response/1)
@@ -519,7 +518,7 @@ defmodule ReqLLM.Providers.AmazonBedrock do
   # Translate reasoning_effort/reasoning_token_budget to Bedrock additionalModelRequestFields
   # Only for Claude models that support extended thinking
   defp maybe_translate_reasoning_params(model, opts) do
-    model_id = model.id
+    model_id = model.model
 
     # Check if this is a Claude model with reasoning capability
     # Use model.capabilities.reasoning instead of hardcoding model IDs
@@ -556,7 +555,7 @@ defmodule ReqLLM.Providers.AmazonBedrock do
   @impl ReqLLM.Provider
   def extract_usage(body, model) when is_map(body) do
     # Delegate to model family formatter
-    model_family = get_model_family(model.id)
+    model_family = get_model_family(model.model)
     formatter = get_formatter_module(model_family)
 
     if function_exported?(formatter, :extract_usage, 2) do
@@ -795,7 +794,7 @@ defmodule ReqLLM.Providers.AmazonBedrock do
     # Delegate to native Anthropic option translation for Anthropic models
     # This ensures we get all Anthropic-specific handling (temperature/top_p conflicts,
     # reasoning effort, etc.) for free
-    model_family = get_model_family(model.id)
+    model_family = get_model_family(model.model)
 
     case model_family do
       "anthropic" ->
