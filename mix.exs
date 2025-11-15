@@ -168,7 +168,7 @@ defmodule ReqLLM.MixProject do
       {:uniq, "~> 0.6"},
       {:zoi, "~> 0.10"},
       {:jsv, "~> 0.11"},
-      {:llm_db, path: "../llm_db"},
+      {:llm_db, github: "neilberkman/llm_db", branch: "bedrock-inference-profile-aliases"},
 
       # Dev/test dependencies
       {:bandit, "~> 1.8", only: :dev, runtime: false},
