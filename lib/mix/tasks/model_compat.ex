@@ -3,7 +3,7 @@ defmodule Mix.Tasks.ReqLlm.ModelCompat do
   @moduledoc """
   Validate ReqLLM model coverage using the fixture system.
 
-  Models are sourced from priv/models_dev/*.json (synced via mix req_llm.model_sync).
+  Models are sourced from LLMDB
   Fixture validation state is tracked in priv/supported_models.json (auto-generated).
 
   ## Selection Principles
@@ -20,7 +20,7 @@ defmodule Mix.Tasks.ReqLlm.ModelCompat do
   - **sample** (optional): Further reduces using `:sample_text_models` or `:sample_embedding_models`.
     If not configured, falls back to one model per provider.
 
-  **Important**: 
+  **Important**:
   - Only **implemented providers** are included (registry models without implementation are skipped)
   - Config lists (`:test_models`, `:test_embedding_models`) are defaults only, not hard filters
   - Explicit specs like `"anthropic:*"` test ALL registry models for that provider
@@ -72,6 +72,7 @@ defmodule Mix.Tasks.ReqLlm.ModelCompat do
   @impl Mix.Task
   def run(args) do
     Application.ensure_all_started(:req_llm)
+    # LLMDB.load(allow: :all, custom: %{})
 
     {opts, positional, _} =
       OptionParser.parse(args,
@@ -203,12 +204,7 @@ defmodule Mix.Tasks.ReqLlm.ModelCompat do
     models
     |> Enum.filter(fn {provider, _} -> MapSet.member?(implemented, provider) end)
     |> Enum.map(fn {provider, provider_models} ->
-      allowed_models =
-        Enum.filter(provider_models, fn model ->
-          ReqLLM.Catalog.allowed_spec?(provider, model["id"])
-        end)
-
-      {provider, allowed_models}
+      {provider, provider_models}
     end)
     |> Enum.reject(fn {_provider, models} -> Enum.empty?(models) end)
     |> Enum.sort_by(fn {provider, _} -> provider end)
@@ -697,9 +693,6 @@ defmodule Mix.Tasks.ReqLlm.ModelCompat do
     |> Enum.flat_map(fn {provider, models} ->
       if MapSet.member?(implemented, provider) do
         models
-        |> Enum.filter(fn m ->
-          ReqLLM.Catalog.allowed_spec?(provider, m["id"])
-        end)
         |> Enum.map(fn m -> {provider, m["id"]} end)
       else
         []
@@ -714,9 +707,6 @@ defmodule Mix.Tasks.ReqLlm.ModelCompat do
 
       models ->
         models
-        |> Enum.filter(fn m ->
-          ReqLLM.Catalog.allowed_spec?(provider, m["id"])
-        end)
         |> Enum.map(fn m -> {provider, m["id"]} end)
     end
   end
@@ -761,37 +751,45 @@ defmodule Mix.Tasks.ReqLlm.ModelCompat do
   end
 
   defp load_registry do
-    priv_dir = :code.priv_dir(:req_llm)
-    models_dir = Path.join(priv_dir, "models_dev")
+    LLMDB.providers()
+    |> Enum.map(fn provider ->
+      models =
+        LLMDB.models(provider.id)
+        |> Enum.map(fn model ->
+          tier = extract_tier(model.tags)
 
-    if !File.dir?(models_dir) do
-      Mix.raise("""
-      Models directory not found: #{models_dir}
+          %{
+            "id" => model.model,
+            "type" => infer_type(model),
+            "tier" => tier,
+            "modalities" => model.modalities
+          }
+        end)
 
-      Run: mix req_llm.model_sync
-      """)
-    end
-
-    models_dir
-    |> File.ls!()
-    |> Enum.filter(&String.ends_with?(&1, ".json"))
-    |> Enum.map(fn filename ->
-      provider = filename |> String.replace_suffix(".json", "") |> String.to_atom()
-      path = Path.join(models_dir, filename)
-
-      case File.read(path) do
-        {:ok, content} ->
-          data = Jason.decode!(content)
-          models = Map.get(data, "models", [])
-          {provider, models}
-
-        {:error, reason} ->
-          Mix.raise("Failed to read #{path}: #{inspect(reason)}")
-      end
+      {provider.id, models}
     end)
     |> Enum.reject(fn {_, models} -> Enum.empty?(models) end)
     |> Map.new()
   end
+
+  defp infer_type(model) do
+    if model.capabilities && model.capabilities.embeddings != false do
+      "embedding"
+    else
+      "text"
+    end
+  end
+
+  defp extract_tier(tags) when is_list(tags) do
+    Enum.find_value(tags, fn tag ->
+      case tag do
+        "tier:" <> tier -> tier
+        _ -> nil
+      end
+    end)
+  end
+
+  defp extract_tier(_), do: nil
 
   defp load_state do
     priv_dir = :code.priv_dir(:req_llm)
@@ -879,7 +877,7 @@ defmodule Mix.Tasks.ReqLlm.ModelCompat do
     # Normalize model_id using provider's callback if available
     # This allows providers to handle model ID aliases (e.g., Bedrock inference profiles)
     normalized_model_id =
-      case ReqLLM.Provider.Registry.get_provider(provider_atom) do
+      case ReqLLM.provider(provider_atom) do
         {:ok, provider_module} when not is_nil(provider_module) ->
           if function_exported?(provider_module, :normalize_model_id, 1) do
             provider_module.normalize_model_id(model_id)
@@ -913,7 +911,7 @@ defmodule Mix.Tasks.ReqLlm.ModelCompat do
   defp header(_), do: "Model Coverage"
 
   defp get_implemented_providers do
-    providers = ReqLLM.Provider.Registry.list_implemented_providers()
+    providers = ReqLLM.Providers.list()
     MapSet.new(providers)
   end
 
