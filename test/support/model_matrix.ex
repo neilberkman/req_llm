@@ -169,7 +169,7 @@ defmodule ReqLLM.Test.ModelMatrix do
 
   defp expand_provider_wildcard(provider, registry) do
     case registry.list_models(provider) do
-      {:ok, models} -> Enum.map(models, &"#{provider}:#{&1}")
+      {:ok, models} -> Enum.map(models, &"#{provider}:#{&1.id}")
       {:error, _} -> []
     end
   end
@@ -199,7 +199,7 @@ defmodule ReqLLM.Test.ModelMatrix do
     registry.list_providers()
     |> Enum.flat_map(fn provider ->
       case registry.list_models(provider) do
-        {:ok, models} -> Enum.map(models, &"#{provider}:#{&1}")
+        {:ok, models} -> Enum.map(models, &"#{provider}:#{&1.id}")
         {:error, _} -> []
       end
     end)
@@ -244,7 +244,7 @@ defmodule ReqLLM.Test.ModelMatrix do
     registry.list_providers()
     |> Enum.flat_map(fn provider ->
       case registry.list_models(provider) do
-        {:ok, models} -> Enum.map(models, &"#{provider}:#{&1}")
+        {:ok, models} -> Enum.map(models, &"#{provider}:#{&1.id}")
         {:error, _} -> []
       end
     end)
