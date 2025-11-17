@@ -343,7 +343,7 @@ defmodule ReqLLM.Providers.GoogleTest do
         body: google_response
       }
 
-      model = ReqLLM.Model.from!("google:gemini-2.5-flash")
+      {:ok, model} = ReqLLM.model("google:gemini-2.5-flash")
       context = context_fixture()
 
       mock_req = %Req.Request{
