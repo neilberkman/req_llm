@@ -154,7 +154,9 @@ defmodule ReqLLM.Providers.GoogleVertex.Anthropic do
   # Only for Claude models that support extended thinking
   defp maybe_translate_reasoning_params(model, opts) do
     # Check if this model has reasoning capability
-    has_reasoning = get_in(model, [Access.key(:capabilities), Access.key(:reasoning), Access.key(:enabled)]) == true
+    has_reasoning =
+      get_in(model, [Access.key(:capabilities), Access.key(:reasoning), Access.key(:enabled)]) ==
+        true
 
     if has_reasoning do
       {reasoning_effort, opts} = Keyword.pop(opts, :reasoning_effort)

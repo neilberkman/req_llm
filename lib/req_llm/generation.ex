@@ -297,10 +297,12 @@ defmodule ReqLLM.Generation do
 
   # Coerces object types to match schema for models that don't strictly follow schemas
   # Uses JSV validation but keeps the coerced result instead of discarding it
-  defp coerce_object_types(%Response{object: object} = response, schema) when not is_nil(object) do
+  defp coerce_object_types(%Response{object: object} = response, schema)
+       when not is_nil(object) do
     case coerce_with_schema(object, schema) do
       {:ok, coerced} -> %{response | object: coerced}
-      {:error, _} -> response  # If coercion fails, return original
+      # If coercion fails, return original
+      {:error, _} -> response
     end
   end
 
@@ -323,7 +325,8 @@ defmodule ReqLLM.Generation do
         # Try validation again with coerced data
         case JSV.validate(coerced_data, built_schema) do
           {:ok, validated_data} -> {:ok, validated_data}
-          {:error, _} -> {:ok, coerced_data}  # Return coerced even if still invalid
+          # Return coerced even if still invalid
+          {:error, _} -> {:ok, coerced_data}
         end
     end
   rescue
