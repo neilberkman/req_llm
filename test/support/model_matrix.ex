@@ -39,6 +39,7 @@ defmodule ReqLLM.Test.ModelMatrix do
   @type operation :: :text | :embedding
   @type opts :: [
           env: %{optional(String.t()) => String.t() | nil},
+          registry: module(),
           operation: operation()
         ]
 
@@ -55,6 +56,7 @@ defmodule ReqLLM.Test.ModelMatrix do
   ## Options
 
     * `:env` - Map of environment variables to use instead of System.get_env
+    * `:registry` - Registry module to use for listing models (default: uses LLMDB directly)
     * `:operation` - Operation type (:text or :embedding, default: :text)
 
   ## Examples
@@ -77,6 +79,7 @@ defmodule ReqLLM.Test.ModelMatrix do
   @spec selected_specs(opts()) :: [binary()]
   def selected_specs(opts) do
     env = Keyword.get(opts, :env, %{})
+    registry = Keyword.get(opts, :registry)
 
     operation =
       parse_operation(Keyword.get(opts, :operation) || get_env_value(env, "REQ_LLM_OPERATION"))
@@ -85,7 +88,7 @@ defmodule ReqLLM.Test.ModelMatrix do
     sample = get_env_value(env, "REQ_LLM_SAMPLE")
     exclude = get_env_value(env, "REQ_LLM_EXCLUDE")
 
-    resolve_base_selection(pattern, operation)
+    resolve_base_selection(pattern, operation, registry)
     |> maybe_sample(sample)
     |> maybe_exclude(exclude)
     |> Enum.sort()
@@ -123,33 +126,33 @@ defmodule ReqLLM.Test.ModelMatrix do
   defp parse_operation("embedding"), do: :embedding
   defp parse_operation(_), do: :text
 
-  defp resolve_base_selection(pattern, operation) do
+  defp resolve_base_selection(pattern, operation, registry) do
     case pattern do
       "all" ->
-        all_model_specs()
+        all_model_specs(registry)
 
       nil ->
-        default_model_specs(operation)
+        default_model_specs(operation, registry)
 
       pattern_str ->
-        resolve_patterns(pattern_str)
+        resolve_patterns(pattern_str, registry)
     end
   end
 
-  defp resolve_patterns(pattern_string) do
+  defp resolve_patterns(pattern_string, registry) do
     pattern_string
     |> String.split([",", " "], trim: true)
-    |> Enum.flat_map(&expand_pattern/1)
+    |> Enum.flat_map(&expand_pattern(&1, registry))
     |> Enum.uniq()
   end
 
-  defp expand_pattern("*:*"), do: all_model_specs()
-  defp expand_pattern("all"), do: all_model_specs()
+  defp expand_pattern("*:*", registry), do: all_model_specs(registry)
+  defp expand_pattern("all", registry), do: all_model_specs(registry)
 
-  defp expand_pattern(pattern) do
+  defp expand_pattern(pattern, registry) do
     case String.split(pattern, ":", parts: 2) do
       [provider, "*"] ->
-        expand_provider_wildcard(String.to_atom(provider))
+        expand_provider_wildcard(String.to_atom(provider), registry)
 
       [_provider, _model] ->
         [pattern]
@@ -159,16 +162,23 @@ defmodule ReqLLM.Test.ModelMatrix do
     end
   end
 
-  defp expand_provider_wildcard(provider) do
+  defp expand_provider_wildcard(provider, nil) do
     models = LLMDB.models(provider)
     Enum.map(models, &"#{provider}:#{&1.id}")
   end
 
-  defp all_model_specs do
-    allowed_model_specs()
+  defp expand_provider_wildcard(provider, registry) do
+    case registry.list_models(provider) do
+      {:ok, models} -> Enum.map(models, &"#{provider}:#{&1}")
+      {:error, _} -> []
+    end
   end
 
-  defp allowed_model_specs do
+  defp all_model_specs(registry) do
+    allowed_model_specs(registry)
+  end
+
+  defp allowed_model_specs(nil) do
     # Get providers that have both implementation and models
     implemented_providers = ReqLLM.Providers.list() |> MapSet.new()
 
@@ -185,24 +195,34 @@ defmodule ReqLLM.Test.ModelMatrix do
     end)
   end
 
-  defp default_model_specs(:text) do
+  defp allowed_model_specs(registry) do
+    registry.list_providers()
+    |> Enum.flat_map(fn provider ->
+      case registry.list_models(provider) do
+        {:ok, models} -> Enum.map(models, &"#{provider}:#{&1}")
+        {:error, _} -> []
+      end
+    end)
+  end
+
+  defp default_model_specs(:text, registry) do
     configured = Application.get_env(:req_llm, :sample_text_models)
 
     if configured && not Enum.empty?(configured) do
       configured
     else
-      auto_pick_from_allowed()
+      auto_pick_from_allowed(registry)
     end
   end
 
-  defp default_model_specs(:embedding) do
+  defp default_model_specs(:embedding, _registry) do
     Application.get_env(:req_llm, :sample_embedding_models) || []
   end
 
-  defp auto_pick_from_allowed do
+  defp auto_pick_from_allowed(registry) do
     per_provider = Application.get_env(:req_llm, :test_sample_per_provider, 1)
 
-    resolve_allowed_specs()
+    resolve_allowed_specs(registry)
     |> Enum.group_by(&extract_provider/1)
     |> Enum.flat_map(fn {_provider, specs} ->
       specs
@@ -211,11 +231,22 @@ defmodule ReqLLM.Test.ModelMatrix do
     end)
   end
 
-  defp resolve_allowed_specs do
+  defp resolve_allowed_specs(nil) do
     ReqLLM.Providers.list()
     |> Enum.flat_map(fn provider ->
       models = LLMDB.models(provider)
       Enum.map(models, fn model -> LLMDB.Model.spec(model) end)
+    end)
+    |> Enum.sort()
+  end
+
+  defp resolve_allowed_specs(registry) do
+    registry.list_providers()
+    |> Enum.flat_map(fn provider ->
+      case registry.list_models(provider) do
+        {:ok, models} -> Enum.map(models, &"#{provider}:#{&1}")
+        {:error, _} -> []
+      end
     end)
     |> Enum.sort()
   end
