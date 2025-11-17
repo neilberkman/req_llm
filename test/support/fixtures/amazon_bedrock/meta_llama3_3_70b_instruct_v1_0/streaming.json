@@ -1,0 +1,97 @@
+{
+  "captured_at": "2025-11-16T18:55:08.515640Z",
+  "chunks": [
+    {
+      "b64": "AAAAjAAAAFKUUbIiCzpldmVudC10eXBlBwAMbWVzc2FnZVN0YXJ0DTpjb250ZW50LXR5cGUHABBhcHBsaWNhdGlvbi9qc29uDTptZXNzYWdlLXR5cGUHAAVldmVudHsicCI6ImFiY2RlZmdoaWprbG1ubyIsInJvbGUiOiJhc3Npc3RhbnQifaICnXQAAACgAAAAV+AKhKgLOmV2ZW50LXR5cGUHABFjb250ZW50QmxvY2tEZWx0YQ06Y29udGVudC10eXBlBwAQYXBwbGljYXRpb24vanNvbg06bWVzc2FnZS10eXBlBwAFZXZlbnR7ImNvbnRlbnRCbG9ja0luZGV4IjowLCJkZWx0YSI6eyJ0ZXh0IjoiQXMifSwicCI6ImFiY2RlIn3qyaVeAAAA2AAAAFcpqC+mCzpldmVudC10eXBlBwARY29udGVudEJsb2NrRGVsdGENOmNvbnRlbnQtdHlwZQcAEGFwcGxpY2F0aW9uL2pzb24NOm1lc3NhZ2UtdHlwZQcABWV2ZW50eyJjb250ZW50QmxvY2tJbmRleCI6MCwiZGVsdGEiOnsidGV4dCI6IiBhIn0sInAiOiJhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ekFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaMDEyMzQ1Njc4In1ZXzja"
+    },
+    {
+      "b64": "AAAA2AAAAFcpqC+mCzpldmVudC10eXBlBwARY29udGVudEJsb2NrRGVsdGENOmNvbnRlbnQtdHlwZQcAEGFwcGxpY2F0aW9uL2pzb24NOm1lc3NhZ2UtdHlwZQcABWV2ZW50eyJjb250ZW50QmxvY2tJbmRleCI6MCwiZGVsdGEiOnsidGV4dCI6IiBzcGFya2xpbmcifSwicCI6ImFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVowIn00hENM"
+    },
+    {
+      "b64": "AAAAvQAAAFd4etebCzpldmVudC10eXBlBwARY29udGVudEJsb2NrRGVsdGENOmNvbnRlbnQtdHlwZQcAEGFwcGxpY2F0aW9uL2pzb24NOm1lc3NhZ2UtdHlwZQcABWV2ZW50eyJjb250ZW50QmxvY2tJbmRleCI6MCwiZGVsdGEiOnsidGV4dCI6IiBzdGFyIGJ1cnN0cyJ9LCJwIjoiYWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4In0Xck47"
+    },
+    {
+      "b64": "AAAAzAAAAFe8yB7kCzpldmVudC10eXBlBwARY29udGVudEJsb2NrRGVsdGENOmNvbnRlbnQtdHlwZQcAEGFwcGxpY2F0aW9uL2pzb24NOm1lc3NhZ2UtdHlwZQcABWV2ZW50eyJjb250ZW50QmxvY2tJbmRleCI6MCwiZGVsdGEiOnsidGV4dCI6IiBpbnRvIn0sInAiOiJhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ekFCQ0RFRkdISUpLTE1OT1BRUlNUIn3m/wCL"
+    },
+    {
+      "b64": "AAAAyQAAAFd0KJGUCzpldmVudC10eXBlBwARY29udGVudEJsb2NrRGVsdGENOmNvbnRlbnQtdHlwZQcAEGFwcGxpY2F0aW9uL2pzb24NOm1lc3NhZ2UtdHlwZQcABWV2ZW50eyJjb250ZW50QmxvY2tJbmRleCI6MCwiZGVsdGEiOnsidGV4dCI6IiBhIHJhZGlhbnQifSwicCI6ImFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6QUJDREVGR0hJSktMIn3zDa3P"
+    },
+    {
+      "b64": "AAAA0gAAAFdjGDcHCzpldmVudC10eXBlBwARY29udGVudEJsb2NrRGVsdGENOmNvbnRlbnQtdHlwZQcAEGFwcGxpY2F0aW9uL2pzb24NOm1lc3NhZ2UtdHlwZQcABWV2ZW50eyJjb250ZW50QmxvY2tJbmRleCI6MCwiZGVsdGEiOnsidGV4dCI6IiBzbWlsZSJ9LCJwIjoiYWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXpBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZIn3h+MDO"
+    },
+    {
+      "b64": "AAAAvQAAAFd4etebCzpldmVudC10eXBlBwARY29udGVudEJsb2NrRGVsdGENOmNvbnRlbnQtdHlwZQcAEGFwcGxpY2F0aW9uL2pzb24NOm1lc3NhZ2UtdHlwZQcABWV2ZW50eyJjb250ZW50QmxvY2tJbmRleCI6MCwiZGVsdGEiOnsidGV4dCI6IiwgaGVsbG8ifSwicCI6ImFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6QUJDIn0v1LLc"
+    },
+    {
+      "b64": "AAAA2gAAAFdTaHzGCzpldmVudC10eXBlBwARY29udGVudEJsb2NrRGVsdGENOmNvbnRlbnQtdHlwZQcAEGFwcGxpY2F0aW9uL2pzb24NOm1lc3NhZ2UtdHlwZQcABWV2ZW50eyJjb250ZW50QmxvY2tJbmRleCI6MCwiZGVsdGEiOnsidGV4dCI6IiBzaGluZXMifSwicCI6ImFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVowMTIzNDUifV1hN8Q="
+    },
+    {
+      "b64": "AAAAxwAAAFfLGC/1CzpldmVudC10eXBlBwARY29udGVudEJsb2NrRGVsdGENOmNvbnRlbnQtdHlwZQcAEGFwcGxpY2F0aW9uL2pzb24NOm1lc3NhZ2UtdHlwZQcABWV2ZW50eyJjb250ZW50QmxvY2tJbmRleCI6MCwiZGVsdGEiOnsidGV4dCI6IiBicmlnaHRseSwgaWxsdW1pbiJ9LCJwIjoiYWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXpBQiJ9P0vyUA=="
+    },
+    {
+      "b64": "AAAA1wAAAFer+Lh3CzpldmVudC10eXBlBwARY29udGVudEJsb2NrRGVsdGENOmNvbnRlbnQtdHlwZQcAEGFwcGxpY2F0aW9uL2pzb24NOm1lc3NhZ2UtdHlwZQcABWV2ZW50eyJjb250ZW50QmxvY2tJbmRleCI6MCwiZGVsdGEiOnsidGV4dCI6ImF0aW5nIG91ciJ9LCJwIjoiYWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXpBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWjAifTJRg50="
+    },
+    {
+      "b64": "AAAAqgAAAFequpwJCzpldmVudC10eXBlBwARY29udGVudEJsb2NrRGVsdGENOmNvbnRlbnQtdHlwZQcAEGFwcGxpY2F0aW9uL2pzb24NOm1lc3NhZ2UtdHlwZQcABWV2ZW50eyJjb250ZW50QmxvY2tJbmRleCI6MCwiZGVsdGEiOnsidGV4dCI6IiBjb25uZWN0aW9uIn0sInAiOiJhYmNkZWYifeYHOAw="
+    },
+    {
+      "b64": "AAAApQAAAFco6gvYCzpldmVudC10eXBlBwARY29udGVudEJsb2NrRGVsdGENOmNvbnRlbnQtdHlwZQcAEGFwcGxpY2F0aW9uL2pzb24NOm1lc3NhZ2UtdHlwZQcABWV2ZW50eyJjb250ZW50QmxvY2tJbmRleCI6MCwiZGVsdGEiOnsidGV4dCI6Ii4ifSwicCI6ImFiY2RlZmdoaWprIn18poCV"
+    },
+    {
+      "b64": "AAAApgAAAFdvSnEICzpldmVudC10eXBlBwARY29udGVudEJsb2NrRGVsdGENOmNvbnRlbnQtdHlwZQcAEGFwcGxpY2F0aW9uL2pzb24NOm1lc3NhZ2UtdHlwZQcABWV2ZW50eyJjb250ZW50QmxvY2tJbmRleCI6MCwiZGVsdGEiOnsidGV4dCI6IiJ9LCJwIjoiYWJjZGVmZ2hpamtsbSJ9T6dkUQ=="
+    },
+    {
+      "b64": "AAAAuwAAAFaAPRKtCzpldmVudC10eXBlBwAQY29udGVudEJsb2NrU3RvcA06Y29udGVudC10eXBlBwAQYXBwbGljYXRpb24vanNvbg06bWVzc2FnZS10eXBlBwAFZXZlbnR7ImNvbnRlbnRCbG9ja0luZGV4IjowLCJwIjoiYWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXpBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWjAxMiJ9ds55dQAAAK8AAABRizm2TAs6ZXZlbnQtdHlwZQcAC21lc3NhZ2VTdG9wDTpjb250ZW50LXR5cGUHABBhcHBsaWNhdGlvbi9qc29uDTptZXNzYWdlLXR5cGUHAAVldmVudHsicCI6ImFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6QUJDREVGR0hJSktMTU5PUFFSU1QiLCJzdG9wUmVhc29uIjoiZW5kX3R1cm4iffKCdyoAAADYAAAATk3Dh2YLOmV2ZW50LXR5cGUHAAhtZXRhZGF0YQ06Y29udGVudC10eXBlBwAQYXBwbGljYXRpb24vanNvbg06bWVzc2FnZS10eXBlBwAFZXZlbnR7Im1ldHJpY3MiOnsibGF0ZW5jeU1zIjozODl9LCJwIjoiYWJjIiwidXNhZ2UiOnsiaW5wdXRUb2tlbnMiOjUyLCJvdXRwdXRUb2tlbnMiOjIwLCJzZXJ2ZXJUb29sVXNhZ2UiOnt9LCJ0b3RhbFRva2VucyI6NzJ9fb/7eqA="
+    }
+  ],
+  "model_spec": "amazon_bedrock:us.meta.llama3-3-70b-instruct-v1:0",
+  "provider": "amazon_bedrock",
+  "request": {
+    "body": {
+      "b64": "eyJpbmZlcmVuY2VDb25maWciOnsibWF4VG9rZW5zIjoxMDAsInRlbXBlcmF0dXJlIjowLjksInRvcFAiOjAuOH0sIm1lc3NhZ2VzIjpbeyJjb250ZW50IjpbeyJ0ZXh0IjoiU2F5IGhlbGxvIGluIG9uZSBzaG9ydCwgaW1hZ2luYXRpdmUgc2VudGVuY2UuIn1dLCJyb2xlIjoidXNlciJ9XSwic3lzdGVtIjpbeyJ0ZXh0IjoiWW91IGFyZSBhIGhlbHBmdWwsIGNyZWF0aXZlIGFzc2lzdGFudC4ifV19"
+    },
+    "canonical_json": {
+      "inferenceConfig": {
+        "maxTokens": 100,
+        "temperature": 0.9,
+        "topP": 0.8
+      },
+      "messages": [
+        {
+          "content": [
+            {
+              "text": "Say hello in one short, imaginative sentence."
+            }
+          ],
+          "role": "user"
+        }
+      ],
+      "system": [
+        {
+          "text": "You are a helpful, creative assistant."
+        }
+      ]
+    },
+    "headers": {
+      "accept": "application/vnd.amazon.eventstream",
+      "authorization": "[REDACTED:authorization]",
+      "content-type": "application/json",
+      "host": "bedrock-runtime.us-east-1.amazonaws.com",
+      "x-amz-content-sha256": "b41c084ce1eb7fa0db9f8dc7d3937fb24cac5d12ae4be66a3c235d805a8ea800",
+      "x-amz-date": "20251116T185507Z"
+    },
+    "method": "POST",
+    "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.meta.llama3-3-70b-instruct-v1:0/converse-stream"
+  },
+  "response": {
+    "body": null,
+    "headers": {
+      "connection": "keep-alive",
+      "content-type": "application/vnd.amazon.eventstream",
+      "date": "Sun, 16 Nov 2025 18:55:08 GMT",
+      "transfer-encoding": "chunked",
+      "x-amzn-requestid": "27eb6e42-6a45-4f26-88b3-208976ec9d87"
+    },
+    "status": 200
+  }
+}

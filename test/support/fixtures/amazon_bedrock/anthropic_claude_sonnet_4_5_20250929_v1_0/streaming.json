@@ -1,0 +1,87 @@
+{
+  "captured_at": "2025-11-16T18:54:39.325856Z",
+  "chunks": [
+    {
+      "b64": "AAAAoQAAAFKtAFmXCzpldmVudC10eXBlBwAMbWVzc2FnZVN0YXJ0DTpjb250ZW50LXR5cGUHABBhcHBsaWNhdGlvbi9qc29uDTptZXNzYWdlLXR5cGUHAAVldmVudHsicCI6ImFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6QUJDREVGR0hJSiIsInJvbGUiOiJhc3Npc3RhbnQifUMJiXoAAADcAAAAV9woiWYLOmV2ZW50LXR5cGUHABFjb250ZW50QmxvY2tEZWx0YQ06Y29udGVudC10eXBlBwAQYXBwbGljYXRpb24vanNvbg06bWVzc2FnZS10eXBlBwAFZXZlbnR7ImNvbnRlbnRCbG9ja0luZGV4IjowLCJkZWx0YSI6eyJ0ZXh0IjoiSGVsbG8hIn0sInAiOiJhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ekFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaMDEyMzQ1Njc4In1mMlXH"
+    },
+    {
+      "b64": "AAAArQAAAFcYmkAZCzpldmVudC10eXBlBwARY29udGVudEJsb2NrRGVsdGENOmNvbnRlbnQtdHlwZQcAEGFwcGxpY2F0aW9uL2pzb24NOm1lc3NhZ2UtdHlwZQcABWV2ZW50eyJjb250ZW50QmxvY2tJbmRleCI6MCwiZGVsdGEiOnsidGV4dCI6IiBJJ20gYSJ9LCJwIjoiYWJjZGVmZ2hpamtsbW4ifQLPuUI="
+    },
+    {
+      "b64": "AAAAugAAAFfKWguLCzpldmVudC10eXBlBwARY29udGVudEJsb2NrRGVsdGENOmNvbnRlbnQtdHlwZQcAEGFwcGxpY2F0aW9uL2pzb24NOm1lc3NhZ2UtdHlwZQcABWV2ZW50eyJjb250ZW50QmxvY2tJbmRleCI6MCwiZGVsdGEiOnsidGV4dCI6IiBjb25zdGVsbGF0aW9uIn0sInAiOiJhYmNkZWZnaGlqa2xtbm9wcXJzIn2CSseW"
+    },
+    {
+      "b64": "AAAAygAAAFcziOtECzpldmVudC10eXBlBwARY29udGVudEJsb2NrRGVsdGENOmNvbnRlbnQtdHlwZQcAEGFwcGxpY2F0aW9uL2pzb24NOm1lc3NhZ2UtdHlwZQcABWV2ZW50eyJjb250ZW50QmxvY2tJbmRleCI6MCwiZGVsdGEiOnsidGV4dCI6IiBvZiBjdXJpb3MifSwicCI6ImFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6QUJDREVGR0hJSktMTSJ9afkr5Q=="
+    },
+    {
+      "b64": "AAAAvAAAAFdFGv4rCzpldmVudC10eXBlBwARY29udGVudEJsb2NrRGVsdGENOmNvbnRlbnQtdHlwZQcAEGFwcGxpY2F0aW9uL2pzb24NOm1lc3NhZ2UtdHlwZQcABWV2ZW50eyJjb250ZW50QmxvY2tJbmRleCI6MCwiZGVsdGEiOnsidGV4dCI6Iml0eSB3cmFwcGUifSwicCI6ImFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHkifQ4Bxio="
+    },
+    {
+      "b64": "AAAAzAAAAFe8yB7kCzpldmVudC10eXBlBwARY29udGVudEJsb2NrRGVsdGENOmNvbnRlbnQtdHlwZQcAEGFwcGxpY2F0aW9uL2pzb24NOm1lc3NhZ2UtdHlwZQcABWV2ZW50eyJjb250ZW50QmxvY2tJbmRleCI6MCwiZGVsdGEiOnsidGV4dCI6ImQgaW4gYWxnb3JpdGhtcyJ9LCJwIjoiYWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXpBQkNERUZHSElKIn3O7uRm"
+    },
+    {
+      "b64": "AAAAuAAAAFewmljrCzpldmVudC10eXBlBwARY29udGVudEJsb2NrRGVsdGENOmNvbnRlbnQtdHlwZQcAEGFwcGxpY2F0aW9uL2pzb24NOm1lc3NhZ2UtdHlwZQcABWV2ZW50eyJjb250ZW50QmxvY2tJbmRleCI6MCwiZGVsdGEiOnsidGV4dCI6IiwifSwicCI6ImFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6QUJDRCJ9yrUe0Q=="
+    },
+    {
+      "b64": "AAAA1gAAAFeWmJHHCzpldmVudC10eXBlBwARY29udGVudEJsb2NrRGVsdGENOmNvbnRlbnQtdHlwZQcAEGFwcGxpY2F0aW9uL2pzb24NOm1lc3NhZ2UtdHlwZQcABWV2ZW50eyJjb250ZW50QmxvY2tJbmRleCI6MCwiZGVsdGEiOnsidGV4dCI6IiBkZWwifSwicCI6ImFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVowMTIzNCJ9ILa5nA=="
+    },
+    {
+      "b64": "AAAAqgAAAFequpwJCzpldmVudC10eXBlBwARY29udGVudEJsb2NrRGVsdGENOmNvbnRlbnQtdHlwZQcAEGFwcGxpY2F0aW9uL2pzb24NOm1lc3NhZ2UtdHlwZQcABWV2ZW50eyJjb250ZW50QmxvY2tJbmRleCI6MCwiZGVsdGEiOnsidGV4dCI6ImlnaHRlIn0sInAiOiJhYmNkZWZnaGlqa2wifZ1GV4I="
+    },
+    {
+      "b64": "AAAAqQAAAFftGubZCzpldmVudC10eXBlBwARY29udGVudEJsb2NrRGVsdGENOmNvbnRlbnQtdHlwZQcAEGFwcGxpY2F0aW9uL2pzb24NOm1lc3NhZ2UtdHlwZQcABWV2ZW50eyJjb250ZW50QmxvY2tJbmRleCI6MCwiZGVsdGEiOnsidGV4dCI6ImQgdG8gbWVldCB5b3UuIn0sInAiOiJhYiJ9V5Prvw=="
+    },
+    {
+      "b64": "AAAAnwAAAFa0fJtpCzpldmVudC10eXBlBwAQY29udGVudEJsb2NrU3RvcA06Y29udGVudC10eXBlBwAQYXBwbGljYXRpb24vanNvbg06bWVzc2FnZS10eXBlBwAFZXZlbnR7ImNvbnRlbnRCbG9ja0luZGV4IjowLCJwIjoiYWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXpBIn2Ca7EBAAAAtgAAAFHmyUO/CzpldmVudC10eXBlBwALbWVzc2FnZVN0b3ANOmNvbnRlbnQtdHlwZQcAEGFwcGxpY2F0aW9uL2pzb24NOm1lc3NhZ2UtdHlwZQcABWV2ZW50eyJwIjoiYWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXpBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWjAiLCJzdG9wUmVhc29uIjoiZW5kX3R1cm4ifYxWYDAAAAELAAAATkjKUUoLOmV2ZW50LXR5cGUHAAhtZXRhZGF0YQ06Y29udGVudC10eXBlBwAQYXBwbGljYXRpb24vanNvbg06bWVzc2FnZS10eXBlBwAFZXZlbnR7Im1ldHJpY3MiOnsibGF0ZW5jeU1zIjoyMjAwfSwicCI6ImFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVowIiwidXNhZ2UiOnsiaW5wdXRUb2tlbnMiOjI1LCJvdXRwdXRUb2tlbnMiOjIyLCJzZXJ2ZXJUb29sVXNhZ2UiOnt9LCJ0b3RhbFRva2VucyI6NDd9fTdJvGo="
+    }
+  ],
+  "model_spec": "amazon_bedrock:global.anthropic.claude-sonnet-4-5-20250929-v1:0",
+  "provider": "amazon_bedrock",
+  "request": {
+    "body": {
+      "b64": "eyJpbmZlcmVuY2VDb25maWciOnsibWF4VG9rZW5zIjoxMDAsInRlbXBlcmF0dXJlIjowLjl9LCJtZXNzYWdlcyI6W3siY29udGVudCI6W3sidGV4dCI6IlNheSBoZWxsbyBpbiBvbmUgc2hvcnQsIGltYWdpbmF0aXZlIHNlbnRlbmNlLiJ9XSwicm9sZSI6InVzZXIifV0sInN5c3RlbSI6W3sidGV4dCI6IllvdSBhcmUgYSBoZWxwZnVsLCBjcmVhdGl2ZSBhc3Npc3RhbnQuIn1dfQ=="
+    },
+    "canonical_json": {
+      "inferenceConfig": {
+        "maxTokens": 100,
+        "temperature": 0.9
+      },
+      "messages": [
+        {
+          "content": [
+            {
+              "text": "Say hello in one short, imaginative sentence."
+            }
+          ],
+          "role": "user"
+        }
+      ],
+      "system": [
+        {
+          "text": "You are a helpful, creative assistant."
+        }
+      ]
+    },
+    "headers": {
+      "accept": "application/vnd.amazon.eventstream",
+      "authorization": "[REDACTED:authorization]",
+      "content-type": "application/json",
+      "host": "bedrock-runtime.us-east-1.amazonaws.com",
+      "x-amz-content-sha256": "114244a2287c62c32f91eb5cd9f0878036650e31d7e2769add92de41376a89b2",
+      "x-amz-date": "20251116T185436Z"
+    },
+    "method": "POST",
+    "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/global.anthropic.claude-sonnet-4-5-20250929-v1:0/converse-stream"
+  },
+  "response": {
+    "body": null,
+    "headers": {
+      "connection": "keep-alive",
+      "content-type": "application/vnd.amazon.eventstream",
+      "date": "Sun, 16 Nov 2025 18:54:38 GMT",
+      "transfer-encoding": "chunked",
+      "x-amzn-requestid": "3c497e43-5de4-4704-a9d5-84b708377288"
+    },
+    "status": 200
+  }
+}
