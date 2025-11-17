@@ -39,7 +39,7 @@
         "08a540b717c10538f53b963be52e7cff049d824d13feb69ea4a3a2ac0c26629e"
       ],
       "x-amz-date": [
-        "20251116T191635Z"
+        "20251117T063822Z"
       ]
     },
     "method": "post",
@@ -47,30 +47,7 @@
   },
   "response": {
     "body": {
-      "metrics": {
-        "latencyMs": 3222
-      },
-      "output": {
-        "message": {
-          "content": [
-            {
-              "text": "Hello! How can I help you today?"
-            }
-          ],
-          "role": "assistant"
-        }
-      },
-      "stopReason": "max_tokens",
-      "usage": {
-        "cacheReadInputTokenCount": 0,
-        "cacheReadInputTokens": 0,
-        "cacheWriteInputTokenCount": 0,
-        "cacheWriteInputTokens": 0,
-        "inputTokens": 10,
-        "outputTokens": 10,
-        "serverToolUsage": {},
-        "totalTokens": 20
-      }
+      "message": "Signature expired: 20251117T063822Z is now earlier than 20251117T063849Z (20251117T064349Z - 5 min.)"
     },
     "headers": {
       "connection": [
@@ -80,12 +57,15 @@
         "application/json"
       ],
       "date": [
-        "Sun, 16 Nov 2025 19:16:38 GMT"
+        "Mon, 17 Nov 2025 06:43:49 GMT"
+      ],
+      "x-amzn-errortype": [
+        "InvalidSignatureException:http://internal.amazon.com/coral/com.amazon.coral.service/"
       ],
       "x-amzn-requestid": [
-        "f065c81d-7a4c-40cb-b71e-928834f97133"
+        "7d243dfd-6f43-4621-8425-7192436c60c1"
       ]
     },
-    "status": 200
+    "status": 403
   }
 }

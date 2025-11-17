@@ -3,7 +3,7 @@
   "provider": "amazon_bedrock",
   "request": {
     "body": {
-      "b64": "eyJpbmZlcmVuY2VDb25maWciOnsibWF4VG9rZW5zIjoxNTAsInRlbXBlcmF0dXJlIjowLjB9LCJtZXNzYWdlcyI6W3siY29udGVudCI6W3sidGV4dCI6IlVzZSB0aGUgYWRkIHRvb2wgdG8gY29tcHV0ZSAyICsgMy4gQWZ0ZXIgdGhlIHRvb2wgcmVzdWx0IGFycml2ZXMsIHJlc3BvbmQgd2l0aCAnc3VtPTx2YWx1ZT4nLiJ9XSwicm9sZSI6InVzZXIifSx7ImNvbnRlbnQiOlt7InRvb2xVc2UiOnsiaW5wdXQiOnsiYSI6MiwiYiI6M30sIm5hbWUiOiJhZGQiLCJ0b29sVXNlSWQiOiJ0b29sdXNlX05aUWpNVldyVHItU0FnWk1EOUJuemcifX1dLCJyb2xlIjoiYXNzaXN0YW50In0seyJjb250ZW50IjpbeyJ0b29sUmVzdWx0Ijp7ImNvbnRlbnQiOlt7InRleHQiOiI1In1dLCJ0b29sVXNlSWQiOiJ0b29sdXNlX05aUWpNVldyVHItU0FnWk1EOUJuemcifX1dLCJyb2xlIjoidXNlciJ9XSwidG9vbENvbmZpZyI6eyJ0b29scyI6W3sidG9vbFNwZWMiOnsiZGVzY3JpcHRpb24iOiJBZGQgdHdvIGludGVnZXJzIiwiaW5wdXRTY2hlbWEiOnsianNvbiI6eyJhZGRpdGlvbmFsUHJvcGVydGllcyI6ZmFsc2UsInByb3BlcnRpZXMiOnsiYSI6eyJ0eXBlIjoiaW50ZWdlciJ9LCJiIjp7InR5cGUiOiJpbnRlZ2VyIn19LCJyZXF1aXJlZCI6WyJhIiwiYiJdLCJ0eXBlIjoib2JqZWN0In19LCJuYW1lIjoiYWRkIn19XX19"
+      "b64": "eyJpbmZlcmVuY2VDb25maWciOnsibWF4VG9rZW5zIjoxNTAsInRlbXBlcmF0dXJlIjowLjB9LCJtZXNzYWdlcyI6W3siY29udGVudCI6W3sidGV4dCI6IlVzZSB0aGUgYWRkIHRvb2wgdG8gY29tcHV0ZSAyICsgMy4gQWZ0ZXIgdGhlIHRvb2wgcmVzdWx0IGFycml2ZXMsIHJlc3BvbmQgd2l0aCAnc3VtPTx2YWx1ZT4nLiJ9XSwicm9sZSI6InVzZXIifSx7ImNvbnRlbnQiOlt7InRvb2xVc2UiOnsiaW5wdXQiOnsiYSI6MiwiYiI6M30sIm5hbWUiOiJhZGQiLCJ0b29sVXNlSWQiOiJ0b29sdXNlX2lsT09uWGlzUUR1eDg2OHFQbHdPVmcifX1dLCJyb2xlIjoiYXNzaXN0YW50In0seyJjb250ZW50IjpbeyJ0b29sUmVzdWx0Ijp7ImNvbnRlbnQiOlt7InRleHQiOiI1In1dLCJ0b29sVXNlSWQiOiJ0b29sdXNlX2lsT09uWGlzUUR1eDg2OHFQbHdPVmcifX1dLCJyb2xlIjoidXNlciJ9XSwidG9vbENvbmZpZyI6eyJ0b29scyI6W3sidG9vbFNwZWMiOnsiZGVzY3JpcHRpb24iOiJBZGQgdHdvIGludGVnZXJzIiwiaW5wdXRTY2hlbWEiOnsianNvbiI6eyJhZGRpdGlvbmFsUHJvcGVydGllcyI6ZmFsc2UsInByb3BlcnRpZXMiOnsiYSI6eyJ0eXBlIjoiaW50ZWdlciJ9LCJiIjp7InR5cGUiOiJpbnRlZ2VyIn19LCJyZXF1aXJlZCI6WyJhIiwiYiJdLCJ0eXBlIjoib2JqZWN0In19LCJuYW1lIjoiYWRkIn19XX19"
     },
     "canonical_json": {
       "inferenceConfig": {
@@ -28,7 +28,7 @@
                   "b": 3
                 },
                 "name": "add",
-                "toolUseId": "tooluse_NZQjMVWrTr-SAgZMD9Bnzg"
+                "toolUseId": "tooluse_ilOOnXisQDux868qPlwOVg"
               }
             }
           ],
@@ -43,7 +43,7 @@
                     "text": "5"
                   }
                 ],
-                "toolUseId": "tooluse_NZQjMVWrTr-SAgZMD9Bnzg"
+                "toolUseId": "tooluse_ilOOnXisQDux868qPlwOVg"
               }
             }
           ],
@@ -94,10 +94,10 @@
         "req/0.5.16"
       ],
       "x-amz-content-sha256": [
-        "4b570e3e53c6706d27852415794c7d9eb32015fc9460dda2803552a72a65c3b2"
+        "1875dae11746e6b1a9f405171fbeeb1e7256b12cd45e379f1840cd0332bcc973"
       ],
       "x-amz-date": [
-        "20251116T185507Z"
+        "20251117T060645Z"
       ]
     },
     "method": "post",
@@ -106,7 +106,7 @@
   "response": {
     "body": {
       "metrics": {
-        "latencyMs": 237
+        "latencyMs": 190
       },
       "output": {
         "message": {
@@ -134,10 +134,10 @@
         "application/json"
       ],
       "date": [
-        "Sun, 16 Nov 2025 18:55:07 GMT"
+        "Mon, 17 Nov 2025 06:06:46 GMT"
       ],
       "x-amzn-requestid": [
-        "466f86cf-4fa2-485b-bb9c-3fa5c4828bc4"
+        "465de560-f153-40b1-ad63-e6222246b2eb"
       ]
     },
     "status": 200

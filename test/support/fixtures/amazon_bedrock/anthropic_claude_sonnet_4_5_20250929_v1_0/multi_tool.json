@@ -100,7 +100,7 @@
         "9b4229715676ff07b6aeae6062d5e2b75157be637ebdc7d854aa81348ba5e5ab"
       ],
       "x-amz-date": [
-        "20251116T185501Z"
+        "20251117T061133Z"
       ]
     },
     "method": "post",
@@ -109,7 +109,7 @@
   "response": {
     "body": {
       "metrics": {
-        "latencyMs": 2684
+        "latencyMs": 2302
       },
       "output": {
         "message": {
@@ -120,7 +120,7 @@
                   "location": "Paris, France"
                 },
                 "name": "get_weather",
-                "toolUseId": "tooluse_4ka7L-0FSYu9sbyx_f5F2w",
+                "toolUseId": "tooluse_VwR2c9B4Tru3plRTgZZgbA",
                 "type": "tool_use"
               }
             }
@@ -148,10 +148,10 @@
         "application/json"
       ],
       "date": [
-        "Sun, 16 Nov 2025 18:55:04 GMT"
+        "Mon, 17 Nov 2025 06:11:35 GMT"
       ],
       "x-amzn-requestid": [
-        "a586f08a-0463-4ae2-a7b9-d2412c4cbd93"
+        "9bc80e32-4977-4272-b184-ecd30eb30700"
       ]
     },
     "status": 200

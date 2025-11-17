@@ -39,7 +39,7 @@
         "af3f637afd9c02d90b55ab65f033e5438add0479d2f6b78eb0e25cc0524c5965"
       ],
       "x-amz-date": [
-        "20251116T185511Z"
+        "20251117T061024Z"
       ]
     },
     "method": "post",
@@ -48,13 +48,13 @@
   "response": {
     "body": {
       "metrics": {
-        "latencyMs": 2061
+        "latencyMs": 1571
       },
       "output": {
         "message": {
           "content": [
             {
-              "text": "# The Last Dragon's Quest\n\n## Part One: The Awakening\n\nThe mountain had been silent for three hundred years.\n\nKaelith opened her eyes to darkness, her massive form coiled beneath centuries of dust and fallen stone. Her scales, once brilliant as molten gold, had dulled to the color of old bronze. She stretched her wings—each one the size of a merchant's sail—and felt the satisfying crack of joints long unused. Dust cascade"
+              "text": "# The Dragon Riders of Aethermoor\n\n## Part One: The Awakening\n\nThe morning sun cast long shadows across the stone courtyard of Thornhaven Castle, where a young stable hand named Kael swept away the previous night's ash and debris. He was seventeen years old, with calloused hands and a perpetual smudge of dirt on his cheek. His life had been unremarkable until the day the dragon fell from the sky."
             }
           ],
           "role": "assistant"
@@ -80,10 +80,10 @@
         "application/json"
       ],
       "date": [
-        "Sun, 16 Nov 2025 18:55:13 GMT"
+        "Mon, 17 Nov 2025 06:10:26 GMT"
       ],
       "x-amzn-requestid": [
-        "84845c62-af9c-4f2c-a47b-c747d0413d02"
+        "59f6285b-edfe-4823-a248-8e513f944144"
       ]
     },
     "status": 200

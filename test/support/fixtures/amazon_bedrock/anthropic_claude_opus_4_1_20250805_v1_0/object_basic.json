@@ -1,5 +1,5 @@
 {
-  "model_spec": "amazon_bedrock:us.meta.llama3-3-70b-instruct-v1:0",
+  "model_spec": "amazon_bedrock:us.anthropic.claude-opus-4-1-20250805-v1:0",
   "provider": "amazon_bedrock",
   "request": {
     "body": {
@@ -74,29 +74,33 @@
         "023a2dce3b08acd7d8e5de8dfc2f46d17b613d6a408e807e4ced55c6a19ed6f2"
       ],
       "x-amz-date": [
-        "20251117T060353Z"
+        "20251117T064354Z"
       ]
     },
     "method": "post",
-    "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.meta.llama3-3-70b-instruct-v1:0/converse"
+    "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-opus-4-1-20250805-v1:0/converse"
   },
   "response": {
     "body": {
       "metrics": {
-        "latencyMs": 339
+        "latencyMs": 7303
       },
       "output": {
         "message": {
           "content": [
             {
+              "text": "I'll generate a software engineer profile for you."
+            },
+            {
               "toolUse": {
                 "input": {
-                  "age": "30",
-                  "name": "John Doe",
+                  "age": 28,
+                  "name": "Alex Chen",
                   "occupation": "Software Engineer"
                 },
                 "name": "structured_output",
-                "toolUseId": "tooluse_NmIoK154SBuVfYaypa2wKw"
+                "toolUseId": "tooluse_BHkorkjcQJiRc_B47NBI1Q",
+                "type": "tool_use"
               }
             }
           ],
@@ -105,10 +109,14 @@
       },
       "stopReason": "tool_use",
       "usage": {
-        "inputTokens": 243,
-        "outputTokens": 37,
+        "cacheReadInputTokenCount": 0,
+        "cacheReadInputTokens": 0,
+        "cacheWriteInputTokenCount": 0,
+        "cacheWriteInputTokens": 0,
+        "inputTokens": 445,
+        "outputTokens": 100,
         "serverToolUsage": {},
-        "totalTokens": 280
+        "totalTokens": 545
       }
     },
     "headers": {
@@ -119,10 +127,10 @@
         "application/json"
       ],
       "date": [
-        "Mon, 17 Nov 2025 06:03:54 GMT"
+        "Mon, 17 Nov 2025 06:44:02 GMT"
       ],
       "x-amzn-requestid": [
-        "9a0f6770-d39c-4e28-a2e8-8c06bd55dc56"
+        "49153e0d-f2f1-4867-9845-37f687f79afd"
       ]
     },
     "status": 200

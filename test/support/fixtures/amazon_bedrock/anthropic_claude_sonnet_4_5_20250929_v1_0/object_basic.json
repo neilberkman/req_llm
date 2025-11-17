@@ -1,5 +1,5 @@
 {
-  "model_spec": "amazon_bedrock:us.meta.llama3-3-70b-instruct-v1:0",
+  "model_spec": "amazon_bedrock:global.anthropic.claude-sonnet-4-5-20250929-v1:0",
   "provider": "amazon_bedrock",
   "request": {
     "body": {
@@ -74,16 +74,16 @@
         "023a2dce3b08acd7d8e5de8dfc2f46d17b613d6a408e807e4ced55c6a19ed6f2"
       ],
       "x-amz-date": [
-        "20251117T060353Z"
+        "20251117T061138Z"
       ]
     },
     "method": "post",
-    "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.meta.llama3-3-70b-instruct-v1:0/converse"
+    "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/global.anthropic.claude-sonnet-4-5-20250929-v1:0/converse"
   },
   "response": {
     "body": {
       "metrics": {
-        "latencyMs": 339
+        "latencyMs": 2462
       },
       "output": {
         "message": {
@@ -91,12 +91,13 @@
             {
               "toolUse": {
                 "input": {
-                  "age": "30",
-                  "name": "John Doe",
+                  "age": 29,
+                  "name": "Alex Chen",
                   "occupation": "Software Engineer"
                 },
                 "name": "structured_output",
-                "toolUseId": "tooluse_NmIoK154SBuVfYaypa2wKw"
+                "toolUseId": "tooluse_SGCbgbvjSVSFglGmp7579g",
+                "type": "tool_use"
               }
             }
           ],
@@ -105,10 +106,14 @@
       },
       "stopReason": "tool_use",
       "usage": {
-        "inputTokens": 243,
-        "outputTokens": 37,
+        "cacheReadInputTokenCount": 0,
+        "cacheReadInputTokens": 0,
+        "cacheWriteInputTokenCount": 0,
+        "cacheWriteInputTokens": 0,
+        "inputTokens": 628,
+        "outputTokens": 89,
         "serverToolUsage": {},
-        "totalTokens": 280
+        "totalTokens": 717
       }
     },
     "headers": {
@@ -119,10 +124,10 @@
         "application/json"
       ],
       "date": [
-        "Mon, 17 Nov 2025 06:03:54 GMT"
+        "Mon, 17 Nov 2025 06:11:40 GMT"
       ],
       "x-amzn-requestid": [
-        "9a0f6770-d39c-4e28-a2e8-8c06bd55dc56"
+        "8fb8b051-8411-4925-9795-a8c5cb61d39f"
       ]
     },
     "status": 200

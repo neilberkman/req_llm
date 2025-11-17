@@ -3,7 +3,7 @@
   "provider": "amazon_bedrock",
   "request": {
     "body": {
-      "b64": "eyJpbmZlcmVuY2VDb25maWciOnsibWF4VG9rZW5zIjoxNTAsInRlbXBlcmF0dXJlIjowLjB9LCJtZXNzYWdlcyI6W3siY29udGVudCI6W3sidGV4dCI6IlVzZSB0aGUgYWRkIHRvb2wgdG8gY29tcHV0ZSAyICsgMy4gQWZ0ZXIgdGhlIHRvb2wgcmVzdWx0IGFycml2ZXMsIHJlc3BvbmQgd2l0aCAnc3VtPTx2YWx1ZT4nLiJ9XSwicm9sZSI6InVzZXIifSx7ImNvbnRlbnQiOlt7InRvb2xVc2UiOnsiaW5wdXQiOnsiYSI6MiwiYiI6M30sIm5hbWUiOiJhZGQiLCJ0b29sVXNlSWQiOiJ0b29sdXNlXzJqUjh0QkNnUlFPeVF3eWEyOVZ4S2cifX1dLCJyb2xlIjoiYXNzaXN0YW50In0seyJjb250ZW50IjpbeyJ0b29sUmVzdWx0Ijp7ImNvbnRlbnQiOlt7InRleHQiOiI1In1dLCJ0b29sVXNlSWQiOiJ0b29sdXNlXzJqUjh0QkNnUlFPeVF3eWEyOVZ4S2cifX1dLCJyb2xlIjoidXNlciJ9XSwidG9vbENvbmZpZyI6eyJ0b29scyI6W3sidG9vbFNwZWMiOnsiZGVzY3JpcHRpb24iOiJBZGQgdHdvIGludGVnZXJzIiwiaW5wdXRTY2hlbWEiOnsianNvbiI6eyJhZGRpdGlvbmFsUHJvcGVydGllcyI6ZmFsc2UsInByb3BlcnRpZXMiOnsiYSI6eyJ0eXBlIjoiaW50ZWdlciJ9LCJiIjp7InR5cGUiOiJpbnRlZ2VyIn19LCJyZXF1aXJlZCI6WyJhIiwiYiJdLCJ0eXBlIjoib2JqZWN0In19LCJuYW1lIjoiYWRkIn19XX19"
+      "b64": "eyJpbmZlcmVuY2VDb25maWciOnsibWF4VG9rZW5zIjoxNTAsInRlbXBlcmF0dXJlIjowLjB9LCJtZXNzYWdlcyI6W3siY29udGVudCI6W3sidGV4dCI6IlVzZSB0aGUgYWRkIHRvb2wgdG8gY29tcHV0ZSAyICsgMy4gQWZ0ZXIgdGhlIHRvb2wgcmVzdWx0IGFycml2ZXMsIHJlc3BvbmQgd2l0aCAnc3VtPTx2YWx1ZT4nLiJ9XSwicm9sZSI6InVzZXIifSx7ImNvbnRlbnQiOlt7InRvb2xVc2UiOnsiaW5wdXQiOnsiYSI6MiwiYiI6M30sIm5hbWUiOiJhZGQiLCJ0b29sVXNlSWQiOiJ0b29sdXNlX2tiaHc4TzJmUmdXWG1JMXpXa1lPYncifX1dLCJyb2xlIjoiYXNzaXN0YW50In0seyJjb250ZW50IjpbeyJ0b29sUmVzdWx0Ijp7ImNvbnRlbnQiOlt7InRleHQiOiI1In1dLCJ0b29sVXNlSWQiOiJ0b29sdXNlX2tiaHc4TzJmUmdXWG1JMXpXa1lPYncifX1dLCJyb2xlIjoidXNlciJ9XSwidG9vbENvbmZpZyI6eyJ0b29scyI6W3sidG9vbFNwZWMiOnsiZGVzY3JpcHRpb24iOiJBZGQgdHdvIGludGVnZXJzIiwiaW5wdXRTY2hlbWEiOnsianNvbiI6eyJhZGRpdGlvbmFsUHJvcGVydGllcyI6ZmFsc2UsInByb3BlcnRpZXMiOnsiYSI6eyJ0eXBlIjoiaW50ZWdlciJ9LCJiIjp7InR5cGUiOiJpbnRlZ2VyIn19LCJyZXF1aXJlZCI6WyJhIiwiYiJdLCJ0eXBlIjoib2JqZWN0In19LCJuYW1lIjoiYWRkIn19XX19"
     },
     "canonical_json": {
       "inferenceConfig": {
@@ -28,7 +28,7 @@
                   "b": 3
                 },
                 "name": "add",
-                "toolUseId": "tooluse_2jR8tBCgRQOyQwya29VxKg"
+                "toolUseId": "tooluse_kbhw8O2fRgWXmI1zWkYObw"
               }
             }
           ],
@@ -43,7 +43,7 @@
                     "text": "5"
                   }
                 ],
-                "toolUseId": "tooluse_2jR8tBCgRQOyQwya29VxKg"
+                "toolUseId": "tooluse_kbhw8O2fRgWXmI1zWkYObw"
               }
             }
           ],
@@ -94,10 +94,10 @@
         "req/0.5.16"
       ],
       "x-amz-content-sha256": [
-        "ab8dc6f892259e6e0cd61f94399227936814c3836fa40586982656d19399406c"
+        "75a9f88a3b58619f9752c1bd3ab73ebf3dc3800d0758d21c18132d9c6a660bab"
       ],
       "x-amz-date": [
-        "20251116T185448Z"
+        "20251117T060436Z"
       ]
     },
     "method": "post",
@@ -106,7 +106,7 @@
   "response": {
     "body": {
       "metrics": {
-        "latencyMs": 2294
+        "latencyMs": 2606
       },
       "output": {
         "message": {
@@ -138,10 +138,10 @@
         "application/json"
       ],
       "date": [
-        "Sun, 16 Nov 2025 18:54:50 GMT"
+        "Mon, 17 Nov 2025 06:04:39 GMT"
       ],
       "x-amzn-requestid": [
-        "6f946532-c517-4a7b-825e-547c9c1d0ddd"
+        "b11ad45b-cff0-4650-a44c-37c5c6fce736"
       ]
     },
     "status": 200
