@@ -60,6 +60,8 @@ defmodule ReqLLM.Providers.GoogleVertex do
     default_base_url: "https://{region}-aiplatform.googleapis.com",
     default_env_key: "GOOGLE_APPLICATION_CREDENTIALS"
 
+  alias ReqLLM.Model
+
   require Logger
 
   @provider_schema [
@@ -136,7 +138,7 @@ defmodule ReqLLM.Providers.GoogleVertex do
       http_opts = Keyword.get(other_opts, :req_http_options, [])
 
       timeout =
-        if get_in(model, [Access.key(:capabilities), Access.key(:reasoning)]) == true do
+        if Model.reasoning_enabled?(model) do
           180_000
         else
           60_000

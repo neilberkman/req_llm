@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **ReqLLM.Model capability helper functions** for type-safe model capability access
+  - Centralized helpers like `ReqLLM.Model.json_schema?/1`, `ReqLLM.Model.tools_strict?/1`
+  - Replaces scattered `get_in(model.capabilities, ...)` calls across providers
+  - Fixes bug in Bedrock provider where reasoning capability was checked incorrectly (was checking `capabilities.reasoning` map instead of `capabilities.reasoning.enabled` boolean)
+  - Provides single source of truth for capability access patterns
+  - Compile-time generated functions from capability schema paths
+
 - **Google Vertex AI Gemini model support**
   - Gemini 2.0 Flash, 2.5 Flash, 2.5 Flash Lite, and 2.5 Pro on Google Vertex AI
   - Delegates to native Google provider format with Vertex-specific quirks handled
