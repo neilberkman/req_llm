@@ -1,4 +1,4 @@
-defmodule ReqLLM.Model do
+defmodule ReqLLM.Capabilities do
   @moduledoc """
   Helper functions for querying LLMDB.Model capabilities.
 
@@ -47,11 +47,11 @@ defmodule ReqLLM.Model do
     ## Examples
 
         iex> model = %LLMDB.Model{capabilities: %{#{example_path}: true#{example_close}}}
-        iex> ReqLLM.Model.#{function_name}(model)
+        iex> ReqLLM.Capabilities.#{function_name}(model)
         true
 
         iex> model = %LLMDB.Model{capabilities: %{}}
-        iex> ReqLLM.Model.#{function_name}(model)
+        iex> ReqLLM.Capabilities.#{function_name}(model)
         false
     """
     def unquote(function_name)(%LLMDB.Model{} = model) do
@@ -68,7 +68,7 @@ defmodule ReqLLM.Model do
 
   ## Examples
 
-      iex> ReqLLM.Model.list_helpers()
+      iex> ReqLLM.Capabilities.list_helpers()
       [:chat?, :json_native?, :json_schema?, :json_strict?, :reasoning_enabled?, ...]
   """
   def list_helpers do
