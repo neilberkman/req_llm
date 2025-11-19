@@ -161,6 +161,12 @@ defmodule ReqLLM.Providers.AmazonBedrock do
     anthropic_prompt_cache_ttl: [
       type: :string,
       doc: "TTL for cache (\"1h\" for one hour; omit for default ~5m)"
+    ],
+    service_tier: [
+      type: {:in, ["priority", "default", "flex"]},
+      default: "default",
+      doc:
+        "Service tier for request prioritization. Priority provides faster responses at higher cost, Flex is more cost-effective with longer latency."
     ]
   ]
 
@@ -360,6 +366,14 @@ defmodule ReqLLM.Providers.AmazonBedrock do
         opts
       )
 
+    # Add service_tier if specified (default is already "default")
+    model_body =
+      if opts[:service_tier] && opts[:service_tier] != "default" do
+        Map.put(model_body, "service_tier", opts[:service_tier])
+      else
+        model_body
+      end
+
     request_with_body =
       updated_request
       |> Req.Request.put_header("content-type", "application/json")
@@ -424,6 +438,15 @@ defmodule ReqLLM.Providers.AmazonBedrock do
 
     # Build request body with translated options
     body = formatter.format_request(model_id, context, translated_opts)
+
+    # Add service_tier if specified (default is already "default")
+    body =
+      if translated_opts[:service_tier] && translated_opts[:service_tier] != "default" do
+        Map.put(body, "service_tier", translated_opts[:service_tier])
+      else
+        body
+      end
+
     json_body = Jason.encode!(body)
 
     # Ensure json_body is binary

@@ -371,6 +371,92 @@ defmodule ReqLLM.Providers.AmazonBedrockTest do
     end
   end
 
+  describe "service_tier parameter" do
+    test "includes service_tier in request body when specified" do
+      System.put_env("AWS_ACCESS_KEY_ID", "AKIATEST")
+      System.put_env("AWS_SECRET_ACCESS_KEY", "secretTEST")
+
+      {:ok, model} = ReqLLM.model("amazon-bedrock:anthropic.claude-3-haiku-20240307-v1:0")
+
+      messages = [Context.user("Hello")]
+      context = Context.new(messages)
+
+      opts = [
+        access_key_id: "AKIATEST",
+        secret_access_key: "secretTEST",
+        service_tier: "priority"
+      ]
+
+      {:ok, request} = AmazonBedrock.prepare_request(:chat, model, context, opts)
+
+      assert %Req.Request{} = request
+      body = Jason.decode!(request.body)
+      assert body["service_tier"] == "priority"
+    end
+
+    test "includes service_tier=flex in request body" do
+      System.put_env("AWS_ACCESS_KEY_ID", "AKIATEST")
+      System.put_env("AWS_SECRET_ACCESS_KEY", "secretTEST")
+
+      {:ok, model} = ReqLLM.model("amazon-bedrock:anthropic.claude-3-haiku-20240307-v1:0")
+
+      messages = [Context.user("Hello")]
+      context = Context.new(messages)
+
+      opts = [
+        access_key_id: "AKIATEST",
+        secret_access_key: "secretTEST",
+        service_tier: "flex"
+      ]
+
+      {:ok, request} = AmazonBedrock.prepare_request(:chat, model, context, opts)
+
+      body = Jason.decode!(request.body)
+      assert body["service_tier"] == "flex"
+    end
+
+    test "omits service_tier when default" do
+      System.put_env("AWS_ACCESS_KEY_ID", "AKIATEST")
+      System.put_env("AWS_SECRET_ACCESS_KEY", "secretTEST")
+
+      {:ok, model} = ReqLLM.model("amazon-bedrock:anthropic.claude-3-haiku-20240307-v1:0")
+
+      messages = [Context.user("Hello")]
+      context = Context.new(messages)
+
+      opts = [
+        access_key_id: "AKIATEST",
+        secret_access_key: "secretTEST",
+        service_tier: "default"
+      ]
+
+      {:ok, request} = AmazonBedrock.prepare_request(:chat, model, context, opts)
+
+      body = Jason.decode!(request.body)
+      refute Map.has_key?(body, "service_tier")
+    end
+
+    test "omits service_tier when not specified" do
+      System.put_env("AWS_ACCESS_KEY_ID", "AKIATEST")
+      System.put_env("AWS_SECRET_ACCESS_KEY", "secretTEST")
+
+      {:ok, model} = ReqLLM.model("amazon-bedrock:anthropic.claude-3-haiku-20240307-v1:0")
+
+      messages = [Context.user("Hello")]
+      context = Context.new(messages)
+
+      opts = [
+        access_key_id: "AKIATEST",
+        secret_access_key: "secretTEST"
+      ]
+
+      {:ok, request} = AmazonBedrock.prepare_request(:chat, model, context, opts)
+
+      body = Jason.decode!(request.body)
+      refute Map.has_key?(body, "service_tier")
+    end
+  end
+
   # Helper to build a valid AWS Event Stream message for testing
   defp build_aws_event_stream_message(payload) when is_binary(payload) do
     headers = <<>>

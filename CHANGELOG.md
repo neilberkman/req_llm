@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Amazon Bedrock service tier support** for request prioritization
+  - `service_tier` option with values: `"priority"`, `"default"`, `"flex"`
+  - Priority tier provides faster responses at premium cost for mission-critical workloads
+  - Flex tier offers cost-effective processing for non-urgent tasks
+  - Supported on compatible Bedrock models (check AWS documentation for availability)
 - **Google Vertex AI Gemini model support**
   - Gemini 2.0 Flash, 2.5 Flash, 2.5 Flash Lite, and 2.5 Pro on Google Vertex AI
   - Delegates to native Google provider format with Vertex-specific quirks handled
