@@ -280,7 +280,7 @@ defmodule ReqLLM.Providers.OpenAI.ResponsesAPI do
     tools = encode_tools_if_any(temp_request) |> ensure_deep_research_tools(temp_request)
 
     tool_choice = encode_tool_choice(opts_map[:tool_choice])
-    reasoning = encode_reasoning_effort(provider_opts[:reasoning_effort])
+    reasoning = encode_reasoning_effort(opts_map[:reasoning_effort])
 
     text_format = encode_text_format(provider_opts[:response_format])
 
@@ -310,14 +310,11 @@ defmodule ReqLLM.Providers.OpenAI.ResponsesAPI do
 
     base_url = ReqLLM.Provider.Options.effective_base_url(ReqLLM.Providers.OpenAI, model, opts)
 
-    provider_opts = opts |> Keyword.get(:provider_options, []) |> Map.new() |> Map.to_list()
-
     cleaned_opts =
       opts
       |> Keyword.delete(:finch_name)
       |> Keyword.delete(:compiled_schema)
-      |> Keyword.delete(:provider_options)
-      |> Keyword.merge(provider_opts)
+      |> Keyword.put(:provider_options, Keyword.get(opts, :provider_options, []))
       |> Keyword.put(:stream, true)
       |> Keyword.put(:model, model.id)
       |> Keyword.put(:context, context)
