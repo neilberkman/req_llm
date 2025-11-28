@@ -1,7 +1,7 @@
-defmodule ReqLLM.CapabilitiesTest do
+defmodule ReqLLM.ModelHelpersTest do
   use ExUnit.Case, async: true
 
-  alias ReqLLM.Capabilities
+  alias ReqLLM.ModelHelpers
 
   # Helper to create test model with capabilities
   defp test_model(capabilities) do
@@ -15,248 +15,248 @@ defmodule ReqLLM.CapabilitiesTest do
   describe "reasoning_enabled?/1" do
     test "returns true when model has reasoning.enabled = true" do
       model = test_model(%{reasoning: %{enabled: true}})
-      assert Capabilities.reasoning_enabled?(model)
+      assert ModelHelpers.reasoning_enabled?(model)
     end
 
     test "returns false when reasoning.enabled is false" do
       model = test_model(%{reasoning: %{enabled: false}})
-      refute Capabilities.reasoning_enabled?(model)
+      refute ModelHelpers.reasoning_enabled?(model)
     end
 
     test "returns false when reasoning.enabled is nil" do
       model = test_model(%{reasoning: %{enabled: nil}})
-      refute Capabilities.reasoning_enabled?(model)
+      refute ModelHelpers.reasoning_enabled?(model)
     end
 
     test "returns false when reasoning is missing" do
       model = test_model(%{})
-      refute Capabilities.reasoning_enabled?(model)
+      refute ModelHelpers.reasoning_enabled?(model)
     end
 
     test "returns false for non-Model structs" do
-      refute Capabilities.reasoning_enabled?(%{})
-      refute Capabilities.reasoning_enabled?(nil)
+      refute ModelHelpers.reasoning_enabled?(%{})
+      refute ModelHelpers.reasoning_enabled?(nil)
     end
   end
 
   describe "json_native?/1" do
     test "returns true when model has json.native = true" do
       model = test_model(%{json: %{native: true}})
-      assert Capabilities.json_native?(model)
+      assert ModelHelpers.json_native?(model)
     end
 
     test "returns false when json.native is false" do
       model = test_model(%{json: %{native: false}})
-      refute Capabilities.json_native?(model)
+      refute ModelHelpers.json_native?(model)
     end
 
     test "returns false when json is missing" do
       model = test_model(%{})
-      refute Capabilities.json_native?(model)
+      refute ModelHelpers.json_native?(model)
     end
 
     test "returns false for non-Model structs" do
-      refute Capabilities.json_native?(%{})
+      refute ModelHelpers.json_native?(%{})
     end
   end
 
   describe "json_schema?/1" do
     test "returns true when model has json.schema = true" do
       model = test_model(%{json: %{schema: true}})
-      assert Capabilities.json_schema?(model)
+      assert ModelHelpers.json_schema?(model)
     end
 
     test "returns false when json.schema is false" do
       model = test_model(%{json: %{schema: false}})
-      refute Capabilities.json_schema?(model)
+      refute ModelHelpers.json_schema?(model)
     end
 
     test "returns false when json is missing" do
       model = test_model(%{})
-      refute Capabilities.json_schema?(model)
+      refute ModelHelpers.json_schema?(model)
     end
 
     test "returns false for non-Model structs" do
-      refute Capabilities.json_schema?(%{})
+      refute ModelHelpers.json_schema?(%{})
     end
   end
 
   describe "json_strict?/1" do
     test "returns true when model has json.strict = true" do
       model = test_model(%{json: %{strict: true}})
-      assert Capabilities.json_strict?(model)
+      assert ModelHelpers.json_strict?(model)
     end
 
     test "returns false when json.strict is false" do
       model = test_model(%{json: %{strict: false}})
-      refute Capabilities.json_strict?(model)
+      refute ModelHelpers.json_strict?(model)
     end
 
     test "returns false when json is missing" do
       model = test_model(%{})
-      refute Capabilities.json_strict?(model)
+      refute ModelHelpers.json_strict?(model)
     end
 
     test "returns false for non-Model structs" do
-      refute Capabilities.json_strict?(%{})
+      refute ModelHelpers.json_strict?(%{})
     end
   end
 
   describe "tools_enabled?/1" do
     test "returns true when model has tools.enabled = true" do
       model = test_model(%{tools: %{enabled: true}})
-      assert Capabilities.tools_enabled?(model)
+      assert ModelHelpers.tools_enabled?(model)
     end
 
     test "returns false when tools.enabled is false" do
       model = test_model(%{tools: %{enabled: false}})
-      refute Capabilities.tools_enabled?(model)
+      refute ModelHelpers.tools_enabled?(model)
     end
 
     test "returns false when tools is missing" do
       model = test_model(%{})
-      refute Capabilities.tools_enabled?(model)
+      refute ModelHelpers.tools_enabled?(model)
     end
 
     test "returns false for non-Model structs" do
-      refute Capabilities.tools_enabled?(%{})
+      refute ModelHelpers.tools_enabled?(%{})
     end
   end
 
   describe "tools_strict?/1" do
     test "returns true when model has tools.strict = true" do
       model = test_model(%{tools: %{strict: true}})
-      assert Capabilities.tools_strict?(model)
+      assert ModelHelpers.tools_strict?(model)
     end
 
     test "returns false when tools.strict is false" do
       model = test_model(%{tools: %{strict: false}})
-      refute Capabilities.tools_strict?(model)
+      refute ModelHelpers.tools_strict?(model)
     end
 
     test "returns false when tools is missing" do
       model = test_model(%{})
-      refute Capabilities.tools_strict?(model)
+      refute ModelHelpers.tools_strict?(model)
     end
 
     test "returns false for non-Model structs" do
-      refute Capabilities.tools_strict?(%{})
+      refute ModelHelpers.tools_strict?(%{})
     end
   end
 
   describe "tools_parallel?/1" do
     test "returns true when model has tools.parallel = true" do
       model = test_model(%{tools: %{parallel: true}})
-      assert Capabilities.tools_parallel?(model)
+      assert ModelHelpers.tools_parallel?(model)
     end
 
     test "returns false when tools.parallel is false" do
       model = test_model(%{tools: %{parallel: false}})
-      refute Capabilities.tools_parallel?(model)
+      refute ModelHelpers.tools_parallel?(model)
     end
 
     test "returns false when tools is missing" do
       model = test_model(%{})
-      refute Capabilities.tools_parallel?(model)
+      refute ModelHelpers.tools_parallel?(model)
     end
 
     test "returns false for non-Model structs" do
-      refute Capabilities.tools_parallel?(%{})
+      refute ModelHelpers.tools_parallel?(%{})
     end
   end
 
   describe "tools_streaming?/1" do
     test "returns true when model has tools.streaming = true" do
       model = test_model(%{tools: %{streaming: true}})
-      assert Capabilities.tools_streaming?(model)
+      assert ModelHelpers.tools_streaming?(model)
     end
 
     test "returns false when tools.streaming is false" do
       model = test_model(%{tools: %{streaming: false}})
-      refute Capabilities.tools_streaming?(model)
+      refute ModelHelpers.tools_streaming?(model)
     end
 
     test "returns false when tools is missing" do
       model = test_model(%{})
-      refute Capabilities.tools_streaming?(model)
+      refute ModelHelpers.tools_streaming?(model)
     end
 
     test "returns false for non-Model structs" do
-      refute Capabilities.tools_streaming?(%{})
+      refute ModelHelpers.tools_streaming?(%{})
     end
   end
 
   describe "streaming_text?/1" do
     test "returns true when model has streaming.text = true" do
       model = test_model(%{streaming: %{text: true}})
-      assert Capabilities.streaming_text?(model)
+      assert ModelHelpers.streaming_text?(model)
     end
 
     test "returns false when streaming.text is false" do
       model = test_model(%{streaming: %{text: false}})
-      refute Capabilities.streaming_text?(model)
+      refute ModelHelpers.streaming_text?(model)
     end
 
     test "returns false when streaming is missing" do
       model = test_model(%{})
-      refute Capabilities.streaming_text?(model)
+      refute ModelHelpers.streaming_text?(model)
     end
 
     test "returns false for non-Model structs" do
-      refute Capabilities.streaming_text?(%{})
+      refute ModelHelpers.streaming_text?(%{})
     end
   end
 
   describe "streaming_tool_calls?/1" do
     test "returns true when model has streaming.tool_calls = true" do
       model = test_model(%{streaming: %{tool_calls: true}})
-      assert Capabilities.streaming_tool_calls?(model)
+      assert ModelHelpers.streaming_tool_calls?(model)
     end
 
     test "returns false when streaming.tool_calls is false" do
       model = test_model(%{streaming: %{tool_calls: false}})
-      refute Capabilities.streaming_tool_calls?(model)
+      refute ModelHelpers.streaming_tool_calls?(model)
     end
 
     test "returns false when streaming is missing" do
       model = test_model(%{})
-      refute Capabilities.streaming_tool_calls?(model)
+      refute ModelHelpers.streaming_tool_calls?(model)
     end
 
     test "returns false for non-Model structs" do
-      refute Capabilities.streaming_tool_calls?(%{})
+      refute ModelHelpers.streaming_tool_calls?(%{})
     end
   end
 
   describe "chat?/1" do
     test "returns true when model has chat = true" do
       model = test_model(%{chat: true})
-      assert Capabilities.chat?(model)
+      assert ModelHelpers.chat?(model)
     end
 
     test "returns false when chat is false" do
       model = test_model(%{chat: false})
-      refute Capabilities.chat?(model)
+      refute ModelHelpers.chat?(model)
     end
 
     test "returns false when chat is nil" do
       model = test_model(%{chat: nil})
-      refute Capabilities.chat?(model)
+      refute ModelHelpers.chat?(model)
     end
 
     test "returns false when chat is missing" do
       model = test_model(%{})
-      refute Capabilities.chat?(model)
+      refute ModelHelpers.chat?(model)
     end
 
     test "returns false for non-Model structs" do
-      refute Capabilities.chat?(%{})
+      refute ModelHelpers.chat?(%{})
     end
   end
 
   describe "list_helpers/0" do
     test "returns sorted list of all helper function names" do
-      helpers = Capabilities.list_helpers()
+      helpers = ModelHelpers.list_helpers()
 
       assert is_list(helpers)
       assert length(helpers) == 11

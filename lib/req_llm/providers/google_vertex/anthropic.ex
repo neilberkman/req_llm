@@ -19,7 +19,7 @@ defmodule ReqLLM.Providers.GoogleVertex.Anthropic do
   Enable with `reasoning_effort: "low" | "medium" | "high"` option.
   """
 
-  alias ReqLLM.Capabilities
+  alias ReqLLM.ModelHelpers
   alias ReqLLM.Providers.Anthropic
   alias ReqLLM.Providers.Anthropic.AdapterHelpers
   alias ReqLLM.Providers.Anthropic.PlatformReasoning
@@ -155,7 +155,7 @@ defmodule ReqLLM.Providers.GoogleVertex.Anthropic do
   # Only for Claude models that support extended thinking
   defp maybe_translate_reasoning_params(model, opts) do
     # Check if this model has reasoning capability
-    has_reasoning = Capabilities.reasoning_enabled?(model)
+    has_reasoning = ModelHelpers.reasoning_enabled?(model)
 
     if has_reasoning do
       {reasoning_effort, opts} = Keyword.pop(opts, :reasoning_effort)
