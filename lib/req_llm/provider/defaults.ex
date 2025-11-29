@@ -681,7 +681,7 @@ defmodule ReqLLM.Provider.Defaults do
     message = build_openai_message_from_chunks(content_chunks)
 
     context = %ReqLLM.Context{
-      messages: if(is_nil(message), do: [], else: [message])
+      messages: [message]
     }
 
     response = %ReqLLM.Response{
@@ -741,7 +741,8 @@ defmodule ReqLLM.Provider.Defaults do
         usage when is_map(usage) ->
           # Check if this is a final usage chunk (empty choices) to mark terminal
           is_final = match?(%{"choices" => []}, data)
-          meta = %{usage: usage, model: model.id}
+          normalized_usage = parse_openai_usage(usage)
+          meta = %{usage: normalized_usage, model: model.id}
           meta = if is_final, do: Map.put(meta, :terminal?, true), else: meta
 
           [ReqLLM.StreamChunk.meta(meta)]
@@ -916,7 +917,7 @@ defmodule ReqLLM.Provider.Defaults do
 
   defp decode_openai_tool_call_delta(_), do: nil
 
-  defp build_openai_message_from_chunks(chunks) when is_list(chunks) and chunks != [] do
+  defp build_openai_message_from_chunks(chunks) when is_list(chunks) do
     content_parts =
       chunks
       |> Enum.filter(&(&1.type in [:content, :thinking]))
@@ -936,8 +937,6 @@ defmodule ReqLLM.Provider.Defaults do
       metadata: %{}
     }
   end
-
-  defp build_openai_message_from_chunks(_), do: nil
 
   defp openai_chunk_to_content_part(%ReqLLM.StreamChunk{type: :content, text: text}) do
     %ReqLLM.Message.ContentPart{type: :text, text: text}
@@ -1243,28 +1242,24 @@ defmodule ReqLLM.Provider.Defaults do
   end
 
   defp extract_from_json_schema_content(response) do
-    case response.message do
-      %ReqLLM.Message{content: content_parts} when is_list(content_parts) ->
-        text_content =
-          content_parts
-          |> Enum.find_value(fn
-            %ReqLLM.Message.ContentPart{type: :text, text: text} when is_binary(text) -> text
-            _ -> nil
-          end)
+    %ReqLLM.Message{content: content_parts} = response.message
 
-        case text_content do
-          nil ->
-            nil
+    text_content =
+      content_parts
+      |> Enum.find_value(fn
+        %ReqLLM.Message.ContentPart{type: :text, text: text} when is_binary(text) -> text
+        _ -> nil
+      end)
 
-          json_string ->
-            case Jason.decode(json_string) do
-              {:ok, parsed_object} -> parsed_object
-              {:error, _} -> nil
-            end
-        end
-
-      _ ->
+    case text_content do
+      nil ->
         nil
+
+      json_string ->
+        case Jason.decode(json_string) do
+          {:ok, parsed_object} -> parsed_object
+          {:error, _} -> nil
+        end
     end
   end
 
