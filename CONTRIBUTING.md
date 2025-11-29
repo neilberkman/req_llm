@@ -195,10 +195,25 @@ mix deps.get
 cp .env.example .env
 # Edit .env with your API keys
 
+# Install git hooks (recommended)
+mix git_hooks.install
+
 # Verify setup
 mix test
 mix quality
 ```
+
+### Git Hooks
+
+We use the [`git_hooks`](https://hex.pm/packages/git_hooks) package to manage git hooks in an Elixir-idiomatic way:
+
+```bash
+mix git_hooks.install
+```
+
+This installs a pre-push hook that runs `mix format --check-formatted` before each push.
+
+This is important because Elixir 1.18 and 1.19 format some code differently (particularly guard clauses), and CI tests against multiple Elixir versions. The hook ensures your code is formatted correctly before pushing, preventing CI failures.
 
 ## Testing Requirements
 
