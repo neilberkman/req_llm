@@ -99,44 +99,54 @@ defmodule ReqLLM.MixProject do
           Contributing: ["CONTRIBUTING.md"]
         ],
         groups_for_modules: [
-          Providers: ~r/ReqLLM\.Providers\..*/,
-          Steps: ~r/ReqLLM\.Step\..*/,
-          Streaming: ~r/ReqLLM\.Streaming.*/,
-          "Data Structures": [
-            ReqLLM.Message,
-            ReqLLM.Message.ContentPart,
-            ReqLLM.Response,
-            ReqLLM.Response.Stream,
-            ReqLLM.StreamResponse,
-            ReqLLM.StreamChunk,
-            ReqLLM.Tool,
-            ReqLLM.ToolCall,
-            ReqLLM.Generation,
-            ReqLLM.Embedding,
+          "Top-Level API": [
+            ReqLLM,
+            ReqLLM.Images,
             ReqLLM.Context,
             ReqLLM.Schema
           ],
-          "Provider API": [
-            ReqLLM.Provider,
-            ReqLLM.Provider.DSL,
-            ReqLLM.Provider.Registry,
-            ReqLLM.Provider.Options,
-            ReqLLM.Provider.Utils,
-            ReqLLM.Provider.Defaults,
-            ReqLLM.Provider.ResponseBuilder,
-            ReqLLM.Provider.Defaults.ResponseBuilder
-          ],
-          Core: [
-            ReqLLM,
+          Utilities: [
             ReqLLM.ModelHelpers,
             ReqLLM.Model.Metadata,
             ReqLLM.Metadata,
             ReqLLM.Capability,
             ReqLLM.Keys,
+            ReqLLM.Usage,
             ReqLLM.Error,
             ReqLLM.Debug,
             ReqLLM.ParamTransform
-          ]
+          ],
+          "Data Structures": [
+            ReqLLM.Message,
+            ReqLLM.Message.ContentPart,
+            ReqLLM.Message.ReasoningDetails,
+            ReqLLM.Response,
+            ReqLLM.Response.Stream,
+            ReqLLM.StreamResponse,
+            ReqLLM.StreamResponse.MetadataHandle,
+            ReqLLM.StreamChunk,
+            ReqLLM.Tool,
+            ReqLLM.ToolCall,
+            ReqLLM.ToolResult,
+            ReqLLM.Generation,
+            ReqLLM.Embedding
+          ],
+          Steps: ~r/ReqLLM\.Step\..*/,
+          Streaming: [~r/ReqLLM\.Streaming.*/, ReqLLM.StreamServer],
+          Transcription: ~r/ReqLLM\.Transcription.*/,
+          Speech: ~r/ReqLLM\.Speech.*/,
+          "Provider Extension API": [
+            ReqLLM.Provider,
+            ReqLLM.Provider.DSL,
+            ReqLLM.Provider.Registry,
+            ReqLLM.Provider.Options,
+            ReqLLM.Provider.Utils,
+            ReqLLM.Providers,
+            ReqLLM.Provider.Defaults,
+            ReqLLM.Provider.ResponseBuilder,
+            ReqLLM.Provider.Defaults.ResponseBuilder
+          ],
+          Providers: ~r/ReqLLM\.Providers\..*/
         ]
       ]
     ]
