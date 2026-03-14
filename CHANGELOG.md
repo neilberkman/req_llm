@@ -9,6 +9,123 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog -->
 
+## [v1.7.0](https://github.com/agentjido/req_llm/compare/v1.6.0...v1.7.0) (2026-03-14)
+
+
+
+
+### Features:
+
+* normalize and document inline model specs (#500) by mikehostetler
+
+* normalize and document inline model specs by mikehostetler
+
+* add Alibaba Cloud Bailian (DashScope) provider (#470) by Steven Holdsworth
+
+* auth: support OAuth tokens and codex Responses routing (#478) by l3wi
+
+* auth: support OAuth tokens and codex Responses routing by l3wi
+
+* Uses the same Finch Pool for streaming/non-streaming (#466) by ycastorium
+
+* Add Usage to Embeddings (#444) by ycastorium
+
+* add response_format to Vertex AI provider schema for OpenAI-compat MaaS models (#450) by shelvick
+
+* pass anthropic_beta through Bedrock to request body (#468) by stevehodgkiss
+
+* add Igniter installer for automated package setup by Nickcom4
+
+### Bug Fixes:
+
+* remove unreachable inline model clause by mikehostetler
+
+* honor Google image output format (#499) by mikehostetler
+
+* emit usage for Vertex embeddings (#498) by mikehostetler
+
+* GoogleVertex extract_gcp_credentials from provider_options (#496) by paulorumor
+
+* streaming: propagate transport errors instead of swallowing (#491) by Julian Scheid
+
+* streaming: propagate transport errors instead of swallowing by Julian Scheid
+
+* move examples into nested mix project by Dave Lucia
+
+* docs: clean up sidebar (#490) by Dave Lucia
+
+* docs: clean up sidebar by Dave Lucia
+
+* docs: restore public providers and usage docs by Dave Lucia
+
+* docs: improve exdoc module grouping by Dave Lucia
+
+* ReqLLM.Response.object returns string keys (#488) by Dave Lucia
+
+* expose stream keepalive callbacks (#495) by mikehostetler
+
+* clean up StreamServer processes after streaming completes (#494) by mikehostetler
+
+* clean up stream servers after stream completion by mikehostetler
+
+* harden stream server lifecycle cleanup by mikehostetler
+
+* auth: honor auth_mode and string-key wire protocol by l3wi
+
+* Fixes sse in case of server failure (#463) by ycastorium
+
+* Fixes sse in case of server failure by ycastorium
+
+* Adds a new termination field by ycastorium
+
+* preserve stop finish_reason for buffered done event by ycastorium
+
+* exclude embedding return_usage from provider transport options (#471) by mikehostetler
+
+* normalize nested string-key tool arguments safely (#459) by mikehostetler
+
+* tool: normalize nested string-key tool arguments by mikehostetler
+
+* tool: normalize map keys in union and tuple types by mikehostetler
+
+* core: remove unsafe runtime string-to-atom conversions by mikehostetler
+
+* ReqLLM embed should use embedding schema, not generation (#446) by ycastorium
+
+* handle API error responses in Vertex AI OpenAI-compat endpoint (#451) by shelvick
+
+* handle API error responses in Vertex AI OpenAI-compat parse_response by shelvick
+
+* unwrap single-element list body in OpenAICompat.parse_response by shelvick
+
+* bedrock: update inference profile prefixes (#449) by stevehodgkiss
+
+* stream usage normalization and accumulation (#464) by stevehodgkiss
+
+* encode tool outputs inline in Responses API input array (#454) by austin macciola
+
+* only add cache_control to last tool in Anthropic prompt caching (#453) by tomtrin
+
+* remove $schema and additionalProperties recursively in to_google_format (#460) by Jhon Pedroza
+
+* allow max_retries to be 0 to disable retries (#469) by stevehodgkiss
+
+* omit mimeType from fileData for YouTube and extensionless URLs (#442) by Nickcom4
+
+* omit mimeType from fileData for YouTube and extensionless URLs by Nickcom4
+
+* google: return nil for unknown inferred mime type by Nickcom4
+
+* strip redundant tool_choice auto from OpenRouter requests (#437) by Noah S
+
+* strip redundant tool_choice auto from OpenRouter requests by Noah S
+
+* widen generation function specs to match Context.normalize/2 (#441) by Nickcom4
+
+* widen generation function specs to match Context.normalize/2 by Nickcom4
+
+* Removes redundant validation (#448) by ycastorium
+
 ## [v1.6.0](https://github.com/agentjido/req_llm/compare/v1.5.1...v1.6.0) (2026-02-19)
 
 
