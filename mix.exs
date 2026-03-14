@@ -20,7 +20,6 @@ defmodule ReqLLM.MixProject do
       # Dialyzer configuration
       dialyzer: [
         plt_add_apps: [:mix],
-        ignore_warnings: ".dialyzer_ignore.exs",
         exclude_paths: ["test/support"]
       ],
 
