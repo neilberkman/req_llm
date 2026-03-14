@@ -98,6 +98,20 @@ defmodule ReqLLM.EmbeddingTest do
       # Tuple format (if supported)
       assert {:ok, _} = Embedding.validate_model({:openai, id: "text-embedding-3-small"})
     end
+
+    test "accepts inline embedding models outside the catalog" do
+      assert {:ok, %LLMDB.Model{id: "text-embedding-4"}} =
+               Embedding.validate_model(%{provider: :openai, id: "text-embedding-4"})
+    end
+
+    test "accepts inline embedding models declared via capabilities" do
+      assert {:ok, %LLMDB.Model{id: "custom-embed"}} =
+               Embedding.validate_model(%{
+                 provider: :openai,
+                 id: "custom-embed",
+                 capabilities: %{embeddings: true}
+               })
+    end
   end
 
   describe "embed/3 - basic functionality" do
@@ -157,7 +171,10 @@ defmodule ReqLLM.EmbeddingTest do
       assert embedding == [0.1, -0.2, 0.3]
       assert usage.input == 2
 
-      assert_receive {:telemetry_event, [:req_llm, :token_usage], measurements, metadata}
+      assert_receive {:telemetry_event, [:req_llm, :token_usage], measurements,
+                      %{model: %LLMDB.Model{provider: :google_vertex, id: "gemini-embedding-001"}} =
+                        metadata}
+
       assert measurements.tokens.input == 2
       assert metadata.model.provider == :google_vertex
       assert metadata.model.id == "gemini-embedding-001"
