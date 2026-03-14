@@ -9,6 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog -->
 
+## [v1.7.1](https://github.com/agentjido/req_llm/compare/v1.7.0...v1.7.1) (2026-03-14)
+
+
+
+
+### Bug Fixes:
+
+* make image tests resilient to llm_db catalog updates by mikehostetler
+
+* preserve assistant metadata and reasoning details when normalizing loose maps (#501) by Chris Lema
+
+* format context normalization branches by Chris Lema
+
 ## [v1.7.0](https://github.com/agentjido/req_llm/compare/v1.6.0...v1.7.0) (2026-03-14)
 
 
