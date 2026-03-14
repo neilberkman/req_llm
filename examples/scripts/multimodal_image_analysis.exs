@@ -1,42 +1,42 @@
-alias ReqLLM.Scripts.Helpers
+alias ReqLLM.Examples.Helpers
 
-defmodule MultimodalPdfQA do
+defmodule MultimodalImageAnalysis do
   @moduledoc """
-  Demonstrates PDF document analysis using Anthropic's vision models.
+  Demonstrates vision/image analysis using multimodal AI models.
 
-  Analyzes PDF documents by sending them to Claude models along with a text prompt.
-  Note that PDF analysis is currently only supported by Anthropic models with
-  vision capabilities.
+  Analyzes images by sending them to vision-capable models along with a text prompt.
+  Supports common image formats (JPG, PNG, GIF, WebP) and can be used with any
+  vision-capable model.
 
   ## Usage
 
-      mix run lib/examples/scripts/multimodal_pdf_qa.exs [prompt] --file <pdf_path> [options]
+      mix run scripts/multimodal_image_analysis.exs [prompt] --file <image_path> [options]
 
   ## Options
 
-    * `--file` - Path to PDF file (required)
-    * `--model`, `-m` - Anthropic model to use (default: anthropic:claude-3-5-haiku-20241022)
+    * `--file` - Path to image file (required)
+    * `--model`, `-m` - Model to use (default: openai:gpt-4o-mini)
     * `--log-level`, `-l` - Log level: debug, info, warning, error (default: warning)
     * `--max-tokens` - Maximum tokens to generate
-    * `--temperature` - Sampling temperature (0.0-1.0)
+    * `--temperature` - Sampling temperature (0.0-2.0)
 
   ## Examples
 
-      # Summarize a PDF document
-      mix run lib/examples/scripts/multimodal_pdf_qa.exs --file priv/examples/test.pdf
+      # Analyze an image with default prompt
+      mix run scripts/multimodal_image_analysis.exs --file priv/examples/test.jpg
 
-      # Ask a specific question about the document
-      mix run lib/examples/scripts/multimodal_pdf_qa.exs "What is the main conclusion?" --file report.pdf
+      # Ask a specific question about the image
+      mix run scripts/multimodal_image_analysis.exs "What colors are prominent?" --file image.png
 
-      # Use a different Claude model
-      mix run lib/examples/scripts/multimodal_pdf_qa.exs --file document.pdf --model anthropic:claude-sonnet-4-5-20250929
+      # Use a different model
+      mix run scripts/multimodal_image_analysis.exs --file photo.jpg --model anthropic:claude-3-5-haiku-20241022
 
-      # Extract specific information
-      mix run lib/examples/scripts/multimodal_pdf_qa.exs "List all financial figures" --file report.pdf --max-tokens 1000
+      # Control generation parameters
+      mix run scripts/multimodal_image_analysis.exs --file image.png --max-tokens 500 --temperature 0.7
   """
 
-  @script_name "multimodal_pdf_qa.exs"
-  @default_model "anthropic:claude-3-5-haiku-20241022"
+  @script_name "multimodal_image_analysis.exs"
+  @default_model "openai:gpt-4o-mini"
 
   def run(argv) do
     Helpers.ensure_app!()
@@ -66,13 +66,10 @@ defmodule MultimodalPdfQA do
     opts = Keyword.merge(parsed_opts, prompt: prompt, file: file_path)
 
     model = opts[:model] || @default_model
-    provider = detect_provider(model)
-
-    validate_provider!(provider)
 
     Logger.configure(level: Helpers.log_level(opts[:log_level] || "warning"))
 
-    Helpers.banner!(@script_name, "Demonstrates PDF document analysis",
+    Helpers.banner!(@script_name, "Demonstrates vision/image analysis",
       model: model,
       prompt: prompt,
       file: file_path,
@@ -80,12 +77,12 @@ defmodule MultimodalPdfQA do
       temperature: opts[:temperature]
     )
 
+    media_type = Helpers.media_type(file_path)
     binary_data = File.read!(file_path)
-    filename = Path.basename(file_path)
 
     parts = [
       ReqLLM.Message.ContentPart.text(prompt),
-      ReqLLM.Message.ContentPart.file(binary_data, filename, "application/pdf")
+      ReqLLM.Message.ContentPart.image(binary_data, media_type)
     ]
 
     ctx = ReqLLM.Context.new()
@@ -108,7 +105,7 @@ defmodule MultimodalPdfQA do
 
   defp get_prompt(remaining_args) do
     if Enum.empty?(remaining_args) do
-      "Summarize the key points"
+      "Describe this image in detail"
     else
       List.first(remaining_args)
     end
@@ -121,11 +118,13 @@ defmodule MultimodalPdfQA do
     end
 
     extension = Path.extname(path) |> String.downcase()
+    valid_extensions = [".jpg", ".jpeg", ".png", ".gif", ".webp"]
 
-    if extension != ".pdf" do
+    if extension not in valid_extensions do
       IO.puts(
         :stderr,
-        IO.ANSI.red() <> "Error: File must be a PDF document" <> IO.ANSI.reset()
+        IO.ANSI.red() <>
+          "Error: File must be an image (jpg, jpeg, png, gif, webp)" <> IO.ANSI.reset()
       )
 
       IO.puts(:stderr, "Got: #{extension}")
@@ -133,49 +132,23 @@ defmodule MultimodalPdfQA do
     end
   end
 
-  defp detect_provider(model) do
-    case String.split(model, ":", parts: 2) do
-      [provider, _model_name] -> String.to_atom(provider)
-      [_single_part] -> :openai
-    end
-  end
-
-  defp validate_provider!(provider) do
-    if provider != :anthropic do
-      IO.puts(
-        :stderr,
-        IO.ANSI.red() <>
-          "Error: PDF document analysis is only supported by Anthropic models" <>
-          IO.ANSI.reset()
-      )
-
-      IO.puts(
-        :stderr,
-        "Please use an Anthropic model (e.g., anthropic:claude-3-5-haiku-20241022)"
-      )
-
-      System.halt(1)
-    end
-  end
-
   defp print_usage do
     IO.puts(:stderr, "Error: --file is required\n")
-    IO.puts("Usage: mix run #{@script_name} [prompt] --file <pdf_path> [options]")
+    IO.puts("Usage: mix run scripts/#{@script_name} [prompt] --file <image_path> [options]")
     IO.puts("\nOptions:")
-    IO.puts("  --file <path>           Path to PDF file (required)")
+    IO.puts("  --file <path>           Path to image file (required)")
     IO.puts("  --model, -m <model>     Model to use [default: #{@default_model}]")
     IO.puts("  --log-level, -l <level> Log level (debug|info|warning|error)")
     IO.puts("  --max-tokens <int>      Maximum tokens to generate")
     IO.puts("  --temperature <float>   Sampling temperature")
-    IO.puts("\nNote: PDF analysis is only supported by Anthropic models")
     IO.puts("\nExamples:")
 
     IO.puts(
-      "  mix run #{@script_name} \"What is this document about?\" --file priv/examples/test.pdf"
+      "  mix run scripts/#{@script_name} \"What do you see?\" --file priv/examples/test.jpg"
     )
 
     IO.puts(
-      "  mix run #{@script_name} --file document.pdf --model anthropic:claude-sonnet-4-5-20250929"
+      "  mix run scripts/#{@script_name} --file image.png --model anthropic:claude-3-5-haiku-20241022"
     )
   end
 
@@ -186,4 +159,4 @@ defmodule MultimodalPdfQA do
   end
 end
 
-MultimodalPdfQA.run(System.argv())
+MultimodalImageAnalysis.run(System.argv())
