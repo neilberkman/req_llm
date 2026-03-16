@@ -192,6 +192,46 @@ defmodule ReqLLM.Providers.GoogleVertex do
   end
 
   @impl ReqLLM.Provider
+  def prepare_request(:ocr, model_input, document_binary, opts) do
+    with {:ok, model} <- ReqLLM.model(model_input),
+         :ok <- validate_ocr_model(model) do
+      {gcp_creds, other_opts} = extract_gcp_credentials(opts)
+      validate_gcp_credentials!(gcp_creds)
+
+      region = gcp_creds[:region] || @default_region
+      project_id = gcp_creds[:project_id]
+      model_id = model.provider_model_id || model.id
+      model_family = get_model_family(model)
+
+      body = ReqLLM.OCR.build_ocr_body(model_id, document_binary, other_opts)
+
+      base_url = build_base_url(region)
+      path = build_model_path(model_family, model_id, project_id, region)
+      url = "#{base_url}#{path}"
+
+      http_opts = Keyword.get(other_opts, :req_http_options, [])
+
+      request =
+        Req.new(
+          [
+            url: url,
+            method: :post,
+            json: body,
+            receive_timeout: 120_000,
+            headers: [{"content-type", "application/json"}]
+          ] ++ http_opts
+        )
+        |> Req.Request.register_options([:operation])
+        |> Req.Request.merge_options(operation: :ocr)
+        |> Req.Request.put_private(:gcp_credentials, gcp_creds)
+        |> Req.Request.put_private(:model, model)
+        |> attach_ocr(model, gcp_creds, other_opts)
+
+      {:ok, request}
+    end
+  end
+
+  @impl ReqLLM.Provider
   def prepare_request(:embedding, model_input, text, opts) do
     with {:ok, model} <- ReqLLM.model(model_input) do
       {gcp_creds, other_opts} = extract_gcp_credentials(opts)
@@ -321,6 +361,15 @@ defmodule ReqLLM.Providers.GoogleVertex do
         end
       end
     )
+  end
+
+  defp attach_ocr(request, model, gcp_creds, opts) do
+    request
+    |> Req.Request.merge_options(finch: ReqLLM.Application.finch_name())
+    |> ReqLLM.Step.Error.attach()
+    |> ReqLLM.Step.Retry.attach()
+    |> ReqLLM.Step.Fixture.maybe_attach(model, opts)
+    |> put_gcp_auth(gcp_creds)
   end
 
   defp attach_embedding(request, model, gcp_creds, opts) do
@@ -701,6 +750,19 @@ defmodule ReqLLM.Providers.GoogleVertex do
   end
 
   defp extract_embedding_usage(_), do: :error
+
+  defp validate_ocr_model(%LLMDB.Model{} = model) do
+    if ReqLLM.OCR.ocr_capable_model?(model) do
+      :ok
+    else
+      model_string = LLMDB.Model.spec(model)
+
+      {:error,
+       ReqLLM.Error.Invalid.Parameter.exception(
+         parameter: "model: #{model_string} does not support OCR operations"
+       )}
+    end
+  end
 
   def pre_validate_options(operation, model, opts) do
     model_family = get_model_family(model)
