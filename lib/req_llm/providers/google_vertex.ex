@@ -286,8 +286,10 @@ defmodule ReqLLM.Providers.GoogleVertex do
 
       other_opts = Keyword.put(other_opts, :context, context)
 
-      # Build request body using formatter
-      body = formatter.format_request(model.provider_model_id || model.id, context, other_opts)
+      formatter_opts = Keyword.put(other_opts, :provider_model, model)
+
+      body =
+        formatter.format_request(model.provider_model_id || model.id, context, formatter_opts)
 
       # Build Vertex AI endpoint URL
       region = gcp_creds[:region] || @default_region
@@ -323,10 +325,13 @@ defmodule ReqLLM.Providers.GoogleVertex do
             ]
           ] ++ http_opts
         )
-        |> Req.Request.register_options([:context, :operation])
-        |> Req.Request.merge_options(Keyword.take(other_opts, [:context, :operation]))
+        |> Req.Request.register_options([:context, :operation, :model_family])
+        |> Req.Request.merge_options(
+          Keyword.take(other_opts, [:context, :operation]) ++ [model_family: model_family]
+        )
         |> Req.Request.put_private(:gcp_credentials, gcp_creds)
         |> Req.Request.put_private(:model, model)
+        |> Req.Request.put_private(:formatter, formatter)
         |> attach(model, other_opts)
 
       {:ok, request}
@@ -344,6 +349,7 @@ defmodule ReqLLM.Providers.GoogleVertex do
     |> ReqLLM.Step.Retry.attach()
     |> Req.Request.append_response_steps(llm_decode_response: &decode_response/1)
     |> ReqLLM.Step.Usage.attach(model)
+    |> ReqLLM.Step.Telemetry.attach(model, opts)
     |> ReqLLM.Step.Fixture.maybe_attach(model, opts)
     |> put_gcp_auth(gcp_creds)
   end
@@ -384,6 +390,7 @@ defmodule ReqLLM.Providers.GoogleVertex do
     |> ReqLLM.Step.Retry.attach()
     |> ReqLLM.Step.Usage.attach(model)
     |> Req.Request.append_response_steps(llm_decode_response: &decode_embedding_response/1)
+    |> ReqLLM.Step.Telemetry.attach(model, opts)
     |> ReqLLM.Step.Fixture.maybe_attach(model, opts)
     |> put_gcp_auth(gcp_creds)
   end
@@ -871,12 +878,13 @@ defmodule ReqLLM.Providers.GoogleVertex do
 
     other_opts = Keyword.put(other_opts, :context, context)
 
-    # Build request body using formatter (with stream: true)
+    formatter_opts = Keyword.put(other_opts, :provider_model, model)
+
     body =
       formatter.format_request(
         model.provider_model_id || model.id,
         context,
-        Keyword.put(other_opts, :stream, true)
+        Keyword.put(formatter_opts, :stream, true)
       )
 
     # Build Vertex AI endpoint URL for streaming

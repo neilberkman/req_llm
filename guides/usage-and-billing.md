@@ -218,7 +218,52 @@ response.usage.cost.line_items
 
 ## Telemetry
 
-A telemetry event is published on every request:
+ReqLLM now emits three telemetry families:
+
+- `[:req_llm, :request, :start | :stop | :exception]` for lifecycle timing, request and response summaries, usage, and standardized reasoning metadata
+- `[:req_llm, :reasoning, :start | :update | :stop]` for provider-neutral thinking and reasoning milestones
+- `[:req_llm, :token_usage]` for backwards-compatible token and cost tracking
+
+For billing and tenant attribution, use `[:req_llm, :request, :stop]` as the source of truth. It includes duration in measurements plus `request_id`, `usage`, `finish_reason`, and normalized `reasoning` metadata in the event metadata. The token usage event remains useful if you only want token and cost totals.
+
+When you audit reasoning-heavy workloads, prefer the normalized `reasoning` snapshot on the request lifecycle events over raw provider payloads. It captures both the originally requested reasoning settings and the effective translated request, so you can see when a provider rewrites or disables a reasoning configuration before you attribute cost or behavior to a tenant.
+
+```elixir
+:telemetry.attach_many(
+  "my-req-llm-billing",
+  [
+    [:req_llm, :request, :stop],
+    [:req_llm, :request, :exception],
+    [:req_llm, :token_usage]
+  ],
+  fn event, measurements, metadata, _config ->
+    case event do
+      [:req_llm, :request, :stop] ->
+        duration_ms = System.convert_time_unit(measurements.duration, :native, :millisecond)
+
+        IO.inspect(
+          %{
+            request_id: metadata.request_id,
+            duration_ms: duration_ms,
+            finish_reason: metadata.finish_reason,
+            usage: metadata.usage,
+            reasoning: metadata.reasoning
+          },
+          label: "Request"
+        )
+
+      [:req_llm, :request, :exception] ->
+        IO.inspect(metadata, label: "Failed request")
+
+      [:req_llm, :token_usage] ->
+        IO.inspect(%{measurements: measurements, metadata: metadata}, label: "Usage")
+    end
+  end,
+  nil
+)
+```
+
+`[:req_llm, :token_usage]` remains available on every request, including streaming:
 
 ```elixir
 :telemetry.attach(
@@ -236,6 +281,8 @@ Event measurements include:
 - `input_tokens`, `output_tokens`, `total_tokens`
 - `input_cost`, `output_cost`, `total_cost`
 - `reasoning_tokens` (when applicable)
+
+See the [Telemetry Guide](telemetry.md) for the full event contract, reasoning lifecycle, milestone semantics, and payload capture options.
 
 ## Example: Complete Usage Tracking
 

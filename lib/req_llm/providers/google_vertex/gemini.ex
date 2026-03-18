@@ -33,6 +33,7 @@ defmodule ReqLLM.Providers.GoogleVertex.Gemini do
   """
   def format_request(model_id, context, opts) do
     {provider_opts, rest} = Keyword.pop(opts, :provider_options, [])
+    provider_model = Keyword.get(opts, :provider_model)
 
     opts_map =
       rest
@@ -52,7 +53,7 @@ defmodule ReqLLM.Providers.GoogleVertex.Gemini do
     ReqLLM.ToolCallIdCompat.apply_body(
       ReqLLM.Providers.GoogleVertex,
       opts[:operation] || :chat,
-      %{id: model_id, provider_model_id: model_id, provider: :google_vertex},
+      provider_model || %{id: model_id, provider_model_id: model_id, provider: :google_vertex},
       body,
       opts
     )

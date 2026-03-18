@@ -162,6 +162,11 @@ defmodule ReqLLM.Provider.Options do
                                  type: {:list, :any},
                                  doc: "Req HTTP client options"
                                ],
+                               telemetry: [
+                                 type: {:or, [:map, :keyword_list]},
+                                 doc:
+                                   "ReqLLM telemetry options. Currently supports [payloads: :none | :raw]"
+                               ],
 
                                # HTTP client options
                                receive_timeout: [
@@ -184,6 +189,7 @@ defmodule ReqLLM.Provider.Options do
     :on_unsupported,
     :fixture,
     :req_http_options,
+    :telemetry,
     :compiled_schema,
     :operation,
     :text,
@@ -256,6 +262,8 @@ defmodule ReqLLM.Provider.Options do
     # Auto-hoist provider-specific top-level options into :provider_options
     user_opts = auto_hoist_provider_options(provider_mod, user_opts)
 
+    telemetry_original_opts = user_opts
+
     # Apply pre-validation normalization (allows providers to filter/map unsupported options)
     user_opts = apply_pre_validation(provider_mod, operation, model, user_opts)
 
@@ -289,6 +297,7 @@ defmodule ReqLLM.Provider.Options do
       |> inject_base_url_from_registry(model, provider_mod)
 
     final_opts
+    |> Keyword.put(:telemetry_original_opts, telemetry_original_opts)
   end
 
   # Public utility functions

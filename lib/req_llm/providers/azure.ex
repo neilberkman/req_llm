@@ -541,6 +541,7 @@ defmodule ReqLLM.Providers.Azure do
     |> ReqLLM.Step.Error.attach()
     |> Req.Request.append_response_steps(llm_decode_response: &decode_response/1)
     |> ReqLLM.Step.Usage.attach(model)
+    |> ReqLLM.Step.Telemetry.attach(model, user_opts)
     |> ReqLLM.Step.Fixture.maybe_attach(model, user_opts)
   end
 
@@ -942,6 +943,8 @@ defmodule ReqLLM.Providers.Azure do
         :tool_choice,
         :tool_call_id_compat,
         :req_http_options,
+        :telemetry,
+        :telemetry_original_opts,
         :frequency_penalty,
         :system_prompt,
         :top_p,
