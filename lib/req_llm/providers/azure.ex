@@ -265,7 +265,8 @@ defmodule ReqLLM.Providers.Azure do
     "o4" => __MODULE__.OpenAI,
     "deepseek" => __MODULE__.OpenAI,
     "mai-ds" => __MODULE__.OpenAI,
-    "claude" => __MODULE__.Anthropic
+    "claude" => __MODULE__.Anthropic,
+    "grok" => __MODULE__.OpenAI
   }
 
   @model_family_prefixes @model_families |> Map.keys() |> Enum.sort_by(&String.length/1, :desc)
@@ -775,7 +776,8 @@ defmodule ReqLLM.Providers.Azure do
     model_id = effective_model_id(model)
 
     case get_model_family(model_id) do
-      family when family in ["gpt", "text-embedding", "o1", "o3", "o4", "deepseek", "mai-ds"] ->
+      family
+      when family in ["gpt", "text-embedding", "o1", "o3", "o4", "deepseek", "mai-ds", "grok"] ->
         synthetic_model = %{model | provider: :openai}
         ReqLLM.Providers.OpenAI.translate_options(operation, synthetic_model, opts)
 
@@ -952,7 +954,8 @@ defmodule ReqLLM.Providers.Azure do
         :seed,
         :stop,
         :user,
-        :reasoning_effort
+        :reasoning_effort,
+        :reasoning_token_budget
       ] ++ supported_provider_options()
 
     {api_key, extra_option_keys}
