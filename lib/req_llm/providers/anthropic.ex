@@ -122,6 +122,19 @@ defmodule ReqLLM.Providers.Anthropic do
 
       Example: %{max_uses: 5, allowed_domains: ["example.com"]}
       """
+    ],
+    web_fetch: [
+      type: :map,
+      doc: """
+      Enable web fetch tool (web_fetch_20260209) with optional configuration:
+      - `max_uses` - Limit the number of fetches per request (integer)
+      - `allowed_domains` - List of domains to include (list of strings)
+      - `blocked_domains` - List of domains to exclude (list of strings)
+      - `max_content_tokens` - Maximum content length in tokens (integer)
+      - `citations` - Map with `:enabled` boolean for source citations
+
+      Example: %{max_uses: 3, allowed_domains: ["example.com"]}
+      """
     ]
   ]
 
@@ -371,11 +384,13 @@ defmodule ReqLLM.Providers.Anthropic do
       Map.get(server_tool_use, "web_search_requests") ||
         Map.get(server_tool_use, :web_search_requests)
 
-    if is_number(web_search) and web_search > 0 do
-      Map.put(usage, :tool_usage, ReqLLM.Usage.Tool.build(:web_search, web_search))
-    else
-      usage
-    end
+    web_fetch =
+      Map.get(server_tool_use, "web_fetch_requests") ||
+        Map.get(server_tool_use, :web_fetch_requests)
+
+    usage
+    |> maybe_put_tool_usage(:web_search, web_search)
+    |> maybe_put_tool_usage(:web_fetch, web_fetch)
   end
 
   defp maybe_add_anthropic_tool_usage(usage), do: usage
@@ -613,8 +628,15 @@ defmodule ReqLLM.Providers.Anthropic do
   end
 
   defp has_tools?(user_opts) do
+    provider_opts = Keyword.get(user_opts, :provider_options, [])
     tools = Keyword.get(user_opts, :tools, [])
-    is_list(tools) and tools != []
+
+    server_tools? =
+      Enum.any?([:web_search, :web_fetch], fn key ->
+        is_map(get_option(user_opts, key) || get_option(provider_opts, key))
+      end)
+
+    (is_list(tools) and tools != []) or server_tools?
   end
 
   defp has_thinking?(user_opts) do
@@ -811,28 +833,29 @@ defmodule ReqLLM.Providers.Anthropic do
 
   defp maybe_add_tools(body, options) do
     tools = get_option(options, :tools, [])
+    provider_opts = get_option(options, :provider_options, [])
 
-    # Check for web_search in both top-level options and provider_options
+    # Check for server tools in both top-level options and provider_options
     web_search_config =
-      get_option(options, :web_search) ||
-        get_option(get_option(options, :provider_options, []), :web_search)
+      get_option(options, :web_search) || get_option(provider_opts, :web_search)
+
+    web_fetch_config =
+      get_option(options, :web_fetch) || get_option(provider_opts, :web_fetch)
 
     # Build the tools list
-    all_tools =
-      case {tools, web_search_config} do
-        {[], nil} ->
-          []
+    formatted_tools =
+      if is_list(tools) and tools != [],
+        do: Enum.map(tools, &tool_to_anthropic_format/1),
+        else: []
 
-        {tools, nil} when is_list(tools) ->
-          Enum.map(tools, &tool_to_anthropic_format/1)
+    server_tools =
+      [
+        if(is_map(web_search_config), do: build_web_search_tool(web_search_config)),
+        if(is_map(web_fetch_config), do: build_web_fetch_tool(web_fetch_config))
+      ]
+      |> Enum.reject(&is_nil/1)
 
-        {[], web_search_config} when is_map(web_search_config) ->
-          [build_web_search_tool(web_search_config)]
-
-        {tools, web_search_config} when is_list(tools) and is_map(web_search_config) ->
-          Enum.map(tools, &tool_to_anthropic_format/1) ++
-            [build_web_search_tool(web_search_config)]
-      end
+    all_tools = formatted_tools ++ server_tools
 
     case all_tools do
       [] ->
@@ -906,18 +929,64 @@ defmodule ReqLLM.Providers.Anthropic do
 
     # Add optional parameters if present (handle both atom and string keys)
     base_tool
-    |> maybe_put_web_search(:max_uses, get_web_search_option(config, :max_uses))
-    |> maybe_put_web_search(:allowed_domains, get_web_search_option(config, :allowed_domains))
-    |> maybe_put_web_search(:blocked_domains, get_web_search_option(config, :blocked_domains))
-    |> maybe_put_web_search(:user_location, get_web_search_option(config, :user_location))
+    |> maybe_put_server_tool_opt(:max_uses, get_server_tool_opt(config, :max_uses))
+    |> maybe_put_server_tool_opt(
+      :allowed_domains,
+      get_server_tool_opt(config, :allowed_domains)
+    )
+    |> maybe_put_server_tool_opt(
+      :blocked_domains,
+      get_server_tool_opt(config, :blocked_domains)
+    )
+    |> maybe_put_server_tool_opt(:user_location, get_server_tool_opt(config, :user_location))
   end
 
-  defp get_web_search_option(config, key) do
+  # Builds a web fetch tool definition for Anthropic API.
+  #
+  # ## Parameters
+  #   * `config` - Map with optional keys:
+  #     * `:max_uses` - Integer limiting the number of fetches per request
+  #     * `:allowed_domains` - List of domains to include
+  #     * `:blocked_domains` - List of domains to exclude
+  #     * `:max_content_tokens` - Maximum content length in tokens
+  #     * `:citations` - Map with `:enabled` boolean
+  defp build_web_fetch_tool(config) when is_map(config) do
+    base_tool = %{
+      type: "web_fetch_20260209",
+      name: "web_fetch"
+    }
+
+    base_tool
+    |> maybe_put_server_tool_opt(:max_uses, get_server_tool_opt(config, :max_uses))
+    |> maybe_put_server_tool_opt(
+      :allowed_domains,
+      get_server_tool_opt(config, :allowed_domains)
+    )
+    |> maybe_put_server_tool_opt(
+      :blocked_domains,
+      get_server_tool_opt(config, :blocked_domains)
+    )
+    |> maybe_put_server_tool_opt(
+      :max_content_tokens,
+      get_server_tool_opt(config, :max_content_tokens)
+    )
+    |> maybe_put_server_tool_opt(:citations, get_server_tool_opt(config, :citations))
+  end
+
+  defp get_server_tool_opt(config, key) do
     Map.get(config, key) || Map.get(config, Atom.to_string(key))
   end
 
-  defp maybe_put_web_search(tool, _key, nil), do: tool
-  defp maybe_put_web_search(tool, key, value), do: Map.put(tool, key, value)
+  defp maybe_put_server_tool_opt(tool, _key, nil), do: tool
+  defp maybe_put_server_tool_opt(tool, key, value), do: Map.put(tool, key, value)
+
+  defp maybe_put_tool_usage(usage, tool, count) when is_number(count) and count > 0 do
+    tool_usage = Map.get(usage, :tool_usage) || Map.get(usage, "tool_usage") || %{}
+    updated_tool_usage = Map.merge(tool_usage, ReqLLM.Usage.Tool.build(tool, count))
+    Map.put(usage, :tool_usage, updated_tool_usage)
+  end
+
+  defp maybe_put_tool_usage(usage, _tool, _count), do: usage
 
   @doc """
   Maps reasoning effort levels to token budgets.

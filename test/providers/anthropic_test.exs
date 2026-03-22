@@ -100,6 +100,32 @@ defmodule ReqLLM.Providers.AnthropicTest do
       refute Map.has_key?(request.headers, "x-api-key")
     end
 
+    test "attach adds beta header for web_fetch server tool" do
+      {:ok, model} = ReqLLM.model("anthropic:claude-sonnet-4-5-20250929")
+
+      request =
+        Req.new()
+        |> Anthropic.attach(model, provider_options: [web_fetch: %{max_uses: 1}])
+
+      assert request.headers["anthropic-beta"] == ["tools-2024-05-16"]
+    end
+
+    test "attach_stream adds beta header for web_fetch server tool" do
+      {:ok, model} = ReqLLM.model("anthropic:claude-sonnet-4-5-20250929")
+      context = ReqLLM.Context.new([ReqLLM.Context.user("Fetch example.com")])
+
+      {:ok, finch_request} =
+        Anthropic.attach_stream(
+          model,
+          context,
+          [api_key: "anthropic-test-key", provider_options: [web_fetch: %{max_uses: 1}]],
+          nil
+        )
+
+      headers = Map.new(finch_request.headers)
+      assert headers["anthropic-beta"] == "tools-2024-05-16"
+    end
+
     test "error handling for invalid configurations" do
       {:ok, model} = ReqLLM.model("anthropic:claude-sonnet-4-5-20250929")
       prompt = "Hello world"
@@ -636,6 +662,22 @@ defmodule ReqLLM.Providers.AnthropicTest do
       assert usage["output_tokens"] == 20
     end
 
+    test "extract_usage includes web_fetch tool usage" do
+      {:ok, model} = ReqLLM.model("anthropic:claude-sonnet-4-5-20250929")
+
+      body_with_usage = %{
+        "usage" => %{
+          "input_tokens" => 10,
+          "output_tokens" => 20,
+          "server_tool_use" => %{"web_fetch_requests" => 2}
+        }
+      }
+
+      {:ok, usage} = Anthropic.extract_usage(body_with_usage, model)
+      assert usage[:tool_usage][:web_fetch][:count] == 2
+      assert usage[:tool_usage][:web_fetch][:unit] == :call
+    end
+
     test "extract_usage with missing usage data" do
       {:ok, model} = ReqLLM.model("anthropic:claude-sonnet-4-5-20250929")
       body_without_usage = %{"content" => []}
@@ -689,6 +731,149 @@ defmodule ReqLLM.Providers.AnthropicTest do
 
       refute Map.has_key?(formatted, :strict)
       assert formatted[:name] == "non_strict_tool"
+    end
+  end
+
+  describe "web fetch tool" do
+    test "encode_body with web_fetch configuration" do
+      {:ok, model} = ReqLLM.model("anthropic:claude-sonnet-4-6")
+      context = context_fixture()
+
+      mock_request = %Req.Request{
+        options: [
+          context: context,
+          model: model.model,
+          stream: false,
+          provider_options: [
+            web_fetch: %{
+              max_uses: 3,
+              allowed_domains: ["example.com", "docs.example.com"]
+            }
+          ]
+        ]
+      }
+
+      updated_request = Anthropic.encode_body(mock_request)
+      decoded = Jason.decode!(updated_request.body)
+
+      assert is_list(decoded["tools"])
+      assert length(decoded["tools"]) == 1
+
+      [web_fetch_tool] = decoded["tools"]
+      assert web_fetch_tool["type"] == "web_fetch_20260209"
+      assert web_fetch_tool["name"] == "web_fetch"
+      assert web_fetch_tool["max_uses"] == 3
+      assert web_fetch_tool["allowed_domains"] == ["example.com", "docs.example.com"]
+    end
+
+    test "encode_body with web_fetch citations and max_content_tokens" do
+      {:ok, model} = ReqLLM.model("anthropic:claude-sonnet-4-6")
+      context = context_fixture()
+
+      mock_request = %Req.Request{
+        options: [
+          context: context,
+          model: model.model,
+          stream: false,
+          provider_options: [
+            web_fetch: %{
+              max_content_tokens: 50_000,
+              citations: %{enabled: true}
+            }
+          ]
+        ]
+      }
+
+      updated_request = Anthropic.encode_body(mock_request)
+      decoded = Jason.decode!(updated_request.body)
+
+      [web_fetch_tool] = decoded["tools"]
+      assert web_fetch_tool["max_content_tokens"] == 50_000
+      assert web_fetch_tool["citations"] == %{"enabled" => true}
+    end
+
+    test "encode_body with web_fetch defaults (empty config)" do
+      {:ok, model} = ReqLLM.model("anthropic:claude-sonnet-4-6")
+      context = context_fixture()
+
+      mock_request = %Req.Request{
+        options: [
+          context: context,
+          model: model.model,
+          stream: false,
+          provider_options: [
+            web_fetch: %{}
+          ]
+        ]
+      }
+
+      updated_request = Anthropic.encode_body(mock_request)
+      decoded = Jason.decode!(updated_request.body)
+
+      [web_fetch_tool] = decoded["tools"]
+      assert web_fetch_tool["type"] == "web_fetch_20260209"
+      assert web_fetch_tool["name"] == "web_fetch"
+      refute Map.has_key?(web_fetch_tool, "max_uses")
+    end
+
+    test "encode_body with both regular tools and web_fetch" do
+      {:ok, model} = ReqLLM.model("anthropic:claude-sonnet-4-6")
+      context = context_fixture()
+
+      tool =
+        ReqLLM.Tool.new!(
+          name: "get_weather",
+          description: "Get weather",
+          parameter_schema: [location: [type: :string, required: true, doc: "City"]],
+          callback: fn _ -> {:ok, "sunny"} end
+        )
+
+      mock_request = %Req.Request{
+        options: [
+          context: context,
+          model: model.model,
+          stream: false,
+          tools: [tool],
+          provider_options: [
+            web_fetch: %{max_uses: 2}
+          ]
+        ]
+      }
+
+      updated_request = Anthropic.encode_body(mock_request)
+      decoded = Jason.decode!(updated_request.body)
+
+      assert length(decoded["tools"]) == 2
+      [regular_tool, web_fetch_tool] = decoded["tools"]
+      assert regular_tool["name"] == "get_weather"
+      assert web_fetch_tool["type"] == "web_fetch_20260209"
+      assert web_fetch_tool["name"] == "web_fetch"
+      assert web_fetch_tool["max_uses"] == 2
+    end
+
+    test "encode_body with web_fetch and web_search combined" do
+      {:ok, model} = ReqLLM.model("anthropic:claude-sonnet-4-6")
+      context = context_fixture()
+
+      mock_request = %Req.Request{
+        options: [
+          context: context,
+          model: model.model,
+          stream: false,
+          provider_options: [
+            web_search: %{max_uses: 5},
+            web_fetch: %{max_uses: 3}
+          ]
+        ]
+      }
+
+      updated_request = Anthropic.encode_body(mock_request)
+      decoded = Jason.decode!(updated_request.body)
+
+      assert length(decoded["tools"]) == 2
+      tool_types = Enum.map(decoded["tools"], & &1["type"])
+      assert "web_search_20250305" in tool_types
+      assert "web_fetch_20260209" in tool_types
     end
   end
 

@@ -1,0 +1,332 @@
+{
+  "model_spec": "anthropic:claude-sonnet-4-5-20250929",
+  "provider": "anthropic",
+  "request": {
+    "body": {
+      "b64": "eyJtYXhfdG9rZW5zIjo2NDAwMCwibWVzc2FnZXMiOlt7ImNvbnRlbnQiOiJGZXRjaCBodHRwczovL2V4YW1wbGUuY29tIGFuZCBzdW1tYXJpemUgd2hhdCB0aGUgcGFnZSBjb250YWlucy4iLCJyb2xlIjoidXNlciJ9XSwibW9kZWwiOiJjbGF1ZGUtc29ubmV0LTQtNS0yMDI1MDkyOSIsInN0cmVhbSI6ZmFsc2UsInRvb2xzIjpbeyJtYXhfdXNlcyI6MiwibmFtZSI6IndlYl9mZXRjaCIsInR5cGUiOiJ3ZWJfZmV0Y2hfMjAyNjAyMDkifV19"
+    },
+    "canonical_json": {
+      "max_tokens": 64000,
+      "messages": [
+        {
+          "content": "Fetch https://example.com and summarize what the page contains.",
+          "role": "user"
+        }
+      ],
+      "model": "claude-sonnet-4-5-20250929",
+      "stream": false,
+      "tools": [
+        {
+          "max_uses": 2,
+          "name": "web_fetch",
+          "type": "web_fetch_20260209"
+        }
+      ]
+    },
+    "headers": {
+      "accept-encoding": [
+        "gzip"
+      ],
+      "anthropic-version": [
+        "2023-06-01"
+      ],
+      "content-type": [
+        "application/json"
+      ],
+      "user-agent": [
+        "req/0.5.17"
+      ],
+      "x-api-key": "[REDACTED:x-api-key]"
+    },
+    "method": "post",
+    "url": "https://api.anthropic.com/v1/messages"
+  },
+  "response": {
+    "body": {
+      "container": {
+        "expires_at": "2026-03-17T02:10:35.592167Z",
+        "id": "container_011CZ7m5AiD6ixBTRXGbiWD2"
+      },
+      "content": [
+        {
+          "text": "I'll fetch the content from https://example.com and summarize it for you.",
+          "type": "text"
+        },
+        {
+          "caller": {
+            "type": "direct"
+          },
+          "id": "srvtoolu_01CBNKXXxubVoszhZN7ja1nw",
+          "input": {
+            "code": "\nimport json\n\n# Fetch the content from example.com\nresult = await web_fetch({\"url\": \"https://example.com\"})\nparsed = json.loads(result)\n\n# Print key information about the fetch\nprint(\"Fetch Type:\", parsed[0][\"type\"])\nprint(\"URL:\", parsed[0][\"url\"])\nprint(\"Title:\", parsed[0][\"title\"])\nprint(\"Content Type:\", parsed[0][\"content_type\"])\nprint(\"\\n--- Content ---\")\nprint(parsed[0][\"content\"])\n"
+          },
+          "name": "code_execution",
+          "type": "server_tool_use"
+        },
+        {
+          "caller": {
+            "tool_id": "srvtoolu_01CBNKXXxubVoszhZN7ja1nw",
+            "type": "code_execution_20260120"
+          },
+          "id": "srvtoolu_01AvSmkFK8bz1xvStY6whKNz",
+          "input": {
+            "url": "https://example.com"
+          },
+          "name": "web_fetch",
+          "type": "server_tool_use"
+        },
+        {
+          "caller": {
+            "tool_id": "srvtoolu_01CBNKXXxubVoszhZN7ja1nw",
+            "type": "code_execution_20260120"
+          },
+          "content": {
+            "content": {
+              "source": {
+                "data": "Example Domain\n\n# Example Domain\n\nThis domain is for use in documentation examples without needing permission. Avoid use in operations.\n\n[Learn more](https://iana.org/domains/example)",
+                "media_type": "text/plain",
+                "type": "text"
+              },
+              "title": "Example Domain",
+              "type": "document"
+            },
+            "retrieved_at": "2026-03-16T19:21:28.976000+00:00",
+            "type": "web_fetch_result",
+            "url": "https://example.com"
+          },
+          "tool_use_id": "srvtoolu_01AvSmkFK8bz1xvStY6whKNz",
+          "type": "web_fetch_tool_result"
+        },
+        {
+          "content": {
+            "abort_reason": null,
+            "content": [],
+            "return_code": 1,
+            "stderr": "Traceback (most recent call last):\n  File \"/usr/local/lib/python3.11/asyncio/runners.py\", line 190, in run\n    return runner.run(main)\n           ^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/asyncio/runners.py\", line 118, in run\n    return self._loop.run_until_complete(task)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/asyncio/base_events.py\", line 654, in run_until_complete\n    return future.result()\n           ^^^^^^^^^^^^^^^\n  File \"/tmp/srvtoolu_01CBNKXXxubVoszhZN7ja1nw/cell.py\", line 16, in <module>\n    print(\"Fetch Type:\", parsed[0][\"type\"])\n                         ~~~~~~^^^\nKeyError: 0\n",
+            "stdout": "",
+            "type": "code_execution_result"
+          },
+          "tool_use_id": "srvtoolu_01CBNKXXxubVoszhZN7ja1nw",
+          "type": "code_execution_tool_result"
+        },
+        {
+          "text": "Let me fix the code - the result structure is different:",
+          "type": "text"
+        },
+        {
+          "caller": {
+            "type": "direct"
+          },
+          "id": "srvtoolu_016mkptF6Ebx1XN5RBm3F6hx",
+          "input": {
+            "code": "\nimport json\n\n# Fetch the content from example.com\nresult = await web_fetch({\"url\": \"https://example.com\"})\nparsed = json.loads(result)\n\n# Check the structure first\nprint(\"Result type:\", type(parsed))\nif isinstance(parsed, list):\n    data = parsed[0]\nelse:\n    data = parsed\n\n# Print key information\nprint(\"\\nFetch Type:\", data.get(\"type\"))\nprint(\"URL:\", data.get(\"url\"))\nprint(\"Title:\", data.get(\"title\"))\nprint(\"Content Type:\", data.get(\"content_type\"))\nprint(\"\\n--- Content Preview ---\")\ncontent = data.get(\"content\", \"\")\nprint(content[:500] if len(content) > 500 else content)\n"
+          },
+          "name": "code_execution",
+          "type": "server_tool_use"
+        },
+        {
+          "caller": {
+            "tool_id": "srvtoolu_016mkptF6Ebx1XN5RBm3F6hx",
+            "type": "code_execution_20260120"
+          },
+          "id": "srvtoolu_015GppJik4pAdYyZE9QV4zBQ",
+          "input": {
+            "url": "https://example.com"
+          },
+          "name": "web_fetch",
+          "type": "server_tool_use"
+        },
+        {
+          "caller": {
+            "tool_id": "srvtoolu_016mkptF6Ebx1XN5RBm3F6hx",
+            "type": "code_execution_20260120"
+          },
+          "content": {
+            "content": {
+              "source": {
+                "data": "Example Domain\n\n# Example Domain\n\nThis domain is for use in documentation examples without needing permission. Avoid use in operations.\n\n[Learn more](https://iana.org/domains/example)",
+                "media_type": "text/plain",
+                "type": "text"
+              },
+              "title": "Example Domain",
+              "type": "document"
+            },
+            "retrieved_at": "2026-03-16T19:21:28.976000+00:00",
+            "type": "web_fetch_result",
+            "url": "https://example.com"
+          },
+          "tool_use_id": "srvtoolu_015GppJik4pAdYyZE9QV4zBQ",
+          "type": "web_fetch_tool_result"
+        },
+        {
+          "content": {
+            "abort_reason": null,
+            "content": [],
+            "return_code": 0,
+            "stderr": "",
+            "stdout": "Result type: <class 'dict'>\n\nFetch Type: web_fetch_result\nURL: https://example.com\nTitle: None\nContent Type: None\n\n--- Content Preview ---\n{'type': 'document', 'source': {'type': 'text', 'media_type': 'text/plain', 'data': 'Example Domain\\n\\n# Example Domain\\n\\nThis domain is for use in documentation examples without needing permission. Avoid use in operations.\\n\\n[Learn more](https://iana.org/domains/example)'}, 'title': 'Example Domain'}\n",
+            "type": "code_execution_result"
+          },
+          "tool_use_id": "srvtoolu_016mkptF6Ebx1XN5RBm3F6hx",
+          "type": "code_execution_tool_result"
+        },
+        {
+          "caller": {
+            "type": "direct"
+          },
+          "id": "srvtoolu_011BYf5gEUHWCDXzAdbqvsWT",
+          "input": {
+            "code": "\n# The content is actually a nested structure, let me parse it properly\ncontent_data = eval(data.get(\"content\", \"{}\"))\n\nprint(\"Page Title:\", content_data.get(\"title\"))\nprint(\"\\nPage Content:\")\nprint(content_data.get(\"source\", {}).get(\"data\"))\n"
+          },
+          "name": "code_execution",
+          "type": "server_tool_use"
+        },
+        {
+          "content": {
+            "abort_reason": null,
+            "content": [],
+            "return_code": 1,
+            "stderr": "Traceback (most recent call last):\n  File \"/tmp/srvtoolu_011BYf5gEUHWCDXzAdbqvsWT/cell.py\", line 10, in <module>\n    content_data = eval(data.get(\"content\", \"{}\"))\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: eval() arg 1 must be a string, bytes or code object\n",
+            "stdout": "",
+            "type": "code_execution_result"
+          },
+          "tool_use_id": "srvtoolu_011BYf5gEUHWCDXzAdbqvsWT",
+          "type": "code_execution_tool_result"
+        },
+        {
+          "caller": {
+            "type": "direct"
+          },
+          "id": "srvtoolu_01PWe3T4JkjnsFZ7NkZwgrnA",
+          "input": {
+            "code": "\n# Let me check the actual type of content\ncontent = data.get(\"content\")\nprint(\"Content type:\", type(content))\n\nif isinstance(content, dict):\n    print(\"\\nPage Title:\", content.get(\"title\"))\n    print(\"\\nPage Content:\")\n    print(content.get(\"source\", {}).get(\"data\"))\nelse:\n    print(\"\\nContent:\")\n    print(content)\n"
+          },
+          "name": "code_execution",
+          "type": "server_tool_use"
+        },
+        {
+          "content": {
+            "abort_reason": null,
+            "content": [],
+            "return_code": 0,
+            "stderr": "",
+            "stdout": "Content type: <class 'dict'>\n\nPage Title: Example Domain\n\nPage Content:\nExample Domain\n\n# Example Domain\n\nThis domain is for use in documentation examples without needing permission. Avoid use in operations.\n\n[Learn more](https://iana.org/domains/example)\n",
+            "type": "code_execution_result"
+          },
+          "tool_use_id": "srvtoolu_01PWe3T4JkjnsFZ7NkZwgrnA",
+          "type": "code_execution_tool_result"
+        },
+        {
+          "text": "## Summary of https://example.com\n\nThe page is **Example Domain**, which is a simple demonstration/placeholder website. Here's what it contains:\n\n**Content:**\n- **Title**: \"Example Domain\"\n- **Purpose**: This domain is specifically designed for use in documentation examples and testing purposes\n- **Key Message**: It explicitly states that this domain can be used in illustrative examples without requiring prior permission or coordination\n- **Warning**: It advises to avoid using this domain in operational contexts\n- **Link**: Includes a link to learn more at https://iana.org/domains/example (IANA - Internet Assigned Numbers Authority)\n\nThis is the well-known example.com domain managed by IANA, which serves as a standard placeholder domain for documentation, tutorials, and testing scenarios where you need a valid domain name but don't want to use a real one.",
+          "type": "text"
+        }
+      ],
+      "id": "msg_018QeVb57nUHs6KPcPU14hV9",
+      "model": "claude-sonnet-4-5-20250929",
+      "role": "assistant",
+      "stop_reason": "end_turn",
+      "stop_sequence": null,
+      "type": "message",
+      "usage": {
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 0,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "inference_geo": "not_available",
+        "input_tokens": 20894,
+        "output_tokens": 883,
+        "server_tool_use": {
+          "web_fetch_requests": 2,
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      }
+    },
+    "headers": {
+      "anthropic-organization-id": [
+        "e5562178-dbd2-4c6b-a1e2-1212defc26ae"
+      ],
+      "anthropic-ratelimit-input-tokens-limit": [
+        "800000"
+      ],
+      "anthropic-ratelimit-input-tokens-remaining": [
+        "795000"
+      ],
+      "anthropic-ratelimit-input-tokens-reset": [
+        "2026-03-17T01:10:37Z"
+      ],
+      "anthropic-ratelimit-output-tokens-limit": [
+        "160000"
+      ],
+      "anthropic-ratelimit-output-tokens-remaining": [
+        "160000"
+      ],
+      "anthropic-ratelimit-output-tokens-reset": [
+        "2026-03-17T01:10:41Z"
+      ],
+      "anthropic-ratelimit-requests-limit": [
+        "2000"
+      ],
+      "anthropic-ratelimit-requests-remaining": [
+        "1999"
+      ],
+      "anthropic-ratelimit-requests-reset": [
+        "2026-03-17T01:10:10Z"
+      ],
+      "anthropic-ratelimit-tokens-limit": [
+        "960000"
+      ],
+      "anthropic-ratelimit-tokens-remaining": [
+        "955000"
+      ],
+      "anthropic-ratelimit-tokens-reset": [
+        "2026-03-17T01:10:37Z"
+      ],
+      "cf-cache-status": [
+        "DYNAMIC"
+      ],
+      "cf-ray": [
+        "9dd81dc909a54fda-BOS"
+      ],
+      "connection": [
+        "keep-alive"
+      ],
+      "content-security-policy": [
+        "default-src 'none'; frame-ancestors 'none'"
+      ],
+      "content-type": [
+        "application/json"
+      ],
+      "date": [
+        "Tue, 17 Mar 2026 01:10:41 GMT"
+      ],
+      "request-id": [
+        "req_011CZ7m5AcFpFX4LiUNxp1HS"
+      ],
+      "server": [
+        "cloudflare"
+      ],
+      "server-timing": [
+        "proxy;dur=30898"
+      ],
+      "strict-transport-security": [
+        "max-age=31536000; includeSubDomains; preload"
+      ],
+      "transfer-encoding": [
+        "chunked"
+      ],
+      "vary": [
+        "Accept-Encoding"
+      ],
+      "x-envoy-upstream-service-time": [
+        "30897"
+      ],
+      "x-robots-tag": [
+        "none"
+      ]
+    },
+    "status": 200
+  }
+}

@@ -318,12 +318,20 @@ defmodule ReqLLM.Providers.Anthropic.Response do
       Map.get(server_tool_use, "web_search_requests") ||
         Map.get(server_tool_use, :web_search_requests)
 
-    if is_number(web_search) and web_search > 0 do
-      ReqLLM.Usage.Tool.build(:web_search, web_search)
-    else
-      %{}
-    end
+    web_fetch =
+      Map.get(server_tool_use, "web_fetch_requests") ||
+        Map.get(server_tool_use, :web_fetch_requests)
+
+    %{}
+    |> maybe_put_tool_usage(:web_search, web_search)
+    |> maybe_put_tool_usage(:web_fetch, web_fetch)
   end
+
+  defp maybe_put_tool_usage(tool_usage, tool, count) when is_number(count) and count > 0 do
+    Map.merge(tool_usage, ReqLLM.Usage.Tool.build(tool, count))
+  end
+
+  defp maybe_put_tool_usage(tool_usage, _tool, _count), do: tool_usage
 
   defp parse_finish_reason("stop"), do: :stop
   defp parse_finish_reason("max_tokens"), do: :length
