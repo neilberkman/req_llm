@@ -38,7 +38,6 @@ defmodule ReqLLM.Providers.GoogleImagesTest do
 
     assert get_in(body, ["generationConfig", "responseModalities"]) == nil
     assert get_in(body, ["generationConfig", "imageConfig", "aspectRatio"]) == "1:1"
-    assert get_in(body, ["generationConfig", "imageConfig", "outputMimeType"]) == "image/png"
     assert get_in(body, ["generationConfig", "candidateCount"]) == 2
 
     assert get_in(body, ["contents", Access.at(0), "parts", Access.at(0), "text"]) ==
@@ -86,32 +85,40 @@ defmodule ReqLLM.Providers.GoogleImagesTest do
     assert is_nil(body["generationConfig"])
   end
 
-  test "encode_body/1 maps alternate image output formats" do
-    context = %Context{
-      messages: [
-        %ReqLLM.Message{role: :user, content: "A cat in space"}
-      ]
-    }
+  test "prepare_request/4 normalizes image response modalities to Gemini enums" do
+    {:ok, model} = ReqLLM.model("google:gemini-2.5-flash-image")
 
-    request =
-      Req.new(url: "/models/gemini-2.0-flash-exp-image-generation:generateContent")
-      |> Req.Request.register_options([
-        :operation,
-        :model,
-        :output_format,
-        :context
-      ])
-      |> Req.Request.merge_options(
-        operation: :image,
-        model: "gemini-2.0-flash-exp-image-generation",
-        output_format: :webp,
-        context: context
+    {:ok, request} =
+      Google.prepare_request(
+        :image,
+        model,
+        "Generate an image",
+        response_modalities: ["Image"]
       )
 
     encoded = Google.encode_body(request)
     body = Jason.decode!(encoded.body)
 
-    assert get_in(body, ["generationConfig", "imageConfig", "outputMimeType"]) == "image/webp"
+    assert request.options[:response_modalities] == ["IMAGE"]
+    assert get_in(body, ["generationConfig", "responseModalities"]) == ["IMAGE"]
+  end
+
+  test "prepare_request/4 normalizes multiple image response modalities" do
+    {:ok, model} = ReqLLM.model("google:gemini-2.5-flash-image")
+
+    {:ok, request} =
+      Google.prepare_request(
+        :image,
+        model,
+        "Describe and draw something",
+        response_modalities: ["Text", "Image"]
+      )
+
+    encoded = Google.encode_body(request)
+    body = Jason.decode!(encoded.body)
+
+    assert request.options[:response_modalities] == ["TEXT", "IMAGE"]
+    assert get_in(body, ["generationConfig", "responseModalities"]) == ["TEXT", "IMAGE"]
   end
 
   test "decode_response/1 converts inlineData to ContentPart.image" do

@@ -18,6 +18,7 @@ defmodule ReqLLM.Providers.Google do
   - `cached_content` - Reference to cached content for 90% cost savings (see Context Caching below)
   - `dimensions` - Number of dimensions for embedding vectors
   - `task_type` - Task type for embeddings (e.g., RETRIEVAL_QUERY)
+  - `response_modalities` - Control output modalities for image generation (e.g., ["IMAGE"] for image-only)
 
   See `provider_schema/0` for the complete Google-specific schema and
   `ReqLLM.Provider.Options` for inherited OpenAI parameters.
@@ -130,6 +131,11 @@ defmodule ReqLLM.Providers.Google do
       default: false,
       doc:
         "Use x-goog-api-key header for authentication instead of URL query parameter. Required for OpenAI-compatible API proxies."
+    ],
+    response_modalities: [
+      type: {:list, {:in, ["TEXT", "IMAGE"]}},
+      doc:
+        "Control output modalities for image generation. List of \"TEXT\" and/or \"IMAGE\". Default is [\"TEXT\", \"IMAGE\"]. Use [\"IMAGE\"] for image-only responses."
     ]
   ]
 
@@ -675,6 +681,7 @@ defmodule ReqLLM.Providers.Google do
     {provider_opts, rest} = Keyword.pop(opts, :provider_options, [])
 
     {effort, provider_opts} = Keyword.pop(provider_opts, :reasoning_effort)
+    provider_opts = normalize_response_modalities(provider_opts)
 
     provider_opts =
       case effort do
@@ -698,6 +705,31 @@ defmodule ReqLLM.Providers.Google do
 
     {Keyword.put(rest, :provider_options, provider_opts), []}
   end
+
+  defp normalize_response_modalities(provider_opts) do
+    case Keyword.fetch(provider_opts, :response_modalities) do
+      {:ok, modalities} when is_list(modalities) ->
+        normalized = Enum.map(modalities, &normalize_response_modality/1)
+        Keyword.put(provider_opts, :response_modalities, normalized)
+
+      _ ->
+        provider_opts
+    end
+  end
+
+  defp normalize_response_modality(modality) when is_atom(modality) do
+    modality
+    |> Atom.to_string()
+    |> normalize_response_modality()
+  end
+
+  defp normalize_response_modality(modality) when is_binary(modality) do
+    modality
+    |> String.trim()
+    |> String.upcase()
+  end
+
+  defp normalize_response_modality(modality), do: modality
 
   defp translate_reasoning_effort_to_budget(:none, _model), do: 0
   defp translate_reasoning_effort_to_budget(:minimal, _model), do: 2_048
@@ -828,7 +860,7 @@ defmodule ReqLLM.Providers.Google do
     generation_config =
       %{}
       |> maybe_put_google_aspect_ratio(request.options[:aspect_ratio])
-      |> maybe_put_google_output_format(request.options[:output_format])
+      |> maybe_put_google_response_modalities(request.options[:response_modalities])
       |> maybe_put(:candidateCount, image_candidate_count(request.options))
 
     generation_config = if generation_config != %{}, do: generation_config
@@ -868,32 +900,13 @@ defmodule ReqLLM.Providers.Google do
 
   defp maybe_put_google_aspect_ratio(config, _), do: config
 
-  defp maybe_put_google_output_format(config, nil), do: config
+  defp maybe_put_google_response_modalities(config, nil), do: config
 
-  defp maybe_put_google_output_format(config, format) do
-    case google_image_output_mime_type(format) do
-      nil ->
-        config
-
-      mime_type ->
-        Map.put(
-          config,
-          "imageConfig",
-          Map.put(Map.get(config, "imageConfig", %{}), "outputMimeType", mime_type)
-        )
-    end
+  defp maybe_put_google_response_modalities(config, modalities) when is_list(modalities) do
+    Map.put(config, "responseModalities", modalities)
   end
 
-  defp google_image_output_mime_type(:png), do: "image/png"
-  defp google_image_output_mime_type(:jpeg), do: "image/jpeg"
-  defp google_image_output_mime_type(:webp), do: "image/webp"
-  defp google_image_output_mime_type("png"), do: "image/png"
-  defp google_image_output_mime_type("jpeg"), do: "image/jpeg"
-  defp google_image_output_mime_type("webp"), do: "image/webp"
-  defp google_image_output_mime_type("image/png"), do: "image/png"
-  defp google_image_output_mime_type("image/jpeg"), do: "image/jpeg"
-  defp google_image_output_mime_type("image/webp"), do: "image/webp"
-  defp google_image_output_mime_type(_), do: nil
+  defp maybe_put_google_response_modalities(config, _), do: config
 
   defp parse_size(size) when is_binary(size) do
     case String.split(size, "x") do
