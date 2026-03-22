@@ -839,13 +839,18 @@ defmodule ReqLLM.Provider.Defaults do
   defp encode_openai_content(content) when is_list(content) do
     content
     |> Enum.map(&encode_openai_content_part/1)
-    |> maybe_flatten_single_text()
+    |> normalize_encoded_content()
   end
 
-  defp maybe_flatten_single_text(content) do
+  # Normalize encoded content parts: reject nils, flatten single text blocks,
+  # and collapse empty arrays to "" (vLLM/strict OpenAI rejects "content": []).
+  defp normalize_encoded_content(content) do
     filtered = Enum.reject(content, &is_nil/1)
 
     case filtered do
+      [] ->
+        ""
+
       [%{type: "text", text: text} = block] ->
         if map_size(block) == 2, do: text, else: [block]
 
@@ -918,6 +923,10 @@ defmodule ReqLLM.Provider.Defaults do
       }
     }
   end
+
+  # Reasoning model artifacts (e.g. chain-of-thought) — strip from OpenAI encoding
+  # since the format has no standard representation for thinking content.
+  defp encode_openai_content_part(%ReqLLM.Message.ContentPart{type: :thinking}), do: nil
 
   defp encode_openai_content_part(_), do: nil
 

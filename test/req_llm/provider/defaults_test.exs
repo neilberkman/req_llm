@@ -228,7 +228,7 @@ defmodule ReqLLM.Provider.DefaultsTest do
         messages: [
           %{
             role: "assistant",
-            content: [],
+            content: "",
             tool_calls: [
               %{
                 id: "call_123",
@@ -295,6 +295,58 @@ defmodule ReqLLM.Provider.DefaultsTest do
       [encoded_message] = result.messages
 
       refute Map.has_key?(encoded_message, :reasoning_details)
+    end
+
+    test "strips :thinking content parts from encoding" do
+      message = %Message{
+        role: :assistant,
+        content: [
+          %ContentPart{type: :thinking, text: "Let me reason about this..."},
+          %ContentPart{type: :text, text: "Here is the answer."}
+        ]
+      }
+
+      context = %Context{messages: [message]}
+      result = Defaults.encode_context_to_openai_format(context, "gpt-4")
+
+      [encoded_message] = result.messages
+      # :thinking part stripped, single text part flattened to string
+      assert encoded_message.content == "Here is the answer."
+    end
+
+    test "collapses to empty string when all content parts are :thinking" do
+      message = %Message{
+        role: :assistant,
+        content: [
+          %ContentPart{type: :thinking, text: "Internal chain-of-thought"}
+        ],
+        tool_calls: [
+          %{
+            id: "call_abc",
+            type: "function",
+            function: %{name: "get_weather", arguments: ~s({"city":"NYC"})}
+          }
+        ]
+      }
+
+      context = %Context{messages: [message]}
+      result = Defaults.encode_context_to_openai_format(context, "gpt-4")
+
+      [encoded_message] = result.messages
+      # All parts filtered → empty array collapsed to ""
+      assert encoded_message.content == ""
+      # Tool calls still present
+      assert length(encoded_message.tool_calls) == 1
+    end
+
+    test "collapses empty content list to empty string" do
+      message = %Message{role: :assistant, content: []}
+
+      context = %Context{messages: [message]}
+      result = Defaults.encode_context_to_openai_format(context, "gpt-4")
+
+      [encoded_message] = result.messages
+      assert encoded_message.content == ""
     end
   end
 
