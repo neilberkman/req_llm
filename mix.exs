@@ -19,7 +19,7 @@ defmodule ReqLLM.MixProject do
 
       # Dialyzer configuration
       dialyzer: [
-        plt_add_apps: [:mix],
+        plt_add_apps: [:mix, :llm_db],
         exclude_paths: ["test/support"]
       ],
 
@@ -185,6 +185,7 @@ defmodule ReqLLM.MixProject do
   def application do
     [
       extra_applications: [:logger, :xmerl],
+      included_applications: [:llm_db],
       mod: {ReqLLM.Application, []}
     ]
   end
