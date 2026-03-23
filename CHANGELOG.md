@@ -9,6 +9,97 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog -->
 
+## [v1.8.0](https://github.com/agentjido/req_llm/compare/v1.7.1...v1.8.0) (2026-03-23)
+
+
+
+
+### Features:
+
+* add web_fetch server tool support by Tonyhaenn
+
+* add oauth-backed OpenAI Codex routing (#513) by l3wi
+
+* openai: add oauth-backed codex routing by l3wi
+
+* add native request and reasoning telemetry (#515) by mikehostetler
+
+* add native request and reasoning telemetry by mikehostetler
+
+* add cross-provider tool call ID compatibility (#417) by mikehostetler
+
+* add cross-provider tool call id compatibility by mikehostetler
+
+### Bug Fixes:
+
+* honor req_llm load_dotenv when starting llm_db (#536) by mikehostetler
+
+* honor req_llm load_dotenv when starting llm_db by mikehostetler
+
+* include llm_db in dialyzer plt apps by mikehostetler
+
+* openai: validate nested object schemas with string keys (#533) by dl-alexandre
+
+* bedrock: filter empty text blocks in Converse (#534) by Julian Scheid
+
+* schema: preserve doc option in nested {:map, opts} fields (#532) by dl-alexandre
+
+* retry transient streaming transport failures (#531) by mikehostetler
+
+* preserve google embedding usage metadata (#530) by mikehostetler
+
+* break azure anthropic xref cycle (#529) by mikehostetler
+
+* make livebook validation deterministic by dl-alexandre
+
+* format livebook parse errors from metadata by dl-alexandre
+
+* remove unsupported outputMimeType and add response_modalities foâ¦ (#517) by mrdotb
+
+* remove unsupported outputMimeType and add response_modalities for Google images by mrdotb
+
+* normalize Gemini response modalities by mrdotb
+
+* gate Anthropic server tools behind beta headers by Tonyhaenn
+
+* default Codex streaming auth to oauth by l3wi
+
+* merge consecutive same-role entries in Gemini message encoding (#525) by paulorumor
+
+* prevent Inspect.ReqLLM.Context crash on Logger depth truncation (#519) by Edgar Gomes
+
+* azure: add Grok to known model families (#518) by shelvick
+
+* azure: add Grok to known model families by shelvick
+
+* azure: add Grok to OpenAI-compatible prefix lists and add reasoning_token_budget by shelvick
+
+* support image content in Bedrock tool results (#516) by Julian Scheid
+
+* OpenAI content encoding for thinking parts and empty arrays (#428) by laudney
+
+* restore telemetry raw payload capture (#520) by mikehostetler
+
+* restore telemetry raw payload capture by mikehostetler
+
+* resolve CI regressions for telemetry by mikehostetler
+
+* harden telemetry reasoning normalization by mikehostetler
+
+* update tool call IDs and timestamps in compatibility JSON fixtures by mikehostetler
+
+* accept map-based vertex model metadata by mikehostetler
+
+* google: strip atom-keyed forbidden schema fields (#504) by pcharbon70
+
+* remove impossible role == :tool checks (#508) by Barna Kovacs
+
+* remove redundant fallback for reasoning tokens in normalize (#507) by Barna Kovacs
+
+### Refactoring:
+
+* only inherit llm_db load_dotenv when unset by mikehostetler
+
 ## [v1.7.1](https://github.com/agentjido/req_llm/compare/v1.7.0...v1.7.1) (2026-03-14)
 
 
