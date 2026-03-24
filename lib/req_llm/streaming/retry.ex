@@ -5,6 +5,8 @@ defmodule ReqLLM.Streaming.Retry do
   Streaming retries are intentionally conservative: only transient transport
   failures that happen before any response body data is emitted are retried.
   This avoids duplicating partial model output when a stream has already begun.
+
+  Also handles 429 rate limit errors with retry-after header support.
   """
 
   require Logger
@@ -42,14 +44,57 @@ defmodule ReqLLM.Streaming.Retry do
          max_retries,
          attempt
        ) do
-    initial_acc = %{callback_acc: acc, data_received?: false}
+    initial_acc = %{
+      callback_acc: acc,
+      data_received?: false,
+      status: nil,
+      headers: [],
+      error_body: []
+    }
+
     wrapped_callback = fn event, wrapped_acc -> apply_callback(event, wrapped_acc, callback) end
 
     case stream_fun.(request, finch_name, initial_acc, wrapped_callback, stream_opts) do
+      {:ok, %{status: 429} = state} when attempt < max_retries ->
+        maybe_retry(
+          request,
+          finch_name,
+          acc,
+          callback,
+          stream_opts,
+          stream_fun,
+          max_retries,
+          attempt,
+          state.callback_acc,
+          :rate_limited,
+          state
+        )
+
+      {:ok, %{status: 429} = state} ->
+        deliver_rate_limit_failure(state, callback)
+
       {:ok, %{callback_acc: callback_acc}} ->
         {:ok, callback_acc}
 
-      {:error, reason, %{data_received?: false, callback_acc: callback_acc}}
+      {:error, reason, %{status: 429} = state} when attempt < max_retries ->
+        maybe_retry(
+          request,
+          finch_name,
+          acc,
+          callback,
+          stream_opts,
+          stream_fun,
+          max_retries,
+          attempt,
+          state.callback_acc,
+          reason,
+          state
+        )
+
+      {:error, _reason, %{status: 429} = state} ->
+        deliver_rate_limit_failure(state, callback)
+
+      {:error, reason, %{data_received?: false, callback_acc: callback_acc} = state}
       when attempt < max_retries ->
         maybe_retry(
           request,
@@ -61,7 +106,8 @@ defmodule ReqLLM.Streaming.Retry do
           max_retries,
           attempt,
           callback_acc,
-          reason
+          reason,
+          state
         )
 
       {:error, reason, %{callback_acc: callback_acc}} ->
@@ -79,48 +125,185 @@ defmodule ReqLLM.Streaming.Retry do
          max_retries,
          attempt,
          callback_acc,
-         reason
+         reason,
+         state
        ) do
-    if retryable_reason?(reason) do
-      log_retry(reason, attempt + 1, max_retries)
+    case classify_error(reason, state) do
+      {:retry, delay_ms} ->
+        log_retry(reason, attempt + 1, max_retries, delay_ms)
 
-      do_stream(
-        request,
-        finch_name,
-        acc,
-        callback,
-        stream_opts,
-        stream_fun,
-        max_retries,
-        attempt + 1
-      )
-    else
-      {:error, reason, callback_acc}
+        if delay_ms > 0 do
+          Process.sleep(delay_ms)
+        end
+
+        do_stream(
+          request,
+          finch_name,
+          acc,
+          callback,
+          stream_opts,
+          stream_fun,
+          max_retries,
+          attempt + 1
+        )
+
+      :no_retry ->
+        {:error, reason, callback_acc}
     end
+  end
+
+  defp apply_callback({:status, 429}, wrapped_acc, _callback) do
+    %{wrapped_acc | status: 429}
+  end
+
+  defp apply_callback({:status, status}, %{callback_acc: callback_acc} = wrapped_acc, callback) do
+    new_acc = callback.({:status, status}, callback_acc)
+    %{wrapped_acc | callback_acc: new_acc, status: status}
+  end
+
+  defp apply_callback({:headers, headers}, %{status: 429} = wrapped_acc, _callback) do
+    %{wrapped_acc | headers: headers}
+  end
+
+  defp apply_callback({:headers, headers}, %{callback_acc: callback_acc} = wrapped_acc, callback) do
+    new_acc = callback.({:headers, headers}, callback_acc)
+    %{wrapped_acc | callback_acc: new_acc, headers: headers}
+  end
+
+  defp apply_callback(
+         {:data, chunk},
+         %{status: 429, error_body: error_body} = wrapped_acc,
+         _callback
+       ) do
+    %{wrapped_acc | error_body: [chunk | error_body]}
   end
 
   defp apply_callback({:data, _} = event, %{callback_acc: callback_acc} = wrapped_acc, callback) do
     %{wrapped_acc | callback_acc: callback.(event, callback_acc), data_received?: true}
   end
 
+  defp apply_callback(:done, %{status: 429} = wrapped_acc, _callback) do
+    wrapped_acc
+  end
+
   defp apply_callback(event, %{callback_acc: callback_acc} = wrapped_acc, callback) do
     %{wrapped_acc | callback_acc: callback.(event, callback_acc)}
   end
 
-  defp retryable_reason?(%Mint.TransportError{reason: reason}) when reason in @retryable_reasons,
-    do: true
+  defp classify_error(%Mint.TransportError{reason: reason}, _state)
+       when reason in @retryable_reasons,
+       do: {:retry, 0}
 
-  defp retryable_reason?(%Req.TransportError{reason: reason}) when reason in @retryable_reasons,
-    do: true
+  defp classify_error(%Req.TransportError{reason: reason}, _state)
+       when reason in @retryable_reasons,
+       do: {:retry, 0}
 
-  defp retryable_reason?(_reason), do: false
+  defp classify_error(_reason, %{status: 429} = state) do
+    {:retry, extract_retry_after_delay(state.headers)}
+  end
 
-  defp log_retry(reason, attempt, max_retries) do
-    Logger.warning(
-      "Retrying streaming request after transient transport error",
-      reason: inspect(reason),
-      attempt: attempt,
-      max_retries: max_retries
+  defp classify_error(_reason, _state) do
+    :no_retry
+  end
+
+  defp extract_retry_after_delay(headers) when is_list(headers) do
+    retry_after =
+      Enum.find_value(headers, fn
+        {name, value} when is_binary(name) or is_list(name) ->
+          name_str = if is_list(name), do: List.first(name), else: name
+
+          if String.downcase(name_str) == "retry-after" do
+            if is_list(value), do: List.first(value), else: value
+          else
+            nil
+          end
+
+        _ ->
+          nil
+      end)
+
+    case retry_after do
+      nil ->
+        1000
+
+      value when is_binary(value) ->
+        case Integer.parse(value) do
+          {seconds, _} -> seconds * 1000
+          :error -> 1000
+        end
+
+      value when is_integer(value) and value > 0 ->
+        value * 1000
+
+      _ ->
+        1000
+    end
+  end
+
+  defp extract_retry_after_delay(_), do: 1000
+
+  defp deliver_rate_limit_failure(state, callback) do
+    callback_acc =
+      callback.({:status, 429}, state.callback_acc)
+      |> maybe_emit_headers(callback, state.headers)
+
+    {:error, build_rate_limit_error(state), callback_acc}
+  end
+
+  defp maybe_emit_headers(callback_acc, _callback, []), do: callback_acc
+
+  defp maybe_emit_headers(callback_acc, callback, headers) do
+    callback.({:headers, headers}, callback_acc)
+  end
+
+  defp build_rate_limit_error(state) do
+    response_body =
+      state.error_body
+      |> Enum.reverse()
+      |> IO.iodata_to_binary()
+      |> decode_rate_limit_body()
+
+    reason =
+      case response_body do
+        %{"error" => %{"message" => message}} when is_binary(message) and message != "" -> message
+        %{"message" => message} when is_binary(message) and message != "" -> message
+        body when is_binary(body) and body != "" -> body
+        _ -> "HTTP 429"
+      end
+
+    ReqLLM.Error.API.Request.exception(
+      reason: reason,
+      status: 429,
+      response_body: response_body,
+      headers: state.headers
     )
+  end
+
+  defp decode_rate_limit_body(""), do: ""
+
+  defp decode_rate_limit_body(body) when is_binary(body) do
+    case Jason.decode(body) do
+      {:ok, decoded} -> decoded
+      {:error, _} -> body
+    end
+  end
+
+  defp log_retry(reason, attempt, max_retries, delay_ms) do
+    if delay_ms > 0 do
+      Logger.warning(
+        "Retrying streaming request after rate limit (429), waiting #{delay_ms}ms",
+        reason: inspect(reason),
+        attempt: attempt,
+        max_retries: max_retries,
+        delay_ms: delay_ms
+      )
+    else
+      Logger.warning(
+        "Retrying streaming request after transient transport error",
+        reason: inspect(reason),
+        attempt: attempt,
+        max_retries: max_retries
+      )
+    end
   end
 end
