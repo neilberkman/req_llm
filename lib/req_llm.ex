@@ -571,20 +571,13 @@ defmodule ReqLLM do
     end
   end
 
+  defp resolve_provider_model_fallback(:mistral, model_id, _original_error) do
+    model(mistral_inline_model_attrs(model_id))
+  end
+
   defp resolve_provider_model_fallback(provider, model_id, _original_error) do
     with {:ok, _provider_module} <- ReqLLM.provider(provider) do
-      IO.warn("""
-      Using unverified model: #{provider}:#{model_id}
-
-      This model is not in the LLMDB catalog. While it will work if the provider \
-      supports this model ID, some features like pricing, token counting, and \
-      capability detection may be unavailable.
-
-      To suppress this warning, use an inline model spec:
-
-          ReqLLM.model(%{provider: :#{provider}, id: "#{model_id}"})
-      """)
-
+      warn_unverified_model(provider, model_id)
       model(%{provider: provider, id: model_id})
     else
       {:error, _} ->
@@ -595,6 +588,20 @@ defmodule ReqLLM do
              "Provider :#{provider} is not available. Ensure the provider is properly configured or use an inline model spec."
          )}
     end
+  end
+
+  defp warn_unverified_model(provider, model_id) do
+    IO.warn("""
+    Using unverified model: #{provider}:#{model_id}
+
+    This model is not in the LLMDB catalog. While it will work if the provider \
+    supports this model ID, some features like pricing, token counting, and \
+    capability detection may be unavailable.
+
+    To suppress this warning, use an inline model spec:
+
+        ReqLLM.model(%{provider: :#{provider}, id: "#{model_id}"})
+    """)
   end
 
   defp provider_atom_from_string(provider_name) when is_binary(provider_name) do
@@ -623,6 +630,28 @@ defmodule ReqLLM do
       true ->
         Map.put(extra, :wire, %{protocol: protocol})
     end
+  end
+
+  defp mistral_inline_model_attrs(model_id) do
+    base_attrs = %{
+      provider: :mistral,
+      id: model_id,
+      model: model_id,
+      provider_model_id: model_id
+    }
+
+    if mistral_embedding_model?(model_id) do
+      Map.put(base_attrs, :capabilities, %{embeddings: true})
+    else
+      Map.merge(base_attrs, %{
+        capabilities: %{chat: true, tools: %{enabled: true}},
+        extra: %{wire: %{protocol: "openai_chat"}}
+      })
+    end
+  end
+
+  defp mistral_embedding_model?(model_id) when is_binary(model_id) do
+    String.contains?(model_id, "embed")
   end
 
   defp normalize_inline_model_attrs(attrs) do
