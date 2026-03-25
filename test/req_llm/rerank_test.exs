@@ -38,7 +38,7 @@ defmodule ReqLLM.RerankTest do
   describe "validate_model/1" do
     test "accepts inline rerank models outside the catalog" do
       assert {:ok, %LLMDB.Model{provider: :cohere, id: "rerank-v3.5"}} =
-               Rerank.validate_model("cohere:rerank-v3.5")
+               Rerank.validate_model(%{provider: :cohere, id: "rerank-v3.5"})
     end
 
     test "rejects non-rerank models" do
@@ -112,7 +112,7 @@ defmodule ReqLLM.RerankTest do
     test "returns reranked results with original documents attached" do
       {:ok, response} =
         Rerank.rerank(
-          "cohere:rerank-v3.5",
+          %{provider: :cohere, id: "rerank-v3.5"},
           query: "capital of the United States?",
           documents: ["Carson City", "Washington, D.C.", "Saipan"],
           top_n: 2,
@@ -140,7 +140,7 @@ defmodule ReqLLM.RerankTest do
     test "merges batched rankings into a single global result set" do
       {:ok, response} =
         Rerank.rerank(
-          "cohere:rerank-v3.5",
+          %{provider: :cohere, id: "rerank-v3.5"},
           query: "best docs",
           documents: ["Doc 1", "Doc 2", "Doc 3", "Doc 4"],
           batch_size: 2,
@@ -165,7 +165,7 @@ defmodule ReqLLM.RerankTest do
     test "rejects invalid batch_size values" do
       assert {:error, error} =
                Rerank.rerank(
-                 "cohere:rerank-v3.5",
+                 %{provider: :cohere, id: "rerank-v3.5"},
                  query: "x",
                  documents: ["Doc 1"],
                  batch_size: 0
@@ -177,7 +177,7 @@ defmodule ReqLLM.RerankTest do
     test "emits usage telemetry for successful rerank requests" do
       assert {:ok, response} =
                Rerank.rerank(
-                 "cohere:rerank-v3.5",
+                 %{provider: :cohere, id: "rerank-v3.5"},
                  query: "capital of the United States?",
                  documents: ["Carson City", "Washington, D.C.", "Saipan"],
                  top_n: 2,
