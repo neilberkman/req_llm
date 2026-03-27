@@ -1194,7 +1194,7 @@ defmodule ReqLLM.Providers.OpenAI.ResponsesAPI do
       metadata: %{response_id: body["id"]}
     }
 
-    {object, object_meta} = maybe_extract_object(req, text) || {nil, %{}}
+    {object, object_meta} = maybe_extract_object(req, text, tool_calls) || {nil, %{}}
 
     base_provider_meta = Map.drop(body, ["id", "model", "output_text", "output", "usage"])
     provider_meta = Map.merge(base_provider_meta, object_meta)
@@ -1220,31 +1220,50 @@ defmodule ReqLLM.Providers.OpenAI.ResponsesAPI do
     {req, %{resp | body: merged_response}}
   end
 
-  # Extract and validate structured object from json_schema responses
-  defp maybe_extract_object(req, text) do
-    case {req.options[:operation], text} do
-      {:object, text} when is_binary(text) and text != "" ->
+  defp maybe_extract_object(req, text, tool_calls) do
+    case req.options[:operation] do
+      :object ->
         compiled_schema = req.options[:compiled_schema]
 
-        case ReqLLM.JSON.decode(text, req.options) do
+        case extract_object_payload(text, tool_calls, req.options) do
           {:ok, parsed_object} when is_map(parsed_object) ->
             case validate_object(parsed_object, compiled_schema) do
               {:ok, _} -> {parsed_object, %{}}
               {:error, reason} -> {nil, %{object_parse_error: reason}}
             end
 
-          {:error, _} ->
-            {nil, %{object_parse_error: :invalid_json}}
-
-          _ ->
+          {:ok, _} ->
             {nil, %{object_parse_error: :not_an_object}}
-        end
 
-      {:object, _} ->
-        {nil, %{}}
+          {:error, reason} ->
+            {nil, %{object_parse_error: reason}}
+
+          :none ->
+            {nil, %{}}
+        end
 
       _ ->
         nil
+    end
+  end
+
+  defp extract_object_payload(text, _tool_calls, opts) when is_binary(text) and text != "" do
+    case ReqLLM.JSON.decode(text, opts) do
+      {:ok, parsed_object} -> {:ok, parsed_object}
+      {:error, _} -> {:error, :invalid_json}
+    end
+  end
+
+  defp extract_object_payload(_text, tool_calls, opts) do
+    case Enum.find(tool_calls, &ReqLLM.ToolCall.matches_name?(&1, "structured_output")) do
+      nil ->
+        :none
+
+      tool_call ->
+        case ReqLLM.ToolCall.args_map(tool_call, opts) do
+          nil -> {:error, :invalid_json}
+          parsed_object -> {:ok, parsed_object}
+        end
     end
   end
 
