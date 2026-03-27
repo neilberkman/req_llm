@@ -9,6 +9,103 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog -->
 
+## [v1.9.0](https://github.com/agentjido/req_llm/compare/v1.8.0...v1.9.0) (2026-03-27)
+
+
+
+
+### Features:
+
+* add mistral provider (#554) by mikehostetler
+
+* add `thinkingLevel` support to Google provider (#565) by Tom Taylor
+
+* add `thinkingLevel` support to Google provider by Tom Taylor
+
+* add `finch_request_adapter` config to modify streaming requests (#566) by johantell
+
+* add FinchRequestAdapter for config-level streaming request transforms by johantell
+
+* add OpenAI websocket streaming and realtime support (#559) by mikehostetler
+
+* allow unknown models with warnings instead of errors (#561) by dl-alexandre
+
+* add reranking API with batch processing (#553) by mikehostetler
+
+* add OpenTelemetry bridge and telemetry stubs (#548) by mikehostetler
+
+* add video URL message support (#549) by mikehostetler
+
+* support Anthropic native tool options (#547) by mikehostetler
+
+* support Anthropic native tool options by mikehostetler
+
+* add Google Imagen image generation support (#550) by mikehostetler
+
+* generation: repair lightly malformed structured JSON (#543) by mikehostetler
+
+* add available model discovery (#544) by mikehostetler
+
+* add application-layer cache hooks (#541) by mikehostetler
+
+* generation: add application cache hooks by mikehostetler
+
+* rate limit retry (429) and custom headers for streaming (#537) by dl-alexandre
+
+* pass custom headers to Finch streaming requests by dl-alexandre
+
+* Add Deepseek support (#538) by Luis Ezcurdia
+
+### Bug Fixes:
+
+* openai: retrieve structured output from tool call (#572) by Robin Verton
+
+* openai: retrieve structured output from tool call by Robin Verton
+
+* openai: validate tool-call structured output by Robin Verton
+
+* track google thinking levels in telemetry by Tom Taylor
+
+* restore streaming fixture recording functionality (#560) by dl-alexandre
+
+* add Google long-context pricing tiers (#546) by mikehostetler
+
+* Allow model specific base_url for streaming responses (#562) by meanderingstream
+
+* Support json schema usage for gemini 3.1 (#563) by Akash Khan
+
+* preserve Anthropic tool formatter shape by mikehostetler
+
+* default GPT-4o models to OpenAI Responses API (#552) by mikehostetler
+
+* zero app-cache usage on response hits (#542) by mikehostetler
+
+* usage: zero app cache hit usage by mikehostetler
+
+* remove dead cache provider meta fallback by mikehostetler
+
+* support multiple system messages (#545) by mikehostetler
+
+* register azure request options from defaults by mikehostetler
+
+* schema: preserve doc option in nested {:map, opts} fields by dl-alexandre
+
+* openai: validate nested object schemas with string keys by dl-alexandre
+
+* streaming retry accumulator and 429 detection bugs by dl-alexandre
+
+* streaming: retry 429 responses and honor map headers by dl-alexandre
+
+* streaming: resolve 429 retry dialyzer warning by dl-alexandre
+
+* streaming: restore 429 failure callback order by dl-alexandre
+
+* bedrock: drop empty messages in Converse encoder (#540) by Julian Scheid
+
+### Refactoring:
+
+* simplify transient streaming logs by mikehostetler
+
 ## [v1.8.0](https://github.com/agentjido/req_llm/compare/v1.7.1...v1.8.0) (2026-03-23)
 
 
