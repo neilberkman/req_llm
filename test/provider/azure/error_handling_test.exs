@@ -96,7 +96,7 @@ defmodule ReqLLM.Providers.Azure.ErrorHandlingTest do
     end
 
     test "handles successful response with missing expected fields gracefully" do
-      {:ok, model} = ReqLLM.model("azure:gpt-4o")
+      model = traditional_openai_model()
       context = ReqLLM.Context.new([ReqLLM.Context.user("Hello")])
 
       request =
@@ -529,5 +529,14 @@ defmodule ReqLLM.Providers.Azure.ErrorHandlingTest do
       assert %ReqLLM.Error.API.Response{} = result
       assert result.status == 504
     end
+  end
+
+  defp traditional_openai_model do
+    %LLMDB.Model{
+      id: "gpt-4o",
+      provider: :azure,
+      capabilities: %{chat: true},
+      extra: %{}
+    }
   end
 end

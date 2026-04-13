@@ -15,7 +15,7 @@ defmodule ReqLLM.Providers.Azure.StreamingTest do
 
   describe "decode_stream_event/2" do
     test "decodes OpenAI SSE event for GPT models" do
-      {:ok, model} = ReqLLM.model("azure:gpt-4o")
+      model = traditional_openai_model()
 
       event = %{
         data: %{
@@ -39,7 +39,7 @@ defmodule ReqLLM.Providers.Azure.StreamingTest do
     end
 
     test "handles [DONE] event for OpenAI models" do
-      {:ok, model} = ReqLLM.model("azure:gpt-4o")
+      model = traditional_openai_model()
 
       event = %{data: "[DONE]"}
 
@@ -93,14 +93,14 @@ defmodule ReqLLM.Providers.Azure.StreamingTest do
 
   describe "streaming error handling" do
     test "OpenAI: empty event data returns empty list" do
-      {:ok, model} = ReqLLM.model("azure:gpt-4o")
+      model = traditional_openai_model()
 
       assert Azure.decode_stream_event(%{data: %{}}, model) == []
       assert Azure.decode_stream_event(%{}, model) == []
     end
 
     test "OpenAI: non-map event data returns empty list" do
-      {:ok, model} = ReqLLM.model("azure:gpt-4o")
+      model = traditional_openai_model()
 
       assert Azure.decode_stream_event("invalid", model) == []
       assert Azure.decode_stream_event(nil, model) == []
@@ -108,7 +108,7 @@ defmodule ReqLLM.Providers.Azure.StreamingTest do
     end
 
     test "OpenAI: malformed event missing choices returns empty list" do
-      {:ok, model} = ReqLLM.model("azure:gpt-4o")
+      model = traditional_openai_model()
 
       event = %{data: %{"id" => "chatcmpl-123", "object" => "chat.completion.chunk"}}
 
@@ -116,7 +116,7 @@ defmodule ReqLLM.Providers.Azure.StreamingTest do
     end
 
     test "OpenAI: invalid JSON in tool arguments returns chunk with empty arguments" do
-      {:ok, model} = ReqLLM.model("azure:gpt-4o")
+      model = traditional_openai_model()
 
       event = %{
         data: %{
@@ -149,7 +149,7 @@ defmodule ReqLLM.Providers.Azure.StreamingTest do
     end
 
     test "OpenAI: nil tool name in streaming delta returns meta chunk" do
-      {:ok, model} = ReqLLM.model("azure:gpt-4o")
+      model = traditional_openai_model()
 
       event = %{
         data: %{
@@ -176,7 +176,7 @@ defmodule ReqLLM.Providers.Azure.StreamingTest do
     end
 
     test "OpenAI: empty choices array returns empty list" do
-      {:ok, model} = ReqLLM.model("azure:gpt-4o")
+      model = traditional_openai_model()
 
       event = %{
         data: %{
@@ -281,7 +281,7 @@ defmodule ReqLLM.Providers.Azure.StreamingTest do
     end
 
     test "OpenAI: streaming finish_reason variations" do
-      {:ok, model} = ReqLLM.model("azure:gpt-4o")
+      model = traditional_openai_model()
 
       length_event = %{
         data: %{
@@ -330,7 +330,7 @@ defmodule ReqLLM.Providers.Azure.StreamingTest do
     end
 
     test "OpenAI: streaming with usage metadata" do
-      {:ok, model} = ReqLLM.model("azure:gpt-4o")
+      model = traditional_openai_model()
 
       event = %{
         data: %{
@@ -352,7 +352,7 @@ defmodule ReqLLM.Providers.Azure.StreamingTest do
     end
 
     test "OpenAI: streaming tool call with incremental arguments" do
-      {:ok, model} = ReqLLM.model("azure:gpt-4o")
+      model = traditional_openai_model()
 
       event = %{
         data: %{
@@ -487,7 +487,7 @@ defmodule ReqLLM.Providers.Azure.StreamingTest do
     end
 
     test "OpenAI: handles [DONE] marker as terminal meta chunk" do
-      {:ok, model} = ReqLLM.model("azure:gpt-4o")
+      model = traditional_openai_model()
 
       result = Azure.decode_stream_event(%{data: "[DONE]"}, model)
       assert [%ReqLLM.StreamChunk{type: :meta} = chunk] = result
@@ -495,7 +495,7 @@ defmodule ReqLLM.Providers.Azure.StreamingTest do
     end
 
     test "OpenAI: handles nil delta gracefully" do
-      {:ok, model} = ReqLLM.model("azure:gpt-4o")
+      model = traditional_openai_model()
 
       event = %{
         data: %{
@@ -699,7 +699,7 @@ defmodule ReqLLM.Providers.Azure.StreamingTest do
     end
 
     test "OpenAI: streaming usage includes cached tokens when present" do
-      {:ok, model} = ReqLLM.model("azure:gpt-4o")
+      model = traditional_openai_model()
 
       event = %{
         data: %{
@@ -721,5 +721,14 @@ defmodule ReqLLM.Providers.Azure.StreamingTest do
       assert chunk.type == :meta
       assert chunk.metadata[:usage]
     end
+  end
+
+  defp traditional_openai_model do
+    %LLMDB.Model{
+      id: "gpt-4o",
+      provider: :azure,
+      capabilities: %{chat: true},
+      extra: %{}
+    }
   end
 end

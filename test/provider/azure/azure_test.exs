@@ -32,7 +32,7 @@ defmodule ReqLLM.Providers.AzureTest do
 
   describe "prepare_request/4" do
     test "constructs URL with deployment from options" do
-      {:ok, model} = ReqLLM.model("azure:gpt-4o")
+      model = traditional_openai_model()
 
       {:ok, request} =
         Azure.prepare_request(
@@ -49,7 +49,7 @@ defmodule ReqLLM.Providers.AzureTest do
     end
 
     test "uses model.id as default deployment when not specified" do
-      {:ok, model} = ReqLLM.model("azure:gpt-4o")
+      model = traditional_openai_model()
 
       {:ok, request} =
         Azure.prepare_request(
@@ -199,8 +199,10 @@ defmodule ReqLLM.Providers.AzureTest do
   end
 
   describe "attach_stream/4" do
+    import ExUnit.CaptureLog
+
     test "builds Finch request with correct URL and headers" do
-      {:ok, model} = ReqLLM.model("azure:gpt-4o")
+      model = traditional_openai_model()
       context = ReqLLM.Context.new([ReqLLM.Context.user("Hello")])
 
       {:ok, finch_request} =
@@ -232,6 +234,31 @@ defmodule ReqLLM.Providers.AzureTest do
       header_map = Map.new(finch_request.headers)
       assert header_map["api-key"] == "test-api-key"
       assert header_map["content-type"] == "application/json"
+    end
+
+    test "logs unsupported parameter warnings for reasoning models" do
+      {:ok, model} = ReqLLM.model("azure:gpt-5.4")
+      context = ReqLLM.Context.new([ReqLLM.Context.user("Hello")])
+
+      log =
+        capture_log(fn ->
+          {:ok, _finch_request} =
+            Azure.attach_stream(
+              model,
+              context,
+              [
+                api_key: "test-api-key",
+                deployment: "my-deployment",
+                base_url: "https://my-resource.openai.azure.com/openai",
+                temperature: 0.2,
+                max_tokens: 50
+              ],
+              :req_llm_finch
+            )
+        end)
+
+      assert log =~ "Renamed :max_tokens to :max_completion_tokens for reasoning models"
+      assert log =~ "This model does not support sampling parameters"
     end
 
     test "uses Authorization Bearer header when api_key starts with 'Bearer '" do
@@ -623,7 +650,7 @@ defmodule ReqLLM.Providers.AzureTest do
 
   describe "extract_usage/2" do
     test "extracts usage for OpenAI models" do
-      {:ok, model} = ReqLLM.model("azure:gpt-4o")
+      model = traditional_openai_model()
 
       body = %{
         "usage" => %{
@@ -640,15 +667,36 @@ defmodule ReqLLM.Providers.AzureTest do
       assert usage.total_tokens == 30
     end
 
+    test "extracts usage for Responses API models" do
+      {:ok, model} = ReqLLM.model("azure:gpt-5.4")
+
+      body = %{
+        "usage" => %{
+          "input_tokens" => 10,
+          "output_tokens" => 20,
+          "total_tokens" => 30,
+          "input_tokens_details" => %{"cached_tokens" => 4}
+        }
+      }
+
+      {:ok, usage} = Azure.extract_usage(body, model)
+
+      assert usage.input_tokens == 10
+      assert usage.output_tokens == 20
+      assert usage.total_tokens == 30
+      assert usage.cached_tokens == 4
+      assert usage.reasoning_tokens == 0
+    end
+
     test "extracts reasoning tokens for o1 models" do
       {:ok, model} = ReqLLM.model("azure:o1-mini")
 
       body = %{
         "usage" => %{
-          "prompt_tokens" => 100,
-          "completion_tokens" => 200,
+          "input_tokens" => 100,
+          "output_tokens" => 200,
           "total_tokens" => 300,
-          "completion_tokens_details" => %{
+          "output_tokens_details" => %{
             "reasoning_tokens" => 150
           }
         }
@@ -1125,7 +1173,7 @@ defmodule ReqLLM.Providers.AzureTest do
     end
 
     test "uses traditional URL path for .openai.azure.com domain" do
-      {:ok, model} = ReqLLM.model("azure:gpt-4o")
+      model = traditional_openai_model()
 
       {:ok, request} =
         Azure.prepare_request(
@@ -1161,7 +1209,7 @@ defmodule ReqLLM.Providers.AzureTest do
     end
 
     test "does not add model to request body for traditional format" do
-      {:ok, model} = ReqLLM.model("azure:gpt-4o")
+      model = traditional_openai_model()
 
       {:ok, request} =
         Azure.prepare_request(
@@ -1252,7 +1300,7 @@ defmodule ReqLLM.Providers.AzureTest do
     end
 
     test "streaming uses traditional URL path for .openai.azure.com domain" do
-      {:ok, model} = ReqLLM.model("azure:gpt-4o")
+      model = traditional_openai_model()
       context = ReqLLM.Context.new([ReqLLM.Context.user("Hello")])
 
       {:ok, finch_request} =
@@ -1594,5 +1642,14 @@ defmodule ReqLLM.Providers.AzureTest do
 
       assert response.message.reasoning_details == nil
     end
+  end
+
+  defp traditional_openai_model do
+    %LLMDB.Model{
+      id: "gpt-4o",
+      provider: :azure,
+      capabilities: %{chat: true},
+      extra: %{}
+    }
   end
 end
