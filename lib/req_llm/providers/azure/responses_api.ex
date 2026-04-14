@@ -89,6 +89,41 @@ defmodule ReqLLM.Providers.Azure.ResponsesAPI do
   end
 
   @doc """
+  Extracts usage from Azure Responses API payloads.
+  """
+  def extract_usage(body, _model) do
+    parsed_body = ReqLLM.Provider.Utils.ensure_parsed_body(body)
+
+    case parsed_body do
+      %{"usage" => usage} ->
+        input_tokens = usage["input_tokens"] || 0
+        output_tokens = usage["output_tokens"] || 0
+        total_tokens = usage["total_tokens"] || input_tokens + output_tokens
+
+        reasoning_tokens =
+          usage["reasoning_tokens"] ||
+            get_in(usage, ["output_tokens_details", "reasoning_tokens"]) ||
+            get_in(usage, ["completion_tokens_details", "reasoning_tokens"]) || 0
+
+        cached_tokens =
+          get_in(usage, ["input_tokens_details", "cached_tokens"]) ||
+            get_in(usage, ["prompt_tokens_details", "cached_tokens"]) || 0
+
+        {:ok,
+         %{
+           input_tokens: input_tokens,
+           output_tokens: output_tokens,
+           total_tokens: total_tokens,
+           cached_tokens: cached_tokens,
+           reasoning_tokens: reasoning_tokens
+         }}
+
+      _ ->
+        {:error, :no_usage_found}
+    end
+  end
+
+  @doc """
   Azure Responses API models do not support embeddings.
   """
   def format_embedding_request(_model_id, _text, _opts) do

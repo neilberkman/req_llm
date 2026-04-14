@@ -16,7 +16,7 @@ defmodule ReqLLM.Providers.Azure.RoutingTest do
 
   describe "multi-family routing" do
     test "routes GPT models to chat/completions endpoint" do
-      {:ok, model} = ReqLLM.model("azure:gpt-4o")
+      model = traditional_openai_model()
 
       {:ok, request} =
         Azure.prepare_request(
@@ -33,7 +33,7 @@ defmodule ReqLLM.Providers.Azure.RoutingTest do
     end
 
     test "routes o1 models to chat/completions endpoint" do
-      {:ok, model} = ReqLLM.model("azure:o1-mini")
+      model = traditional_reasoning_model()
       context = ReqLLM.Context.new([ReqLLM.Context.user("Hello")])
 
       {:ok, finch_request} =
@@ -59,6 +59,61 @@ defmodule ReqLLM.Providers.Azure.RoutingTest do
 
       assert url_string =~ "/chat/completions"
       refute url_string =~ "/messages"
+    end
+
+    test "routes gpt-5.4 models to responses endpoint" do
+      {:ok, model} = ReqLLM.model("azure:gpt-5.4")
+
+      {:ok, request} =
+        Azure.prepare_request(
+          :chat,
+          model,
+          "Hello",
+          base_url: "https://my-resource.openai.azure.com/openai",
+          deployment: "my-deployment"
+        )
+
+      url = URI.to_string(request.url)
+      assert url =~ "/responses"
+      refute url =~ "/chat/completions"
+
+      assert request.options[:json]["model"] == "gpt-5.4"
+      assert is_list(request.options[:json]["input"])
+      refute Map.has_key?(request.options[:json], :messages)
+    end
+
+    test "routes gpt-5.4 streaming requests to responses endpoint" do
+      {:ok, model} = ReqLLM.model("azure:gpt-5.4")
+      context = ReqLLM.Context.new([ReqLLM.Context.user("Hello")])
+
+      {:ok, finch_request} =
+        Azure.attach_stream(
+          model,
+          context,
+          [
+            api_key: "test-api-key",
+            deployment: "my-deployment",
+            base_url: "https://my-resource.openai.azure.com/openai"
+          ],
+          :req_llm_finch
+        )
+
+      url_string =
+        case finch_request do
+          %{path: path, query: query} when is_binary(query) and query != "" ->
+            path <> "?" <> query
+
+          %{path: path} ->
+            path
+        end
+
+      assert url_string =~ "/responses"
+      refute url_string =~ "/chat/completions"
+
+      body = Jason.decode!(finch_request.body)
+      assert body["model"] == "gpt-5.4"
+      assert is_list(body["input"])
+      refute Map.has_key?(body, "messages")
     end
 
     test "uses correct headers for GPT models" do
@@ -184,7 +239,7 @@ defmodule ReqLLM.Providers.Azure.RoutingTest do
     end
 
     test "recognizes gpt family" do
-      {:ok, model} = ReqLLM.model("azure:gpt-4o")
+      model = traditional_openai_model()
 
       {:ok, request} =
         Azure.prepare_request(
@@ -222,7 +277,8 @@ defmodule ReqLLM.Providers.Azure.RoutingTest do
         id: "my-custom-alias",
         provider: :azure,
         provider_model_id: "gpt-4o",
-        capabilities: %{chat: true}
+        capabilities: %{chat: true},
+        extra: %{}
       }
 
       {:ok, request} =
@@ -514,7 +570,7 @@ defmodule ReqLLM.Providers.Azure.RoutingTest do
 
   describe "deployment name edge cases" do
     test "accepts deployment with hyphens" do
-      {:ok, model} = ReqLLM.model("azure:gpt-4o")
+      model = traditional_openai_model()
 
       {:ok, request} =
         Azure.prepare_request(
@@ -530,7 +586,7 @@ defmodule ReqLLM.Providers.Azure.RoutingTest do
     end
 
     test "accepts deployment with underscores" do
-      {:ok, model} = ReqLLM.model("azure:gpt-4o")
+      model = traditional_openai_model()
 
       {:ok, request} =
         Azure.prepare_request(
@@ -546,7 +602,7 @@ defmodule ReqLLM.Providers.Azure.RoutingTest do
     end
 
     test "accepts deployment with numbers" do
-      {:ok, model} = ReqLLM.model("azure:gpt-4o")
+      model = traditional_openai_model()
 
       {:ok, request} =
         Azure.prepare_request(
@@ -562,7 +618,7 @@ defmodule ReqLLM.Providers.Azure.RoutingTest do
     end
 
     test "uses model.id as default deployment" do
-      {:ok, model} = ReqLLM.model("azure:gpt-4o")
+      model = traditional_openai_model()
 
       {:ok, request} =
         Azure.prepare_request(
@@ -583,5 +639,23 @@ defmodule ReqLLM.Providers.Azure.RoutingTest do
       {_, value} when is_binary(value) -> value
       nil -> nil
     end
+  end
+
+  defp traditional_openai_model do
+    %LLMDB.Model{
+      id: "gpt-4o",
+      provider: :azure,
+      capabilities: %{chat: true},
+      extra: %{}
+    }
+  end
+
+  defp traditional_reasoning_model do
+    %LLMDB.Model{
+      id: "o1-mini",
+      provider: :azure,
+      capabilities: %{chat: true},
+      extra: %{}
+    }
   end
 end

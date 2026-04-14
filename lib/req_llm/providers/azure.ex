@@ -658,28 +658,27 @@ defmodule ReqLLM.Providers.Azure do
 
     model_id = effective_model_id(model)
     model_family = get_model_family(model_id)
+    resolved_base_url = resolve_base_url(model_family, opts)
 
-    {provider_options, standard_opts} = Keyword.pop(opts, :provider_options, [])
-    flattened_opts = Keyword.merge(standard_opts, provider_options)
+    opts_with_context =
+      opts
+      |> Keyword.put(:context, context)
+      |> Keyword.put(:base_url, resolved_base_url)
 
-    # Resolve base_url early (attach_stream doesn't use Options.process)
-    resolved_base_url = resolve_base_url(model_family, flattened_opts)
-    flattened_opts = Keyword.put(flattened_opts, :base_url, resolved_base_url)
-
-    {pre_validated_opts, _warnings} = pre_validate_options(:chat, model, flattened_opts)
-    {translated_opts, _warnings} = translate_options(:chat, model, pre_validated_opts)
+    {:ok, processed_opts} =
+      ReqLLM.Provider.Options.process(__MODULE__, :chat, model, opts_with_context)
 
     operation = opts[:operation] || :chat
 
-    translated_opts =
-      translated_opts
+    processed_opts =
+      processed_opts
       |> maybe_clean_thinking_after_translation(model_family, operation)
       |> maybe_warn_service_tier(model_family, model_id)
 
-    {api_key, _extra_option_keys} = resolve_api_key(model_family, model, translated_opts)
+    {api_key, _extra_option_keys} = resolve_api_key(model_family, model, processed_opts)
 
     {api_version, deployment, base_url} =
-      extract_azure_credentials(model, translated_opts)
+      extract_azure_credentials(model, processed_opts)
 
     formatter = get_formatter(model_id, model)
 
@@ -696,8 +695,11 @@ defmodule ReqLLM.Providers.Azure do
       {"accept", "text/event-stream"}
     ]
 
-    extra_headers = get_anthropic_headers(model_id, translated_opts)
-    custom_headers = ReqLLM.Provider.Utils.extract_custom_headers(opts[:req_http_options])
+    extra_headers = get_anthropic_headers(model_id, processed_opts)
+
+    custom_headers =
+      ReqLLM.Provider.Utils.extract_custom_headers(processed_opts[:req_http_options])
+
     headers = base_headers ++ extra_headers ++ custom_headers
 
     body =
@@ -708,9 +710,9 @@ defmodule ReqLLM.Providers.Azure do
           operation,
           model,
           context,
-          translated_opts
+          processed_opts
         ),
-        Keyword.put(translated_opts, :stream, true)
+        Keyword.put(processed_opts, :stream, true)
       )
       |> maybe_add_model_for_foundry(deployment, base_url)
 
@@ -1054,10 +1056,18 @@ defmodule ReqLLM.Providers.Azure do
   # Returns the model ID to use for API calls, preferring provider_model_id if set.
   defp effective_model_id(model), do: model.provider_model_id || model.id
 
-  # Checks if a model uses the Responses API (based on model.extra.wire.protocol metadata).
-  # The model metadata should have `extra: %{wire: %{protocol: "openai_responses"}}` for Responses API models.
+  # Checks if a model uses the Responses API.
+  # Supports both nested `extra.wire.protocol` and flat `extra.wire_protocol`
+  # metadata shapes used by llm_db.
   defp uses_responses_api?(%LLMDB.Model{} = model) do
-    get_in(model, [Access.key(:extra, %{}), :wire, :protocol]) == "openai_responses"
+    wire_protocol(model) in ["openai_responses", "openai_codex_responses"]
+  end
+
+  defp wire_protocol(%LLMDB.Model{} = model) do
+    get_in(model, [Access.key(:extra, %{}), :wire, :protocol]) ||
+      get_in(model, [Access.key(:extra, %{}), "wire", "protocol"]) ||
+      get_in(model, [Access.key(:extra, %{}), :wire_protocol]) ||
+      get_in(model, [Access.key(:extra, %{}), "wire_protocol"])
   end
 
   # Determines the model family (claude, gpt-4o, o1, etc.) from a model ID.
