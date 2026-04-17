@@ -282,6 +282,13 @@ defmodule ReqLLM.Providers.OpenAICodex do
     provider_opts = provider_options(opts)
     instructions = extract_instructions(context) || ""
 
+    body =
+      if tool_resume_body?(body) do
+        Map.delete(body, "previous_response_id")
+      else
+        body
+      end
+
     body
     |> Map.put("input", Enum.reject(List.wrap(body["input"]), &system_input?/1))
     |> Map.delete("max_output_tokens")
@@ -292,6 +299,15 @@ defmodule ReqLLM.Providers.OpenAICodex do
     |> Map.put("instructions", instructions)
     |> maybe_put_parallel_tool_calls(provider_opts[:openai_parallel_tool_calls])
   end
+
+  defp tool_resume_body?(%{"input" => input}) when is_list(input) do
+    Enum.any?(input, fn
+      %{"type" => "function_call_output", "call_id" => id} when is_binary(id) -> true
+      _ -> false
+    end)
+  end
+
+  defp tool_resume_body?(_), do: false
 
   defp normalize_stream_event!(%{data: "[DONE]"} = event), do: event
 
