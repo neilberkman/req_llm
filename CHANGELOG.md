@@ -9,6 +9,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog -->
 
+## [v1.10.0](https://github.com/agentjido/req_llm/compare/v1.9.0...v1.10.0) (2026-04-17)
+
+
+
+
+### Features:
+
+* schema: apply property ordering at wire encoding for non-Google providers (#600) by mhsdef
+
+* schema: preserve property ordering in generated JSON schema (#599) by mikehostetler
+
+* forward parallel_tool_calls to Responses API body (#595) by BlueHotDog
+
+* openai: add explicit ollama auth marker (#594) by mikehostetler
+
+* openai: add `store` provider option for ZDR orgs, allow PDFs for Responses API models (#584) by mhsdef
+
+* Allow redaction of message content when inspecting Context struct (#590) by Shane Howley
+
+* google_vertex: add label support to vertex (#587) by thiagomajesk
+
+### Bug Fixes:
+
+* http: preserve custom finch in sync requests (#617) by mikehostetler
+
+* openai_codex: omit previous_response_id on tool resume (#613) by nsi-inco
+
+* azure: route responses models correctly by neilberkman
+
+* openai: include summary field in reasoning block encoding by mhsdef
+
+* normalize provider tool choice handling and harden tool call decoding (#598) by Zack
+
+* streaming: return structured stream timeouts (#592) by mikehostetler
+
+* anthropic: handle malformed tool arguments gracefully (#586) by BlueHotDog
+
+* bedrock: preserve inference profile prefix in API URLs (#578) by neilberkman
+
 ## [v1.9.0](https://github.com/agentjido/req_llm/compare/v1.8.0...v1.9.0) (2026-03-27)
 
 
