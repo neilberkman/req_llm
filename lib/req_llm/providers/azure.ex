@@ -694,7 +694,7 @@ defmodule ReqLLM.Providers.Azure do
     formatter = get_formatter(model_id, model)
 
     path = get_chat_endpoint_path(model_id, model, deployment, api_version, base_url)
-    url = "#{base_url}#{path}"
+    url = join_url(base_url, path)
 
     Logger.debug(
       "[Azure attach_stream] model_family=#{model_family}, url=#{url}, formatter=#{inspect(formatter)}"
@@ -1306,4 +1306,12 @@ defmodule ReqLLM.Providers.Azure do
   end
 
   defp maybe_add_model_for_foundry(body, _deployment, _base_url), do: body
+
+  # Joins a base URL and a path without producing a double-slash when the
+  # caller passes a trailing-slash base URL (e.g. ".../openai/v1/").
+  # Path is always expected to start with "/"; we strip duplicate leading
+  # slashes after the base URL has been trimmed.
+  defp join_url(base_url, path) when is_binary(base_url) and is_binary(path) do
+    String.trim_trailing(base_url, "/") <> path
+  end
 end

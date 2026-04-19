@@ -1768,6 +1768,32 @@ defmodule ReqLLM.Providers.AzureTest do
       refute url_string =~ "api-version="
       refute url_string =~ "/deployments/"
     end
+
+    test "streaming handles trailing-slash base URL without producing //" do
+      model = traditional_openai_model()
+      context = ReqLLM.Context.new([ReqLLM.Context.user("Hello")])
+
+      {:ok, finch_request} =
+        Azure.attach_stream(
+          model,
+          context,
+          [
+            api_key: "test-api-key",
+            deployment: "gpt-4o-deployment",
+            # Trailing slash, as documented in the moduledoc usage example.
+            base_url: "https://my-resource.openai.azure.com/openai/v1/"
+          ],
+          :req_llm_finch
+        )
+
+      path =
+        case finch_request do
+          %{path: p} -> p
+        end
+
+      refute path =~ "//", "expected single-slash path, got: #{inspect(path)}"
+      assert path =~ "/openai/v1/chat/completions"
+    end
   end
 
   defp traditional_openai_model do
